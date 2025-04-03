@@ -1,0 +1,12 @@
+
+
+<th:block th:fragment="style_jsscript">
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+    <script th:src="@{/js/script.js}" defer></script>  <!--thanks to 'defer' it will be loaded after the entire DOM has fully loaded-->
+</th:block>
+
+<th:block th:fragment="bootstrap">
+    <link th:rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}"/>
+    <link th:rel="stylesheet" th:href="@{/webjars/bootstrap-icons/1.11.3/font/bootstrap-icons.css}" />
+    <script th:src="@{/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js}" defer></script>  <!--x dynamic+ popper js(tooltip,dropdown,ect..)-->
+</th:block>

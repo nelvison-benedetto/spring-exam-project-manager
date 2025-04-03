@@ -1,0 +1,9 @@
+*{margin: 0; padding: 0; box-sizing: border-box;}
+body{
+    font-family: Helvetica,"Roboto", Arial, sans-serif;
+}
+img{max-width: 100%;}
+.debug *{margin: 1px black dashed;}
+:root{
+    
+}
