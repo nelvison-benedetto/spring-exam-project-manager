@@ -4,12 +4,20 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
@@ -34,8 +42,8 @@ public class Project implements Serializable{
     private Integer id;
 
     @Column(nullable = false)
-    @NotBlank(message = "name cannot be blank.")
-    private String name;
+    @NotBlank(message = "title cannot be blank.")
+    private String title;
 
     @Column(nullable = false)
     @Size(max = 2000, message = "description cannot be longer than 2000 characters.")
@@ -52,6 +60,10 @@ public class Project implements Serializable{
     @Column(nullable = false)
     @NotNull(message = "is active cannot be null.")
     private boolean isActive;
+
+    @Column(nullable = false)
+    @NotNull(message = "is completed cannot be null.")
+    private boolean isCompleted;
 
     @Column(nullable = false)
     @NotBlank(message = "category cannot be blank.")
@@ -94,13 +106,26 @@ public class Project implements Serializable{
         this.createdAt = now;
         this.updatedAt = now;
     }
-
     @PreUpdate  //called before save the updates on db
     public void preUpdate(){
         this.updatedAt = LocalDateTime.now();
     }
 
+    @Override
+    public String toString(){
+        return String.format("%s %s %s %s", id, title, description, status);
+    }
 
 
+    //RELATIONS
+    @ManyToMany(mappedBy = "projects")
+    @JsonBackReference
+    private List<Company> companies = new ArrayList<>();
 
+
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<Task> tasks = new ArrayList<>();
+
+    
 }

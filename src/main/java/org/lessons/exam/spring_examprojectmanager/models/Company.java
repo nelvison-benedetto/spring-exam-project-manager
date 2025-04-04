@@ -1,12 +1,20 @@
 package org.lessons.exam.spring_examprojectmanager.models;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -48,6 +56,25 @@ public class Company implements Serializable{
     @NotBlank
     @Pattern(regexp = "\\d{3}-\\d{4}-\\d", message = "Company State Tax ID must follow the format XXX-XXXX-X")
     private String companyStateTaxID;
+    
+    @Override
+    public String toString(){
+        return String.format("%s %s %s", id, companyLegalName, companyUsername);
+    }
+
+    //RELATIONS
+    
+    @ManyToMany(mappedBy = "companies")
+    @JsonBackReference
+    private List<Client> clients = new ArrayList<>();
+
+    @ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE })  
+    @JoinTable(
+        name = "company_project",
+        joinColumns = @JoinColumn(name = "company_id"),
+        inverseJoinColumns = @JoinColumn(name = "project_id")
+    )
+    private List<Project> projects = new ArrayList<>();
 
 }
 //in bootstrap per avere box vuoti da riempire usa 

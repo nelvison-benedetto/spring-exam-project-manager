@@ -46,4 +46,11 @@ public class Employee implements Serializable{
     private String phoneNumber;  //can start w 0
 
 
+    @Override
+    public String toString(){
+        return String.format("%s %s %s", id, firstName, lastName);
+    }
+
+    
+
 }
