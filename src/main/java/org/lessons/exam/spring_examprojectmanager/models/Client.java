@@ -19,6 +19,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreRemove;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
@@ -82,6 +83,7 @@ public class Client implements Serializable{
         return String.format("%s %s %s", id, subscriptionType, status);
     }
 
+    
     //RELATIONS
 
     @ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
@@ -92,5 +94,13 @@ public class Client implements Serializable{
     )
     private List<Company> companies = new ArrayList<>();
 
-    
+
+    //DISCONNECTIONS BEFORE DELETES
+    @PreRemove
+    private void removeCompaniesAssociation() {
+        for(Company company : companies){
+            company.getClients().remove(this);  //disconnect this client from each company
+        }
+        companies.clear();  //disconnect all companies from this client
+    }
 }

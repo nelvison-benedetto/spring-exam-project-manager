@@ -15,6 +15,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.PreRemove;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -76,7 +77,18 @@ public class Company implements Serializable{
     )
     private List<Project> projects = new ArrayList<>();
 
+
+    //DISCONNECTIONS BEFORE DELETES
+    
+    @PreRemove
+    private void removeProjectsAssociation() {
+        for(Project project : projects){
+            project.getCompanies().remove(this);  //disconnect this company from each project
+        }
+        projects.clear();  //disconnect all projects from this company
+    }
 }
+
 //in bootstrap per avere box vuoti da riempire usa 
 //Cleave.js – ottimo per formattare numeri tipo EIN/SSN/etc.
 //Inputmask – anche ottimo per questo tipo di formattazione
