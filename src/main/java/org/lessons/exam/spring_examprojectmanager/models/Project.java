@@ -81,9 +81,6 @@ public class Project implements Serializable{
     @NotNull(message = "due date cannot be null.")
     private LocalDate dueDate;
 
-
-
-
     @Column(nullable = false)
     @NotNull(message = "project start date cannot be null.")
     private LocalDate projectStartDate;  //@Temporal(TemporalType.DATE) x old versions 
@@ -92,6 +89,8 @@ public class Project implements Serializable{
     @NotNull(message = "project end date cannot be null.")
     private LocalDate projectEndDate;
 
+
+    
     @Column(nullable = false)
     @NotNull(message = "created at cannot be null.")
     private LocalDateTime createdAt;

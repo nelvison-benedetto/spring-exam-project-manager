@@ -81,7 +81,7 @@ public class Company implements Serializable{
     //DISCONNECTIONS BEFORE DELETES
     
     @PreRemove
-    private void removeProjectsAssociation() {
+    private void removeProjectsAssociation() {  //add this where you have @jointable(name,joincolumns,inversejoincolumns)
         for(Project project : projects){
             project.getCompanies().remove(this);  //disconnect this company from each project
         }

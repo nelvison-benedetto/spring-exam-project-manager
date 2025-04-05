@@ -20,9 +20,15 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name = "tasks")
+@Getter @Setter @NoArgsConstructor
+@AllArgsConstructor
 public class Task implements Serializable{
     
     private static final long serialVersionUID = 1L;
@@ -72,6 +78,8 @@ public class Task implements Serializable{
     @NotNull(message = "task end date cannot be null.")
     private LocalDate taskEndDate;
 
+
+    
     @Column(nullable = false)
     @NotNull(message = "created at cannot be null.")
     private LocalDateTime createdAt;
