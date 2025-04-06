@@ -11,6 +11,7 @@ import org.lessons.exam.spring_examprojectmanager.models.Project;
 import org.lessons.exam.spring_examprojectmanager.models.Task;
 import org.lessons.exam.spring_examprojectmanager.repository.ProjectRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -20,7 +21,7 @@ public class ProjectService {
     private final CompanyService companyService;
     private final TaskService taskService;
     @Autowired
-    public ProjectService(ProjectRepo projectRepo, CompanyService companyService, TaskService taskService){
+    public ProjectService(ProjectRepo projectRepo, @Lazy CompanyService companyService, TaskService taskService){
         this.projectRepo = projectRepo;
         this.companyService = companyService;
         this.taskService = taskService;

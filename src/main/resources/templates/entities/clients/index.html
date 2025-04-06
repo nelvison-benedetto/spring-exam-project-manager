@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clients Index</title>
+    <th:block th:replace="~{fragments/head.html::bootstrap}" />  <!-- ~ :  Alt+126(numerini)-->
+    <th:block th:replace="~{fragments/head.html::style_jsscript}" />
+</head>
+<body>
+    
+    <div class="container">
+
+      <table class="table table-hover">
+          <thead>
+            <tr>
+              <th scope="col">Id</th>
+              <th scope="col">Subscription</th>
+              <th scope="col">Status</th>
+              <th scope="col">Start Date</th>
+              <th scope="col">End Date</th>
+              <th scope="col">Created At</th>     
+              <th scope="col">Updated At</th>
+            </tr>
+          </thead>
+          <tbody>
+      
+            <tr th:each="client : ${clients}">
+              <th scope="row" th:text="${client.id}"></th>
+              <td th:text="${client.subscriptionType}"></td>
+              <td th:text="${client.status}"></td>
+              <td th:text="${client.subscriptionStartDate}"></td>
+              <td th:text="${client.subscriptionEndDate}"></td>
+              <td th:text="${client.createdAt}"></td> 
+              <td th:text="${client.updatedAt}"></td>
+            </tr>
+      
+            <tr th:if="${#lists.isEmpty(clients)}">
+              <td colspan="5">No clients found</td>
+            </tr>
+      
+          </tbody>
+        </table>
+        
+    </div>
+
+</body>
+</html>

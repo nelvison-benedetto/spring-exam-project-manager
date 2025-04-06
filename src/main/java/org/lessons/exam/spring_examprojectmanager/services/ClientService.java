@@ -9,6 +9,7 @@ import org.lessons.exam.spring_examprojectmanager.models.Client;
 import org.lessons.exam.spring_examprojectmanager.models.Company;
 import org.lessons.exam.spring_examprojectmanager.repository.ClientRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -17,7 +18,7 @@ public class ClientService {
     private final ClientRepo clientRepo;
     private final CompanyService companyService;
     @Autowired
-    public ClientService(ClientRepo clientRepo, CompanyService companyService){
+    public ClientService(ClientRepo clientRepo, @Lazy CompanyService companyService){  //USO LAZY OTHERWISE i services client & company call each other without starting
         this.clientRepo = clientRepo;
         this.companyService = companyService;
     }

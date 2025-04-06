@@ -7,11 +7,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import io.micrometer.common.lang.NonNull;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -41,7 +43,6 @@ public class Client implements Serializable{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    //link to user_id,..
 
     @Column(nullable = false)
     @NotBlank(message = "subscription type cannot be blank.")
@@ -86,12 +87,13 @@ public class Client implements Serializable{
     
     //RELATIONS
 
-    @ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+    @ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE }, fetch = FetchType.LAZY)
     @JoinTable(
         name = "client_company",
         joinColumns = @JoinColumn(name = "client_id"),
         inverseJoinColumns = @JoinColumn(name = "company_id")
     )
+    @JsonManagedReference
     private List<Company> companies = new ArrayList<>();
 
 

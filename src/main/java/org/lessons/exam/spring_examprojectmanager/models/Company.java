@@ -5,10 +5,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -65,16 +67,17 @@ public class Company implements Serializable{
 
     //RELATIONS
     
-    @ManyToMany(mappedBy = "companies")
+    @ManyToMany(mappedBy = "companies", fetch = FetchType.LAZY)
     @JsonBackReference
     private List<Client> clients = new ArrayList<>();
 
-    @ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE })  
+    @ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE }, fetch = FetchType.LAZY)  
     @JoinTable(
         name = "company_project",
         joinColumns = @JoinColumn(name = "company_id"),
         inverseJoinColumns = @JoinColumn(name = "project_id")
     )
+    @JsonManagedReference
     private List<Project> projects = new ArrayList<>();
 
 

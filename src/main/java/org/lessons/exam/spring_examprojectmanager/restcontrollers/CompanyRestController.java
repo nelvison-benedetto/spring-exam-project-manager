@@ -57,7 +57,7 @@ public class CompanyRestController {
     @PutMapping("/{id}")
     public ResponseEntity<Company> update(@Valid @RequestBody Company company, @PathVariable Integer id){
         if(companyService.optionalFindById(id).isPresent()){
-            company.setId(id);
+            company.setId(id);  //ensures to keep the same id! 
             return new ResponseEntity<Company>(companyService.edit(company), HttpStatus.OK);
         }
         return new ResponseEntity<Company>(HttpStatus.NOT_FOUND);
@@ -65,12 +65,12 @@ public class CompanyRestController {
 
     //DELETE
     @DeleteMapping("/{id}")
-    public ResponseEntity<Company> delete(@Valid @PathVariable Integer id){
+    public ResponseEntity<Void> delete(@Valid @PathVariable Integer id){
         if(companyService.optionalFindById(id).isPresent()){
             companyService.deleteById(id);
-            return new ResponseEntity<Company>(HttpStatus.NO_CONTENT);
+            return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
         }
-        return new ResponseEntity<Company>(HttpStatus.NOT_FOUND);
+        return new ResponseEntity<Void>(HttpStatus.NOT_FOUND);
     }
 
 

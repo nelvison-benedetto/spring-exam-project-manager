@@ -111,6 +111,4 @@ public class Task implements Serializable{
     @JsonBackReference
     private Project project;
 
-    
-
 }

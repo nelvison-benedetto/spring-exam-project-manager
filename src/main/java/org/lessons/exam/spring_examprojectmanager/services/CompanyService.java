@@ -10,6 +10,7 @@ import org.lessons.exam.spring_examprojectmanager.models.Company;
 import org.lessons.exam.spring_examprojectmanager.models.Project;
 import org.lessons.exam.spring_examprojectmanager.repository.CompanyRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
@@ -21,7 +22,7 @@ public class CompanyService {
     private final ClientService clientService;
     private final ProjectService projectService;
     @Autowired  //ora eseguito da Lombok w @RequiredArgsConstructor
-    public CompanyService(CompanyRepo companyRepo, ClientService clientService, ProjectService projectService){
+    public CompanyService(CompanyRepo companyRepo, @Lazy ClientService clientService, @Lazy ProjectService projectService){
         this.companyRepo = companyRepo;
         this.clientService = clientService;
         this.projectService = projectService;
