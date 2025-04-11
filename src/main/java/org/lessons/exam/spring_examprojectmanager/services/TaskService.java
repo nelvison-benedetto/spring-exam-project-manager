@@ -59,9 +59,6 @@ public class TaskService {
         if(taskToCreate == null){
             throw new IllegalArgumentException("Task to create cannot be null.");
         }
-        if(boolExists(taskToCreate)){
-            throw new DuplicateResourceException("Task already exists for create.");
-        }
         return taskRepo.save(taskToCreate);
     }
 
@@ -75,8 +72,8 @@ public class TaskService {
         existingTask.setTitle(taskToEdit.getTitle());
         existingTask.setDescription(taskToEdit.getDescription());
         existingTask.setStatus(taskToEdit.getStatus());
-        existingTask.setActive(taskToEdit.isActive());
-        existingTask.setCompleted(taskToEdit.isCompleted());
+        existingTask.setIsActive(taskToEdit.getIsActive());
+        existingTask.setIsCompleted(taskToEdit.getIsCompleted());
         existingTask.setPriority(taskToEdit.getPriority());
         existingTask.setDueDate(taskToEdit.getDueDate());
         existingTask.setTaskStartDate(taskToEdit.getTaskStartDate());

@@ -28,7 +28,7 @@ public class ProjectSeeder {
                     null, 
                     "TechNova App Redesign", 
                     "Redesigning the mobile app for TechNova.", 
-                    "IN_PROGRESS", 
+                    "Completed", 
                     true, 
                     false, 
                     "Mobile Development", 
@@ -45,14 +45,14 @@ public class ProjectSeeder {
     
                 new Project(
                     null, 
-                    "GreenByte Marketing Campaign", 
-                    "Marketing campaign for GreenByte's new product launch.", 
-                    "COMPLETED", 
+                    "DarkStone Marketing Campaign", 
+                    "Marketing campaign for DarkStone's new product launch.", 
+                    "On_Hold",
                     false, 
                     true, 
                     "Marketing", 
                     new BigDecimal("30000.00"), 
-                    "Medium", 
+                    "Urgent", 
                     LocalDate.of(2024, 7, 1), 
                     LocalDate.of(2024, 3, 1), 
                     LocalDate.of(2024, 8, 30), 
@@ -61,31 +61,12 @@ public class ProjectSeeder {
                     new ArrayList<>(),
                     new ArrayList<>()
                 ),
-    
-                new Project(
-                    null, 
-                    "GreenByte Web Development", 
-                    "Developing a new website for GreenByte.", 
-                    "IN_PROGRESS", 
-                    true, 
-                    false, 
-                    "Web Development", 
-                    new BigDecimal("40000.00"), 
-                    "Medium", 
-                    LocalDate.of(2024, 5, 1), 
-                    LocalDate.of(2024, 3, 1), 
-                    LocalDate.of(2024, 11, 1), 
-                    LocalDateTime.now(), 
-                    LocalDateTime.now(),
-                    new ArrayList<>(),
-                    new ArrayList<>()
-                ),
-    
+
                 new Project(
                     null, 
                     "TechNova Cloud Infrastructure", 
                     "Setting up cloud infrastructure for TechNova.", 
-                    "PENDING", 
+                    "In_Debug", 
                     true, 
                     false, 
                     "Infrastructure", 
@@ -98,7 +79,27 @@ public class ProjectSeeder {
                     LocalDateTime.now(),
                     new ArrayList<>(),
                     new ArrayList<>()
+                ),
+    
+                new Project(
+                    null, 
+                    "DarkStone Web Development", 
+                    "Developing a new website for DarkStone.", 
+                    "In_Review", 
+                    true, 
+                    false, 
+                    "Web Development", 
+                    new BigDecimal("40000.00"), 
+                    "Medium", 
+                    LocalDate.of(2024, 5, 1), 
+                    LocalDate.of(2024, 3, 1), 
+                    LocalDate.of(2024, 11, 1), 
+                    LocalDateTime.now(), 
+                    LocalDateTime.now(),
+                    new ArrayList<>(),
+                    new ArrayList<>()
                 )
+    
         );
     }
 

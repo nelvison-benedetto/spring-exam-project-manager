@@ -10,3 +10,25 @@
     <link th:rel="stylesheet" th:href="@{/webjars/bootstrap-icons/1.11.3/font/bootstrap-icons.css}" />
     <script th:src="@{/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js}" defer></script>  <!--x dynamic+ popper js(tooltip,dropdown,ect..)-->
 </th:block>
+
+<th:block th:fragment="dayjs_x_prettydate">
+    <script src="/webjars/dayjs/1.11.13/dayjs.min.js" defer></script>
+    <script src="/webjars/dayjs/1.11.13/plugin/isToday.js" defer></script>
+    <script src="/webjars/dayjs/1.11.13/plugin/isYesterday.js" defer></script>
+    <script src="/webjars/dayjs/1.11.13/plugin/relativeTime.js" defer></script>
+    <script src="/webjars/dayjs/1.11.13/plugin/advancedFormat.js" defer></script>
+    <script src="/webjars/dayjs/1.11.13/plugin/customParseFormat.js" defer></script>
+    
+    <script th:src="@{/js/prettydate.js}" defer></script>  <!--CUSTOM FILE JS PRETTYDATE.JS -->
+</th:block>
+
+<th:block th:fragment="number-format-xvisual">
+    <script th:src="@{/js/number-format-xvisual.js}" defer></script>
+</th:block>
+
+<th:block th:fragment="flatpickr-xvisualinput-dateForm">
+    <link rel="stylesheet" th:href="@{/webjars/flatpickr/4.6.13/dist/flatpickr.min.css}" />
+    <script th:src="@{/webjars/flatpickr/4.6.13/dist/flatpickr.min.js}" defer></script>
+    <script th:src="@{/js/flatpickr-xvisualinput-dateForm.js}" defer></script>
+</th:block>
+

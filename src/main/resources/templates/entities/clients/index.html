@@ -12,35 +12,35 @@
     <div class="container">
 
       <table class="table table-hover">
-          <thead>
-            <tr>
-              <th scope="col">Id</th>
-              <th scope="col">Subscription</th>
-              <th scope="col">Status</th>
-              <th scope="col">Start Date</th>
-              <th scope="col">End Date</th>
-              <th scope="col">Created At</th>     
-              <th scope="col">Updated At</th>
-            </tr>
-          </thead>
-          <tbody>
+        <thead>
+          <tr>
+            <th scope="col">Id</th>
+            <th scope="col">Subscription</th>
+            <th scope="col">Status</th>
+            <th scope="col">Start Date</th>
+            <th scope="col">End Date</th>
+            <th scope="col">Created At</th>
+            <th scope="col">Updated At</th>
+          </tr>
+        </thead>
+        <tbody>
       
-            <tr th:each="client : ${clients}">
-              <th scope="row" th:text="${client.id}"></th>
-              <td th:text="${client.subscriptionType}"></td>
-              <td th:text="${client.status}"></td>
-              <td th:text="${client.subscriptionStartDate}"></td>
-              <td th:text="${client.subscriptionEndDate}"></td>
-              <td th:text="${client.createdAt}"></td> 
-              <td th:text="${client.updatedAt}"></td>
-            </tr>
+          <tr th:each="client : ${clients}">
+            <th scope="row" th:text="${client.id}"></th>
+            <td th:text="${client.subscriptionType}"></td>
+            <td th:text="${client.status}"></td>
+            <td th:text="${client.subscriptionStartDate}"></td>
+            <td th:text="${client.subscriptionEndDate}"></td>
+            <td th:text="${client.createdAt}"></td>
+            <td th:text="${client.updatedAt}"></td>
+          </tr>
       
-            <tr th:if="${#lists.isEmpty(clients)}">
-              <td colspan="5">No clients found</td>
-            </tr>
+          <tr th:if="${#lists.isEmpty(clients)}">
+            <td colspan="5">No clients found</td>
+          </tr>
       
-          </tbody>
-        </table>
+        </tbody>
+      </table>
         
     </div>
 

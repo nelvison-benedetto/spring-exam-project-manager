@@ -31,6 +31,8 @@ public class ProjectService {
     public Boolean boolExistsById(Integer id){
         return projectRepo.existsById(id);
     }
+
+    //also needs a projectAskIfExists w Id here!(no obj not yet saved to db so with Id null)
     public Boolean boolExists(Project projectAskIfExists){  //more compact boolExistsById(companyAskIfExists.getId()) but i wanted to show this logic as well
         Optional<Project> projectOptional = projectRepo.findById(projectAskIfExists.getId());
         if(projectOptional.isPresent()){return true;}
@@ -67,9 +69,6 @@ public class ProjectService {
         if(projectToCreate == null){
             throw new IllegalArgumentException("Project to create cannot be null.");
         }
-        if(boolExists(projectToCreate)){
-            throw new DuplicateResourceException("Project already exists for create.");
-        }
         return projectRepo.save(projectToCreate);
     }
 
@@ -83,8 +82,8 @@ public class ProjectService {
         existingProject.setTitle(projectToEdit.getTitle());
         existingProject.setDescription(projectToEdit.getDescription());
         existingProject.setStatus(projectToEdit.getStatus());
-        existingProject.setActive(projectToEdit.isActive());
-        existingProject.setCompleted(projectToEdit.isCompleted());
+        existingProject.setIsActive(projectToEdit.getIsActive());
+        existingProject.setIsCompleted(projectToEdit.getIsCompleted());
         existingProject.setCategory(projectToEdit.getCategory());
         existingProject.setBudget(projectToEdit.getBudget());
         existingProject.setPriority(projectToEdit.getPriority());

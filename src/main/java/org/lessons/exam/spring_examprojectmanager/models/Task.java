@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -54,11 +55,11 @@ public class Task implements Serializable{
 
     @Column(nullable = false)
     @NotNull(message = "is active cannot be null.")
-    private boolean isActive;
+    private Boolean isActive = false;
 
     @Column(nullable = false)
     @NotNull(message = "is completed cannot be null.")
-    private boolean isCompleted;
+    private Boolean isCompleted = false;
 
     @Column(nullable = false)
     @NotBlank(message = "priority cannot be blank.")
@@ -66,26 +67,29 @@ public class Task implements Serializable{
 
     @Column(nullable = false)
     @NotNull(message = "due date cannot be null.")
+    @JsonFormat(pattern = "yyyy/MM/dd")
     private LocalDate dueDate;
 
 
 
     @Column(nullable = false)
     @NotNull(message = "task start date cannot be null.")
+    @JsonFormat(pattern = "yyyy/MM/dd")
     private LocalDate taskStartDate;  //@Temporal(TemporalType.DATE) x old versions 
 
     @Column(nullable = false)
     @NotNull(message = "task end date cannot be null.")
+    @JsonFormat(pattern = "yyyy/MM/dd")
     private LocalDate taskEndDate;
 
 
     
-    @Column(nullable = false)
-    @NotNull(message = "created at cannot be null.")
+    @Column
+    @JsonFormat(pattern = "yyyy/MM/dd HH:mm:ss")
     private LocalDateTime createdAt;
 
-    @Column(nullable = false)
-    @NotNull(message = "updated at cannot be null.")
+    @Column
+    @JsonFormat(pattern = "yyyy/MM/dd HH:mm:ss")
     private LocalDateTime updatedAt;
 
     @PrePersist  //called before save on db for the first time

@@ -5,5 +5,30 @@ body{
 img{max-width: 100%;}
 .debug *{margin: 1px black dashed;}
 :root{
-    
+    --planned: #17a2b8;
+    --in_progress: #007bff;
+    --on_hold: #ffc107;
+    --completed: #28a745;
+    --cancelled: #dc3545;
+    --delayed: #6c757d;
+    --in_review: #343a40;
+    --in_test: #6610f2;
+    --in_debug: #495057;
+}
+.bg-planned{background-color: var(--planned);}
+.bg-in_progress{background-color: var(--in_progress);}
+.bg-on_hold{background-color: var(--on_hold);}
+.bg-completed{background-color: var(--completed);}
+.bg-cancelled{background-color: var(--cancelled);}
+.bg-delayed{background-color: var(--delayed);}
+.bg-in_review{background-color: var(--in_review);}
+.bg-in_test{background-color: var(--in_test);}
+.bg-in_debug{background-color: var(--in_debug);}
+
+.form-select:hover {
+    background-color: #f0f0f0;
+}
+.form-select option:hover {
+    background-color: #007bff;
+    color: white;
 }

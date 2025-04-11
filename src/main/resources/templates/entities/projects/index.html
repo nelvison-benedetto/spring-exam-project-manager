@@ -6,8 +6,89 @@
     <title>Projects Index</title>
     <th:block th:replace="~{fragments/head.html::bootstrap}" />  <!-- ~ :  Alt+126(numerini)-->
     <th:block th:replace="~{fragments/head.html::style_jsscript}" />
+    <th:block th:replace="~{fragments/head.html::dayjs_x_prettydate}" />
 </head>
 <body>
-    
+    <div class="container">
+        <h1 class="mt-4">Projects</h1>
+        <div class="text-start my-3">
+            <a th:href="@{/projects/create}" class="btn btn-primary">New Project</a>
+        </div>
+
+        <div class="border rounded" style="padding: 0.4rem 0.6rem 0.0rem 0.7rem;">
+            <table class="table table-hover align-middle shadow-sm">
+                <thead class="table-dark ">  
+                    <tr>
+                        <th scope="col">Id</th>
+                        <th scope="col">Last Update</th>
+                        <th scope="col">Title</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Category</th>
+                        <th scope="col">Budget</th>
+                        <th scope="col">Priority</th>
+                        <th scope="col">Due Date</th>
+                        <th scope="col"></th>
+ 
+                    </tr>
+                </thead>
+                <tbody>
+            
+                    <tr th:each="project : ${projects}" style="">
+                        <th scope="row" th:text="${project.id}"></th>
+                        <!-- <td th:text="${#temporals.format(project.updatedAt,'yyyy/MM/dd HH:mm:ss')}"></td>  render result 2025/04/10 12:40:38-->
+                        <td class="updated-at text-muted fs-6" th:attr="data-date=${#temporals.format(project.updatedAt, 'yyyy/MM/dd HH:mm:ss')}"></td>
+
+                        <td th:text="${project.title}" class="fw-bold"></td>
+
+                        <td class="text-white">
+                            <span th:switch="${project.status}">
+                                <span th:case="'Planned'" class=" bg-planned rounded p-2">Planned</span>
+                                <span th:case="'In_Progress'" class=" bg-in_progress rounded p-2">In Progress</span>
+                                <span th:case="'On_Hold'" class=" bg-on_hold rounded p-2">On Hold</span>
+                                <span th:case="'Completed'" class=" bg-completed rounded p-2">Completed</span>
+                                <span th:case="'Cancelled'" class=" bg-cancelled rounded p-2">Cancelled</span>
+                                <span th:case="'Delayed'" class=" bg-delayed rounded p-2">Delayed</span>
+                                <span th:case="'In_Review'" class=" bg-in_review rounded p-2">In Review</span>
+                                <span th:case="'In_Test'" class=" bg-in_test rounded p-2">In Test</span>
+                                <span th:case="'In_Debug'" class=" bg-in_debug rounded p-2">In Debug</span>
+                                <span th:case="*">${project.status}</span>
+                            </span>
+                        </td>
+                        <td th:text="${project.category}"></td>
+
+                        <td class="fw-bold" th:text="|$${#numbers.formatDecimal(project.budget, 1, 'COMMA', 2, 'POINT')}|"></td>
+
+                        <td class="text-white">
+                            <span th:switch="${project.priority}">
+                                <span th:case="'Urgent'" class=" bg-danger rounded p-2">
+                                    <i class="bi bi-exclamation-triangle"></i>
+                                    <span>Urgent</span>
+                                </span>
+                                <span th:case="'High'" class=" bg-danger rounded p-2">High</span>
+                                <span th:case="'Medium'" class=" bg-warning rounded p-2">Medium</span>
+                                <span th:case="'Low'" class=" bg-success rounded p-2">Low</span>
+                                <span th:case="*" class="text-dark" th:text="${project.priority}" />
+                            </span>
+                        </td>
+
+
+                        <td th:text="${#temporals.format(project.dueDate,'yyyy/MM/dd')}"></td>
+                        <td>
+                            <a th:href="@{/projects/{id}(id=${project.id})}" class="btn btn-primary">
+                                <span class="pe-1">More info</span>
+                                <i class="bi bi-arrow-right-circle pb-1"></i>
+                            </a>
+                        </td>
+                    </tr>
+            
+                    <tr th:if="${#lists.isEmpty(projects)}">
+                        <td colspan="5">No projects found</td>
+                    </tr>
+            
+                </tbody>
+            </table>
+        </div>
+
+    </div>
 </body>
 </html>

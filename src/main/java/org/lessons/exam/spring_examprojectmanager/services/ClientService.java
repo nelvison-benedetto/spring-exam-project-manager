@@ -62,9 +62,6 @@ public class ClientService {
         if(clientToCreate == null){
             throw new IllegalArgumentException("Client to create cannot be null.");
         }
-        if(boolExists(clientToCreate)){
-            throw new DuplicateResourceException("Client already exists for create.");
-        }
         return clientRepo.save(clientToCreate);
     }
 

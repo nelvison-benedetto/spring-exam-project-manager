@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import io.micrometer.common.lang.NonNull;
@@ -54,18 +55,22 @@ public class Client implements Serializable{
 
     @Column(nullable = false)
     @NotNull(message = "subscription start date cannot be null.")
+    @JsonFormat(pattern = "yyyy/MM/dd")
     private LocalDate subscriptionStartDate;  //@Temporal(TemporalType.DATE) x old versions 
 
     @Column(nullable = false)
     @NotNull(message = "subscription end date cannot be null.")
+    @JsonFormat(pattern = "yyyy/MM/dd")
     private LocalDate subscriptionEndDate;
 
-    @Column(nullable = false)
-    @NotNull(message = "created at cannot be null.")
+
+
+    @Column
+    @JsonFormat(pattern = "yyyy/MM/dd HH:mm:ss")
     private LocalDateTime createdAt;
 
-    @Column(nullable = false)
-    @NotNull(message = "updated at cannot be null.")
+    @Column
+    @JsonFormat(pattern = "yyyy/MM/dd HH:mm:ss")
     private LocalDateTime updatedAt;
 
     @PrePersist  //called before save on db for the first time

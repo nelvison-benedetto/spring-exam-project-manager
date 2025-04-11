@@ -61,7 +61,7 @@ public class ClientController {
 
     //UPDATE
     @GetMapping("/edit/{id}")
-    public String clientUpdate(@PathVariable Integer id, Model model){
+    public String clientsUpdate(@PathVariable Integer id, Model model){
         model.addAttribute("client", clientService.getById(id));
         model.addAttribute("edit", true);
         return "entities/clients/create-or-edit.html";

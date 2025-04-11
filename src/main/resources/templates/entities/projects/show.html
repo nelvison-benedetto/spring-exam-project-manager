@@ -6,8 +6,81 @@
     <title>Projects Show</title>
     <th:block th:replace="~{fragments/head.html::bootstrap}" />  <!-- ~ :  Alt+126(numerini)-->
     <th:block th:replace="~{fragments/head.html::style_jsscript}" />
+    <th:block th:replace="~{fragments/head.html::dayjs_x_prettydate}" />
 </head>
 <body>
-    
+    <div class="container">
+        <div class="card shadow-lg p-4 mt-5">
+            <h1 class="display-4 mb-3" th:text="${project.title}">Project Title</h1>
+
+            <div class="" style="margin-bottom: 0.4rem;">
+                <span class="text-muted">Last update</span>
+                <span class="text-muted updated-at" th:attr="data-date=${#temporals.format(project.updatedAt, 'yyyy/MM/dd HH:mm:ss')}">Last update</span>
+            </div>
+            
+
+            <h3 class="mb-4" th:text="${project.description}">Project Description</h3>
+
+            <div class="mb-3">
+                <span class="">Status: </span>
+                <span class="fs-5 fw-bold" th:text="${project.status}">Project Status</span>
+            </div>
+
+            <div class="row mb-4">
+                <div class="col-6">
+                    <p><strong>Category:</strong> <span th:text="${project.category}">Category</span></p>
+                    <p><strong>Budget:</strong> <span th:text="${project.budget}">0.00</span> €</p>
+                    <p><strong>Priority:</strong> <span th:text="${project.priority}">Priority</span></p>
+                </div>
+                <div class="col-6">
+                    <p><strong>Due Date:</strong> <span th:text="${#temporals.format(project.dueDate, 'yyyy/MM/dd')}">Due Date</span></p>
+                    <p><strong>Start Date:</strong> <span th:text="${#temporals.format(project.projectStartDate, 'yyyy/MM/dd')}">Start Date</span></p>
+                    <p><strong>End Date:</strong> <span th:text="${#temporals.format(project.projectEndDate, 'yyyy/MM/dd')}">End Date</span></p>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-12 col-md-6">
+                    <div th:if="${project.isActive}" 
+                         class="alert alert-success text-center fw-semibold rounded-pill">
+                        Project Active
+                    </div>
+                    <div th:unless="${project.isActive}" 
+                         class="alert alert-danger text-center fw-semibold rounded-pill">
+                        Project Not Active
+                    </div>
+                </div>
+                <div class="col-12 col-md-6">
+                    <div th:if="${project.isCompleted}" 
+                         class="alert alert-success text-center fw-semibold rounded-pill">
+                        Project Completed
+                    </div>
+                    <div th:unless="${project.isCompleted}" 
+                         class="alert alert-danger text-center fw-semibold rounded-pill">
+                        Project Not Completed
+                    </div>
+                </div>
+            </div>
+
+            <hr class="w-80 mb-3">
+
+            <article>
+                <h2 class="mb-2">Tasks</h2>
+                <a th:href="@{/tasks/create}" class="btn btn-primary mb-2">
+                    <span class="pe-1">Add</span>
+                    <i class="bi bi-plus-square-fill"></i>
+                </a>
+                <div class="row g-3"  th:if="${ #lists.isEmpty(project.tasks)}">
+                    
+                    
+
+                </div>
+                <h3 th:if="${not #lists.isEmpty(project.tasks)}" th:text="|No tasks found.|" class="text-center text-muted ">No Tasks found</h3>
+            </article>
+
+
+        </div>
+
+    </div>
 </body>
 </html>
