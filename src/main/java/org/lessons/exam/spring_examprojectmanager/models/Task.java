@@ -51,7 +51,7 @@ public class Task implements Serializable{
 
     @Column(nullable = false)
     @NotBlank(message = "status cannot be blank.")
-    private String status; 
+    private String status = "Planned"; 
 
     @Column(nullable = false)
     @NotNull(message = "is active cannot be null.")
@@ -105,7 +105,7 @@ public class Task implements Serializable{
 
     @Override
     public String toString(){
-        return String.format("%s %s %s", id, title, description, status);
+        return String.format("%s %s %s %s %s %s %s %s %s %s", id, title, description, status, isActive, isCompleted, priority, dueDate, taskStartDate, taskEndDate, project);
     }
 
     //RELATIONS

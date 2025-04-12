@@ -78,7 +78,7 @@ public class ProjectService {
             throw new IllegalArgumentException("Project to update cannot be null.");
         }
         Project existingProject = checkedExistsById(projectToEdit.getId());
-        
+        //!!x security(choose exactly which fields change) & x help spring persistenza(Spring Data/JPA) Edit always by setting fields one at a time!
         existingProject.setTitle(projectToEdit.getTitle());
         existingProject.setDescription(projectToEdit.getDescription());
         existingProject.setStatus(projectToEdit.getStatus());
@@ -90,10 +90,10 @@ public class ProjectService {
         existingProject.setDueDate(projectToEdit.getDueDate());
         existingProject.setProjectStartDate(projectToEdit.getProjectStartDate());
         existingProject.setProjectEndDate(projectToEdit.getProjectEndDate());
-
+        
 
         //fresh upload from db to avoid errors with incomplete objects
-        List<Company> freshCompanies = projectToEdit.getCompanies().stream()  
+        List<Company> freshCompanies = existingProject.getCompanies().stream()   //use existingProject, because projectToEdit is coming from a form(no field tasks)
         .map(c -> companyService.checkedExistsById(c.getId()))
         .toList();
         //reset all & overwrite (relation MANY-TO-MANY)!!
@@ -102,7 +102,7 @@ public class ProjectService {
 
         //RELATION MANY-ONE  tasks-project
         //fresh upload from db
-        List<Task> freshTasks = projectToEdit.getTasks().stream()  
+        List<Task> freshTasks = existingProject.getTasks().stream()  
         .map(c -> taskService.checkedExistsById(c.getId()))
         .toList();
         //reset all & overwrite
@@ -110,7 +110,9 @@ public class ProjectService {
         for (Task task : freshTasks){  //!!x RELATION MANY-ONE add THIS to who has LIST<> (cioe in rel project-tasks add here)
             task.setProject(existingProject); //!important Imposta la relazione sul lato owner
         }
+        System.out.println("freshTasks" + freshTasks);
         existingProject.getTasks().addAll(freshTasks);
+        System.out.println("advanced existingProject" + existingProject);
 
         return projectRepo.save(existingProject);
     }

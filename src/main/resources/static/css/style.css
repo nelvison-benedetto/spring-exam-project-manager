@@ -3,7 +3,8 @@ body{
     font-family: Helvetica,"Roboto", Arial, sans-serif;
 }
 img{max-width: 100%;}
-.debug *{margin: 1px black dashed;}
+.debug *{border: 1px black dashed;}
+
 :root{
     --planned: #17a2b8;
     --in_progress: #007bff;
@@ -14,6 +15,10 @@ img{max-width: 100%;}
     --in_review: #343a40;
     --in_test: #6610f2;
     --in_debug: #495057;
+
+    --purple: #6A4CFF;
+    --purple2: #5736D6;
+    --purple_ms_teams: #6264A7;
 }
 .bg-planned{background-color: var(--planned);}
 .bg-in_progress{background-color: var(--in_progress);}
@@ -25,6 +30,17 @@ img{max-width: 100%;}
 .bg-in_test{background-color: var(--in_test);}
 .bg-in_debug{background-color: var(--in_debug);}
 
+.bg-purple{
+    background-color: var(--purple);
+    &:hover{
+        background-color: var(--purple2);
+    }
+}
+.bg-teams{
+    background-color: var(--purple_ms_teams) !important;
+    color: white !important;
+}
+
 .form-select:hover {
     background-color: #f0f0f0;
 }
@@ -32,3 +48,5 @@ img{max-width: 100%;}
     background-color: #007bff;
     color: white;
 }
+
+

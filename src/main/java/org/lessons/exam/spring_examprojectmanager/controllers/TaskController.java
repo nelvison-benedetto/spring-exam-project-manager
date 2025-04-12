@@ -3,7 +3,9 @@ package org.lessons.exam.spring_examprojectmanager.controllers;
 import java.util.List;
 
 import org.lessons.exam.spring_examprojectmanager.models.Client;
+import org.lessons.exam.spring_examprojectmanager.models.Project;
 import org.lessons.exam.spring_examprojectmanager.models.Task;
+import org.lessons.exam.spring_examprojectmanager.services.ProjectService;
 import org.lessons.exam.spring_examprojectmanager.services.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -22,9 +24,11 @@ import jakarta.validation.Valid;
 public class TaskController {
     
     private final TaskService taskService;  
+    private final ProjectService projectService;
     @Autowired
-    public TaskController(TaskService taskService) {
+    public TaskController(TaskService taskService, ProjectService projectService) {
         this.taskService = taskService;
+        this.projectService = projectService;
     }
 
     //READ
@@ -52,12 +56,15 @@ public class TaskController {
     @PostMapping("/store")
     public String tasksStore(@Valid @ModelAttribute("task") Task task,
     BindingResult bindingResult, Model model){
+        System.out.println(task);
         if(bindingResult.hasErrors()){
             //add even the lists
             return "entities/tasks/create-or-edit.html";
         }
+        Project linkedProject = projectService.checkedExistsById(task.getProject().getId());  //retrieve project thanks to hidden field of the form
+        task.setProject(linkedProject);
         taskService.create(task);
-        return "redirect:/tasks";
+        return "redirect:/projects";  //+ task.getProject().getId();
     }
 
     //UPDATE

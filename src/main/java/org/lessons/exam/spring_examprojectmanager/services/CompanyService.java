@@ -86,7 +86,7 @@ public class CompanyService {
         existingCompany.setCompanyStateTaxID(companyToEdit.getCompanyStateTaxID());
 
 
-        List<Client> freshClients = companyToEdit.getClients().stream()  //fresh upload from db
+        List<Client> freshClients = existingCompany.getClients().stream()  //fresh upload from db
         .map(client -> clientService.checkedExistsById(client.getId())) 
         .toList();
         //reset all & overwrite!!
@@ -99,7 +99,6 @@ public class CompanyService {
         //reset all & overwrite!!
         existingCompany.getProjects().clear(); // Rimuovi tutte le associazioni progetti esistenti
         existingCompany.getProjects().addAll(freshProjects); // Aggiungi i nuovi progetti
-
         
         return companyRepo.save(existingCompany);
     }

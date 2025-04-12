@@ -8,10 +8,16 @@
     <th:block th:replace="~{fragments/head.html::style_jsscript}" />
     <th:block th:replace="~{fragments/head.html::dayjs_x_prettydate}" />
 </head>
-<body>
+<body class="">
     <div class="container">
-        <div class="card shadow-lg p-4 mt-5">
-            <h1 class="display-4 mb-3" th:text="${project.title}">Project Title</h1>
+        <div class="card shadow-lg p-4 my-5">
+            <div class="d-flex justify-content-between align-items-center gap-2 mb-3">
+                <h1 class="display-4 mb-0" th:text="${project.title}" style="line-height: 1.1;">Project Title</h1>
+                <a th:href="@{/projects/{id}/edit(id=${project.id})}" class="btn btn-primary shadow-sm text-center ">
+                    <i class="bi bi-pencil pe-2"></i>
+                    <span>Edit Project</span>
+                </a>
+            </div>
 
             <div class="" style="margin-bottom: 0.4rem;">
                 <span class="text-muted">Last update</span>
@@ -66,16 +72,89 @@
 
             <article>
                 <h2 class="mb-2">Tasks</h2>
-                <a th:href="@{/tasks/create}" class="btn btn-primary mb-2">
-                    <span class="pe-1">Add</span>
-                    <i class="bi bi-plus-square-fill"></i>
+                <a th:href="@{/tasks/create}" class="btn btn-primary mb-4">
+                    <i class="bi bi-plus-circle me-2"></i>
+                    <span class="">Add</span>
                 </a>
-                <div class="row g-3"  th:if="${ #lists.isEmpty(project.tasks)}">
-                    
-                    
+                <div class="row g-3" th:if="${not #lists.isEmpty(project.tasks)}">
+
+                    <div class="col-12 d-flex" th:each="task : ${project.tasks}">
+
+                        <div class="text-center text-muted me-3 pt-2" style="font-size: 0.75rem;">
+                            <div>Last update</div>
+                            <span class="updated-at"
+                                  th:attr="data-date=${#temporals.format(task.updatedAt, 'yyyy/MM/dd HH:mm:ss')}">Last update</span>
+                        </div>
+
+                        <div class="position-relative me-2">
+                            <div class=" bg-primary rounded-circle " style="width: 1.2rem; height: 1.2rem; margin-top: 1.3rem;"></div>
+
+                            <div class="position-absolute bg-primary rounded" 
+                                    style="top: 0; bottom: 0; left: 0.362rem; width: 0.4rem;"></div>
+                        </div>
+                
+                        <div class="card shadow-sm w-100">
+                            <div class="card-body p-3">
+                                <div class="d-flex justify-content-between align-items-center gap-2 mb-1">
+                                    <h5 class="card-title" th:text="${task.title}">Task Title</h5>
+                                    <div class="" >
+                                        <a th:href="@{/messages/{id}(id=${task.id})}" class="btn btn-sm bg-purple small text-white">
+                                            <i class="bi bi-chat-left-text pe-2"></i>
+                                            <span >Show Messages</span>
+                                        </a>
+                                        <a th:href="@{/tasks/{id}(id=${task.id})}" class="btn btn-sm btn-primary small">
+                                            <i class="bi bi-pencil pe-2" ></i>
+                                            <span >Edit Task</span>
+                                        </a>
+                                    </div>
+                                </div>
+
+                                <p class="mb-2 pt-1 pb-1" th:text="${task.description}">Description</p>
+            
+                                <div class="row small text-muted">
+                                    <div class="col-md-6">
+                                        <p class="mb-1 pt-1 pb-1">
+                                            <span class="fw-semibold">Status:</span>
+                                            <span th:switch="${task.status}">
+                                                <span th:case="'Planned'">Planned</span>
+                                                <span th:case="'In_Progress'">In Progress</span>
+                                                <span th:case="'On_Hold'">On Hold</span>
+                                                <span th:case="'Completed'">Completed</span>
+                                                <span th:case="'Cancelled'">Cancelled</span>
+                                                <span th:case="'Delayed'">Delayed</span>
+                                                <span th:case="'In_Review'">In Review</span>
+                                                <span th:case="'In_Test'">In Test</span>
+                                                <span th:case="'In_Debug'">In Debug</span>
+                                                <span th:case="*">Unknown</span>
+                                            </span>
+                                        </p>
+                                        <p class="mb-1 pt-1 pb-1"><span class="fw-semibold">Priority:</span> <span th:text="${task.priority}">Priority</span></p>
+                                        <p class="mb-1 pt-1 pb-1"><span class="fw-semibold">Due:</span> <span th:text="${#temporals.format(task.dueDate, 'yyyy/MM/dd')}">Due Date</span></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <p class="mb-1 pt-1 pb-1"><span class="fw-semibold">Start:</span> <span th:text="${#temporals.format(task.taskStartDate, 'yyyy/MM/dd')}">Start Date</span></p>
+                                        <p class="mb-1 pt-1 pb-1"><span class="fw-semibold">End:</span> <span th:text="${#temporals.format(task.taskEndDate, 'yyyy/MM/dd')}">End Date</span></p>
+                                    </div>
+                                </div>
+            
+                                <div class="mt-2 row ">
+                                    <div class="col-12 col-md-6">
+                                        <span th:if="${task.isActive}" class="badge bg-success w-100 text-center rounded-pill py-2 mb-2">Task Active</span>
+                                        <span th:unless="${task.isActive}" class="badge bg-danger w-100 text-center rounded-pill py-2 mb-2">Task Not Active</span>
+                                    </div>
+                                    <div class="col-12 col-md-6">
+                                        <span th:if="${task.isCompleted}" class="badge bg-success w-100 text-center rounded-pill py-2 mb-2">Task  Completed</span>
+                                        <span th:unless="${task.isCompleted}" class="badge bg-danger w-100 text-center rounded-pill py-2 mb-2">Task Not Completed</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                
+                    </div>
 
                 </div>
-                <h3 th:if="${not #lists.isEmpty(project.tasks)}" th:text="|No tasks found.|" class="text-center text-muted ">No Tasks found</h3>
+                
+                <h3 th:if="${ #lists.isEmpty(project.tasks)}" th:text="|No tasks found.|" class="text-center text-muted ">No Tasks found</h3>
             </article>
 
 

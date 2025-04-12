@@ -79,7 +79,7 @@ public class ClientService {
 
 
         //fresh upload from db to avoid errors with incomplete objects
-        List<Company> freshCompanies = clientToEdit.getCompanies().stream()  
+        List<Company> freshCompanies = existingClient.getCompanies().stream()  
         .map(c -> companyService.checkedExistsById(c.getId()))
         .toList();
         //reset all & overwrite!!

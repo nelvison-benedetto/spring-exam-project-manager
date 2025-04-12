@@ -45,6 +45,8 @@ public class ProjectController {
     public String projectsShow(@PathVariable Integer id, Model model){
         Project project = projectService.getById(id);
         System.out.println(project);
+        System.out.println(project.getTasks());
+
         model.addAttribute("project", project);
         return "entities/projects/show.html";
     }
@@ -71,21 +73,21 @@ public class ProjectController {
 
     
     //UPDATE
-    @GetMapping("/edit/{id}")
+    @GetMapping("/{id}/edit")
     public String projectsUpdate(@PathVariable Integer id, Model model){
         model.addAttribute("project", projectService.getById(id));
         model.addAttribute("edit", true);
         return "entities/projects/create-or-edit.html";
     }
-    @PostMapping("/update/{id}")
-    public String projectsUpdate(@Valid @ModelAttribute("project") Project project, @PathVariable Integer id,
-    BindingResult bindingResult, Model model){
+    @PostMapping("/{id}/update")
+    public String projectsUpdate(@Valid @ModelAttribute("project") Project project,
+    BindingResult bindingResult, @PathVariable Integer id, Model model){
         if(bindingResult.hasErrors()){
             model.addAttribute("edit", true);
             return "entities/projects/create-or-edit.html";
         }
         projectService.edit(project);
-        return "redirect:/projects";
+        return "redirect:/projects/" + id;
     }
 
     //DELETE
