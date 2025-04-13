@@ -79,6 +79,8 @@ public class TaskService {
         existingTask.setTaskStartDate(taskToEdit.getTaskStartDate());
         existingTask.setTaskEndDate(taskToEdit.getTaskEndDate());
 
+        existingTask.setProject(taskToEdit.getProject());
+
         return taskRepo.save(existingTask);
     }
 

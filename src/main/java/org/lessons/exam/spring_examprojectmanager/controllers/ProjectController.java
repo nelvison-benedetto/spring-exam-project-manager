@@ -14,10 +14,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import jakarta.persistence.Transient;
@@ -44,9 +46,6 @@ public class ProjectController {
     @GetMapping("/{id}")
     public String projectsShow(@PathVariable Integer id, Model model){
         Project project = projectService.getById(id);
-        System.out.println(project);
-        System.out.println(project.getTasks());
-
         model.addAttribute("project", project);
         return "entities/projects/show.html";
     }
@@ -61,7 +60,6 @@ public class ProjectController {
     @PostMapping("/store")
     public String projectsStore(@Valid @ModelAttribute("project") Project project,
     BindingResult bindingResult, Model model){
-        System.out.println(project);
         
         if(bindingResult.hasErrors()){
             //add even the lists
@@ -79,7 +77,7 @@ public class ProjectController {
         model.addAttribute("edit", true);
         return "entities/projects/create-or-edit.html";
     }
-    @PostMapping("/{id}/update")
+    @PutMapping("/{id}/update")
     public String projectsUpdate(@Valid @ModelAttribute("project") Project project,
     BindingResult bindingResult, @PathVariable Integer id, Model model){
         if(bindingResult.hasErrors()){
@@ -91,7 +89,7 @@ public class ProjectController {
     }
 
     //DELETE
-    @GetMapping("/delete/{id}")
+    @DeleteMapping("/{id}/delete")
     public String projectsDelete(@PathVariable Integer id){
         projectService.deleteById(id);
         return "redirect:/projects";

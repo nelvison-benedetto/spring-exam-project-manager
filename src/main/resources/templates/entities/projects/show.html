@@ -25,17 +25,34 @@
             </div>
             
 
-            <h3 class="mb-4" th:text="${project.description}">Project Description</h3>
+            <h3 class="mb-4" th:text="${project.description}">
+                Project Description
+            </h3>
 
             <div class="mb-3">
                 <span class="">Status: </span>
-                <span class="fs-5 fw-bold" th:text="${project.status}">Project Status</span>
+                <span class="fs-5 fw-bold" th:switch="${project.status}">
+                    <span th:case="'Planned'">Planned</span>
+                    <span th:case="'In_Progress'">In Progress</span>
+                    <span th:case="'On_Hold'">On Hold</span>
+                    <span th:case="'Completed'">Completed</span>
+                    <span th:case="'Cancelled'">Cancelled</span>
+                    <span th:case="'Delayed'">Delayed</span>
+                    <span th:case="'In_Review'">In Review</span>
+                    <span th:case="'In_Test'">In Test</span>
+                    <span th:case="'In_Debug'">In Debug</span>
+                    <span th:case="*">Unknown</span>
+                </span>
+                
             </div>
 
             <div class="row mb-4">
                 <div class="col-6">
                     <p><strong>Category:</strong> <span th:text="${project.category}">Category</span></p>
-                    <p><strong>Budget:</strong> <span th:text="${project.budget}">0.00</span> €</p>
+                    <p>
+                        <strong>Budget:</strong>
+                        <span th:text="|$${#numbers.formatDecimal(project.budget, 1, 'COMMA', 2, 'POINT')}|">$0.00</span>
+                    </p>
                     <p><strong>Priority:</strong> <span th:text="${project.priority}">Priority</span></p>
                 </div>
                 <div class="col-6">
@@ -72,7 +89,7 @@
 
             <article>
                 <h2 class="mb-2">Tasks</h2>
-                <a th:href="@{/tasks/create}" class="btn btn-primary mb-4">
+                <a th:href="@{/tasks/{id}/create(id=${project.id})}" class="btn btn-primary mb-4">
                     <i class="bi bi-plus-circle me-2"></i>
                     <span class="">Add</span>
                 </a>
@@ -86,11 +103,11 @@
                                   th:attr="data-date=${#temporals.format(task.updatedAt, 'yyyy/MM/dd HH:mm:ss')}">Last update</span>
                         </div>
 
-                        <div class="position-relative me-2">
+                        <div class="position-relative me-3">
                             <div class=" bg-primary rounded-circle " style="width: 1.2rem; height: 1.2rem; margin-top: 1.3rem;"></div>
 
                             <div class="position-absolute bg-primary rounded" 
-                                    style="top: 0; bottom: 0; left: 0.362rem; width: 0.4rem;"></div>
+                                    style="top: 0; bottom: 0; left: 0.429rem; width: 0.4rem;"></div>
                         </div>
                 
                         <div class="card shadow-sm w-100">
@@ -102,7 +119,7 @@
                                             <i class="bi bi-chat-left-text pe-2"></i>
                                             <span >Show Messages</span>
                                         </a>
-                                        <a th:href="@{/tasks/{id}(id=${task.id})}" class="btn btn-sm btn-primary small">
+                                        <a th:href="@{/tasks/{id}/edit(id=${task.id})}" class="btn btn-sm btn-primary small">
                                             <i class="bi bi-pencil pe-2" ></i>
                                             <span >Edit Task</span>
                                         </a>

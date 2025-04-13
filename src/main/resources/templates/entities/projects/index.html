@@ -8,10 +8,10 @@
     <th:block th:replace="~{fragments/head.html::style_jsscript}" />
     <th:block th:replace="~{fragments/head.html::dayjs_x_prettydate}" />
 </head>
-<body class="debug">
+<body class="">
     <div class="container py-4">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <h1 class="mb-0">Projects</h1>
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="mb-0 display-5">Projects</h1>
             <a th:href="@{/projects/create}" class="btn btn-primary shadow-sm">
                 <i class="bi bi-plus-circle me-2"></i>New Project
             </a>
@@ -42,16 +42,16 @@
                             <td th:text="${project.title}" class="fw-semibold text-dark"></td>
     
                             <td>
-                                <span th:switch="${project.status}">
-                                    <span th:case="'Planned'" class="badge bg-secondary">Planned</span>
-                                    <span th:case="'In_Progress'" class="badge bg-info text-dark">In Progress</span>
-                                    <span th:case="'On_Hold'" class="badge bg-warning text-dark">On Hold</span>
-                                    <span th:case="'Completed'" class="badge bg-success">Completed</span>
-                                    <span th:case="'Cancelled'" class="badge bg-danger">Cancelled</span>
-                                    <span th:case="'Delayed'" class="badge bg-danger">Delayed</span>
-                                    <span th:case="'In_Review'" class="badge bg-primary">In Review</span>
-                                    <span th:case="'In_Test'" class="badge bg-primary">In Test</span>
-                                    <span th:case="'In_Debug'" class="badge bg-primary">In Debug</span>
+                                <span th:switch="${project.status}" class="text-white">
+                                    <span th:case="'Planned'" class="badge bg-planned">Planned</span>
+                                    <span th:case="'In_Progress'" class="badge bg-in_progress">In Progress</span>
+                                    <span th:case="'On_Hold'" class="badge bg-on_hold">On Hold</span>
+                                    <span th:case="'Completed'" class="badge bg-completed">Completed</span>
+                                    <span th:case="'Cancelled'" class="badge bg-cancelled">Cancelled</span>
+                                    <span th:case="'Delayed'" class="badge bg-delayed">Delayed</span>
+                                    <span th:case="'In_Review'" class="badge bg-in_review">In Review</span>
+                                    <span th:case="'In_Test'" class="badge bg-in_test">In Test</span>
+                                    <span th:case="'In_Debug'" class="badge bg-in_debug">In Debug</span>
                                     <span th:case="*" class="badge bg-dark" th:text="${project.status}"></span>
                                 </span>
                             </td>
@@ -66,7 +66,7 @@
                                         <i class="bi bi-exclamation-triangle-fill me-1"></i>Urgent
                                     </span>
                                     <span th:case="'High'" class="badge bg-danger">High</span>
-                                    <span th:case="'Medium'" class="badge bg-warning text-dark">Medium</span>
+                                    <span th:case="'Medium'" class="badge bg-warning">Medium</span>
                                     <span th:case="'Low'" class="badge bg-success">Low</span>
                                     <span th:case="*" class="badge bg-secondary" th:text="${project.priority}"></span>
                                 </span>

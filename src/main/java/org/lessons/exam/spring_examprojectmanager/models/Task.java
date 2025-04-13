@@ -63,7 +63,7 @@ public class Task implements Serializable{
 
     @Column(nullable = false)
     @NotBlank(message = "priority cannot be blank.")
-    private String priority;
+    private String priority = "Low";
 
     @Column(nullable = false)
     @NotNull(message = "due date cannot be null.")

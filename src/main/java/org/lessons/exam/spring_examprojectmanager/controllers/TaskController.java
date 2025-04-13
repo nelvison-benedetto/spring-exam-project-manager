@@ -11,10 +11,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import jakarta.validation.Valid;
@@ -48,9 +50,11 @@ public class TaskController {
 
 
     //CREATE
-    @GetMapping("/create")
-    public String tasksCreate(Model model){
-        model.addAttribute("task", new Task());
+    @GetMapping("/{id}/create")
+    public String tasksCreate(@PathVariable Integer id , Model model){
+        Task task = new Task();
+        task.setProject(projectService.checkedExistsById(id));
+        model.addAttribute("task", task);
         return "entities/tasks/create-or-edit.html";
     }   
     @PostMapping("/store")
@@ -61,35 +65,34 @@ public class TaskController {
             //add even the lists
             return "entities/tasks/create-or-edit.html";
         }
-        Project linkedProject = projectService.checkedExistsById(task.getProject().getId());  //retrieve project thanks to hidden field of the form
-        task.setProject(linkedProject);
         taskService.create(task);
-        return "redirect:/projects";  //+ task.getProject().getId();
+        return "redirect:/projects/"+ task.getProject().getId();
     }
 
     //UPDATE
-    @GetMapping("/edit/{id}")
+    @GetMapping("/{id}/edit")
     public String tasksUpdate(@PathVariable Integer id, Model model){
         model.addAttribute("task", taskService.getById(id));
         model.addAttribute("edit", true);
         return "entities/tasks/create-or-edit.html";
     }
-    @PostMapping("/update/{id}")
-    public String tasksUpdate(@Valid @ModelAttribute("task") Task task, @PathVariable Integer id,
-    BindingResult bindingResult, Model model){
+    @PutMapping("/{id}/update")
+    public String tasksUpdate(@Valid @ModelAttribute("task") Task task,
+    BindingResult bindingResult, @PathVariable Integer id, Model model){
         if(bindingResult.hasErrors()){
             model.addAttribute("edit", true);
             return "entities/tasks/create-or-edit.html";
         }
         taskService.edit(task);
-        return "redirect:/tasks";
+        return "redirect:/projects/" + task.getProject().getId();
     }
 
     //DELETE
-    @GetMapping("/delete/{id}")
+    @DeleteMapping("/{id}/delete")
     public String tasksDelete(@PathVariable Integer id){
+        Integer projectId = taskService.getById(id).getProject().getId();
         taskService.deleteById(id);
-        return "redirect:/tasks";
+        return "redirect:/projects/" + projectId;
     }
 
     //FILTERS
