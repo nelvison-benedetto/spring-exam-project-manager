@@ -56,7 +56,7 @@ public class CompanyController {
             return "entities/companies/create-or-edit.html";
         }
         companyService.create(company);
-        return "redirect:/companies";
+        return "redirect:/";
     }
 
     //UPDATE

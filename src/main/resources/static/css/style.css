@@ -49,4 +49,33 @@ img{max-width: 100%;}
     color: white;
 }
 
+nav a:hover{
+    text-decoration: underline;
+    color: #343a40;
+}
 
+/* style x single-or-company page */
+.card-option {
+    transition: all 0.3s ease;
+    border-radius: 1rem;
+    border: none;
+}
+.card-option:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+.card-option .card-body {
+    text-align: center;
+    padding: 2rem;
+}
+.card-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+.card-text {
+    color: #6c757d;
+}
+a.card-link {
+    text-decoration: none;
+    color: inherit;
+}

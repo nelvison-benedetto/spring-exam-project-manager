@@ -8,6 +8,17 @@
     <th:block th:replace="~{fragments/head.html::style_jsscript}" />
 </head>
 <body>
-    <h1 class="bg-success">Hi, homepage</h1>
+
+    <nav th:replace="~{fragments/layout.html::navbarNubbin}"></nav>
+
+    <div class="container">
+        <h1 class="">Hi, homepage</h1>
+        <a th:href="@{/persons/create}" class="btn btn-primary">Create Person</a>
+
+        <a th:href="@{/projects}" class="btn btn-primary">Projects</a>
+    </div>
+
+    
+
 </body>
 </html>

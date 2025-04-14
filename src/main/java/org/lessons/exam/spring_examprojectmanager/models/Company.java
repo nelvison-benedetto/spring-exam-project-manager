@@ -52,19 +52,20 @@ public class Company implements Serializable{
     @Column(nullable = false)
     @NotBlank
     //@Size(min = 9, max = 9, message = "company EIN must contain exactly 9 digits.")
-    @Pattern(regexp = "\\d{2}-\\d{7}", message = "Company EIN must follow the format XX-XXXXXXX.")
+    //@Pattern(regexp = "\\d{2}-\\d{7}", message = "Company EIN must follow the format XX-XXXXXXX.")
     private String companyEIN;  //XX-XXXXXXX
 
     @Column(nullable = false)
     @NotBlank
-    @Pattern(regexp = "\\d{3}-\\d{4}-\\d", message = "Company State Tax ID must follow the format XXX-XXXX-X")
+    //@Pattern(regexp = "\\d{3}-\\d{4}-\\d", message = "Company State Tax ID must follow the format XXX-XXXX-X")
     private String companyStateTaxID;
     
     @Override
     public String toString(){
-        return String.format("%s %s %s", id, companyLegalName, companyUsername);
+        return String.format("%s %s %s %s %s %s", id, companyLegalName, companyUsername, companyEIN, companyStateTaxID, clients, projects);
     }
 
+    
     //RELATIONS
     
     @ManyToMany(mappedBy = "companies", fetch = FetchType.LAZY)

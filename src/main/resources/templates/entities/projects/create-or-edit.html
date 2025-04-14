@@ -13,9 +13,9 @@
     
     <div class="container">
 
-        <div class="d-flex justify-content-between align-items-center gap-2 mb-1 mt-5">
-            <h1 th:if="${edit}" class="fw-bold mb-0">Edit The Project</h1>
-            <h1 th:unless="${edit}" class="fw-bold mb-0">Create New Project</h1>
+        <div class="d-flex justify-content-between align-items-center gap-2 mb-1 mt-4">
+            <h1 th:if="${edit}" class="fw-bold mb-0 text-primary">Edit The Project</h1>
+            <h1 th:unless="${edit}" class="fw-bold mb-0 text-primary">Create New Project</h1>
 
             <form th:action="@{/projects/{id}/delete(id=${project.id})}" method="post">
                 <input type="hidden" name="_method" value="delete" />

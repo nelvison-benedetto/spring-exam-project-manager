@@ -1,7 +1,10 @@
 package org.lessons.exam.spring_examprojectmanager.models;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.ArrayList;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -33,11 +36,15 @@ public class Person implements Serializable{
 
     @Column(nullable = false)
     @NotBlank(message = "first name cannot be blank.")
-    private String firstName;
+    private String firstname;
 
     @Column(nullable = false)
     @NotBlank(message = "last name cannot be blank.")
-    private String lastName;
+    private String lastname;
+
+    @Column(nullable = false)
+    @NotBlank(message = "username cannot be blank.")
+    private String username;
 
     @Column(nullable = false)
     @NotBlank(message = "email cannot be blank.")
@@ -46,17 +53,23 @@ public class Person implements Serializable{
 
     @Column(nullable = false)
     @NotBlank(message = "phone number cannot be blank.")
-    private String phoneNumber;  //can start w 0
+    private String phoneNumber = "+00";  //w String phonenumber can start w 0!(otherwise w Integer e.g.04664566 would not be saved)
 
     @Column(nullable = false)
     @NotBlank(message = "country cannot be blank.")
     private String country;
 
+    @Column(nullable = false)
+    @NotNull(message = "birthdate cannot be null.")
+    @JsonFormat(pattern = "yyyy/MM/dd")
+    private LocalDate birthdate;
+
     @Override
     public String toString(){
-        return String.format("%s %s %s", id, firstName, lastName);
+        return String.format("%s %s %s %s %s %s %s", id, firstname, lastname, username, email, phoneNumber, country, birthdate);
     }
 
+    
     //RELATIONS
 
     // @OneToOne(mappedBy = "person") // Relazione con User

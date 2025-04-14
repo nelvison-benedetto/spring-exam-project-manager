@@ -24,6 +24,7 @@
 
 <th:block th:fragment="number-format-xvisual">
     <script th:src="@{/js/number-format-xvisual.js}" defer></script>
+    <script th:src="@{/js/phonenumber-converter.js}" defer></script>
 </th:block>
 
 <th:block th:fragment="flatpickr-xvisualinput-dateForm">
@@ -32,3 +33,7 @@
     <script th:src="@{/js/flatpickr-xvisualinput-dateForm.js}" defer></script>
 </th:block>
 
+<th:block th:fragment="companies-special-converts">
+    <script th:src="@{/js/companyEIN-converter.js}" defer></script>
+    <script th:src="@{/js/companyStateTaxID-converter.js}" defer></script>
+</th:block>

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Persons Create or Edit Page</title>
+    <th:block th:replace="~{fragments/head.html::bootstrap}" />  <!-- ~ :  Alt+126(numerini)-->
+    <th:block th:replace="~{fragments/head.html::style_jsscript}" />
+    <th:block th:replace="~{fragments/head.html::flatpickr-xvisualinput-dateForm}" />
+    <th:block th:replace="~{fragments/head.html::number-format-xvisual}" />
+</head>
+<body>
+
+    <div class="container mt-4">
+        <h1 th:if="${edit}" class="fw-bold text-primary">Edit Person</h1>
+        <h1 th:unless="${edit}" class="fw-bold text-primary">Create New Person</h1>
+    
+        <form th:action="@{${edit}? @{|/persons/${person.id}/update|} : @{|/persons/store|} }" method="post" th:object="${person}" class="mt-3">
+            <input th:if="${edit}" type="hidden" name="_method" value="put">
+
+            <div class="form-group mb-2">
+                <label for="firstname" class="form-label">First Name</label>
+                <input type="text" class="form-control" id="firstname" th:field="*{firstname}" th:errorclass="is-invalid">
+                <div class="invalid-feedback" th:if="${#fields.hasErrors('firstname')}">
+                    <ul style="margin-bottom: -0.02rem;">
+                        <li th:each="err : ${#fields.errors('firstname')}" th:text="${err}"></li>
+                    </ul>
+                </div>
+            </div>
+        
+            <div class="form-group mb-2">
+                <label for="lastname" class="form-label">Last Name</label>
+                <input type="text" class="form-control" id="lastname" th:field="*{lastname}" th:errorclass="is-invalid">
+                <div class="invalid-feedback" th:if="${#fields.hasErrors('lastname')}">
+                    <ul style="margin-bottom: -0.02rem;">
+                        <li th:each="err : ${#fields.errors('lastname')}" th:text="${err}"></li>
+                    </ul>
+                </div>
+            </div>
+        
+            <div class="form-group mb-2">
+                <label for="username" class="form-label">Username</label>
+                <input type="text" class="form-control" id="username" th:field="*{username}" th:errorclass="is-invalid">
+                <div class="invalid-feedback" th:if="${#fields.hasErrors('username')}">
+                    <ul style="margin-bottom: -0.02rem;">
+                        <li th:each="err : ${#fields.errors('username')}" th:text="${err}"></li>
+                    </ul>
+                </div>
+            </div>
+        
+            <div class="form-group mb-2">
+                <label for="email" class="form-label">Email</label>
+                <input type="email" class="form-control" id="email" th:field="*{email}" th:errorclass="is-invalid">
+                <div class="invalid-feedback" th:if="${#fields.hasErrors('email')}">
+                    <ul style="margin-bottom: -0.02rem;">
+                        <li th:each="err : ${#fields.errors('email')}" th:text="${err}"></li>
+                    </ul>
+                </div>
+            </div>
+        
+            <div class="form-group mb-2">
+                <label for="phoneNumber" class="form-label">Phone Number</label>
+                <input type="text" class="form-control" id="phoneNumber" placeholder="+39 3334567890">
+                <input type="hidden" name="phone" id="phoneHidden" th:field="*{phoneNumber}" />
+
+                <!-- <div class="invalid-feedback" th:if="${#fields.hasErrors('phoneNumber')}">
+                    <ul style="margin-bottom: -0.02rem;">
+                        <li th:each="err : ${#fields.errors('phoneNumber')}" th:text="${err}"></li>
+                    </ul>
+                </div> -->
+            </div>
+        
+            <div class="form-group mb-2">
+                <label for="country" class="form-label">Country</label>
+                <input type="text" class="form-control" id="country" th:field="*{country}" th:errorclass="is-invalid">
+                <div class="invalid-feedback" th:if="${#fields.hasErrors('country')}">
+                    <ul style="margin-bottom: -0.02rem;">
+                        <li th:each="err : ${#fields.errors('country')}" th:text="${err}"></li>
+                    </ul>
+                </div>
+            </div>
+        
+            <div class="form-group mb-2">
+                <label for="birthdate" class="form-label">Birthdate</label>
+                <input type="date" class="form-control applyflatpickr" placeholder="YYYY/MM/dd" id="birthdate" th:field="*{birthdate}" th:errorclass="is-invalid">
+                <div class="invalid-feedback" th:if="${#fields.hasErrors('birthdate')}">
+                    <ul style="margin-bottom: -0.02rem;">
+                        <li th:each="err : ${#fields.errors('birthdate')}" th:text="${err}"></li>
+                    </ul>
+                </div>
+            </div>
+        
+            <button type="submit" class="btn btn-success my-4">Save</button>
+        </form>
+    </div>
+    
+
+</body>
+</html>

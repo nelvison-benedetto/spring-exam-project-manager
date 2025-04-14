@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Single or Company Page</title>
+    <th:block th:replace="~{fragments/head.html::bootstrap}" />  <!-- ~ :  Alt+126(numerini)-->
+    <th:block th:replace="~{fragments/head.html::style_jsscript}" />
+</head>
+<body style="background-color: #f4f6f9;" class="">
+    <div class="container  d-flex align-items-center justify-content-center" style="height: 100vh;">
+        <div class="row w-100 justify-content-center">
+            <div class="col-md-5 mb-4">
+                <a th:href="@{/continue-as-person}" class="card-link">
+                    <div class="card card-option shadow-sm">
+                        <div class="card-body">
+                            <span class="display-5"><i class="bi bi-person text-primary"></i></span>
+                            <h5 class="card-title text-primary mt-2">Continue as an Individual</h5>
+                            <p class="card-text">Proceed with your personal profile and complete your individual experience.</p>
+                            <span class="mt-2 fs-4"><i class="bi bi-arrow-right-square text-primary"></i></span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-5 mb-4">
+                <a th:href="@{/companies/create}" class="card-link">
+                    <div class="card card-option shadow-sm">
+                        <div class="card-body">
+                            <span class="display-5 "><i class="bi bi-building text-primary"></i></span>
+                            <h5 class="card-title text-primary mt-2">Add Your Company Details</h5>
+                            <p class="card-text">Create a business profile and start managing your organization with us.</p>
+                            <span class="mt-2 fs-4"><i class="bi bi-arrow-right-square text-primary"></i></span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

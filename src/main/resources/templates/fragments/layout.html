@@ -1,0 +1,86 @@
+
+
+<nav th:fragment="navbarNubbin" class="navbar navbar-expand-lg navbar-light bg-white border-bottom shadow-sm px-4 py-2 " style="font-size: 0.9rem;">
+    <div class="container-fluid">
+
+        <a class="navbar-brand" href="/">
+            <img th:src="@{/images/Nubbin_logo.png}" alt="Nubbin Logo" width="120" style="padding-bottom: 0.4rem;">
+        </a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#msNavbar"
+            aria-controls="msNavbar" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="msNavbar">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+
+                <!--Products(w mega menu dropdown)-->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="productsDropdown" role="button"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        Products
+                    </a>
+                    <div class="dropdown-menu p-4 border-0 shadow-lg" aria-labelledby="productsDropdown"
+                        style="min-width: 600px;">
+                        <div class="row">
+                            <div class="col-6">
+                                <h6 class="dropdown-header">For Home</h6>
+                                <a class="dropdown-item" href="#">Nubbin 365</a>
+                                <a class="dropdown-item" href="#">Teams</a>
+                                <a class="dropdown-item" href="#">Nubbin Visual</a>
+                                <a class="dropdown-item" href="#">Surface Devices</a>
+                            </div>
+                            <div class="col-6">
+                                <h6 class="dropdown-header">For Business</h6>
+                                <a class="dropdown-item" href="#">Nazure</a>
+                                <a class="dropdown-item" href="#">NB Dynamics 365</a>
+                                <a class="dropdown-item" href="#">Nubbin Advertising</a>
+                                <a class="dropdown-item" href="#">Industry Solutions</a>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+
+                <!--Solutions-->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="solutionsDropdown" role="button"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        Solutions
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="solutionsDropdown">
+                        <li><a class="dropdown-item" href="#">Collaboration</a></li>
+                        <li><a class="dropdown-item" href="#">Remote Work</a></li>
+                        <li><a class="dropdown-item" href="#">Security</a></li>
+                    </ul>
+                </li>
+
+                <!--Pricing-->
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Pricing</a>
+                </li>
+
+                <!--Resources-->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="resourcesDropdown" role="button"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        Resources
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="resourcesDropdown">
+                        <li><a class="dropdown-item" href="#">Blog</a></li>
+                        <li><a class="dropdown-item" href="#">Support</a></li>
+                        <li><a class="dropdown-item" href="#">Documentation</a></li>
+                    </ul>
+                </li>
+            </ul>
+
+            <!--right actions-->
+            <div class="d-flex align-items-center gap-3">
+                <a href="#" class="text-dark me-2" title="Search" style="font-size: 1.2rem;"><i class="bi bi-search"></i></a>
+                <a href="#" class="text-dark me-2" title="Cart" style="font-size: 1.2rem;"><i class="bi bi-cart"></i></a>
+                <a href="#" class="btn btn-outline-primary btn-sm rounded-1 " style="text-decoration: none;">Download Nubbin</a>
+                <a href="#" class="btn btn-outline-primary btn-sm rounded-1" style="text-decoration: none;">Sign In</a>
+            </div>
+        </div>
+    </div>
+</nav>
