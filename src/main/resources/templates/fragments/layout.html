@@ -72,6 +72,19 @@
                         <li><a class="dropdown-item" href="#">Documentation</a></li>
                     </ul>
                 </li>
+
+                <!--SECURITY-->
+                <th:block th:if="${#authorization.expression('isAuthenticated()')}">
+                    <li class="">
+                        <p class="text-white bg-success " style="margin: 0.5rem 0.2rem 0 0; padding-right: 0.4rem;"> 
+                            <span>👋</span>
+                            <!-- <span th:text="|${username}|" class="text-decoration-underline" />  is the same as that below-->
+                            <span sec:authentication="name" class="text-decoration-underline"></span>
+                            <span sec:authentication="principal.authorities"></span>
+                        </p>
+                    </li>
+                </th:block>
+                <!---->
             </ul>
 
             <!--right actions-->
@@ -79,7 +92,27 @@
                 <a href="#" class="text-dark me-2" title="Search" style="font-size: 1.2rem;"><i class="bi bi-search"></i></a>
                 <a href="#" class="text-dark me-2" title="Cart" style="font-size: 1.2rem;"><i class="bi bi-cart"></i></a>
                 <a href="#" class="btn btn-outline-primary btn-sm rounded-1 " style="text-decoration: none;">Download Nubbin™</a>
-                <a href="#" class="btn btn-outline-primary btn-sm rounded-1" style="text-decoration: none;">Sign In</a>
+                
+                <!--url '/logout' is standart used by spring sec-->
+                <!-- <a href="/logout" class="btn btn-outline-primary btn-sm rounded-1" style="text-decoration: none;">Sign Out</a> -->
+                
+                <!--SECURITY, custom exit url-->
+                <th:block th:if="${#authorization.expression('isAuthenticated()')}">
+                    <a href="#" onclick="document.getElementById('logoutForm').submit(); return false;"
+                        class="btn btn-outline-primary btn-sm rounded-1" style="text-decoration: none;">
+                        Sign Out
+                    </a>
+                    <form id="logoutForm" th:action="@{/sign-out}" method="post" style="display: none;">
+                        <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
+                    </form>
+                </th:block>
+                <th:block th:unless="${#authorization.expression('isAuthenticated()')}">
+                    <a th:href="@{/security/sign-in}" class="btn btn-outline-primary btn-sm rounded-1" style="text-decoration: none;">
+                        Sign In
+                    </a>
+                </th:block>
+                <!---->
+
             </div>
         </div>
     </div>

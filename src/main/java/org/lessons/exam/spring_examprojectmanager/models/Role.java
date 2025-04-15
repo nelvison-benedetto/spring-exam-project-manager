@@ -33,6 +33,13 @@ public class Role implements Serializable{
     @NotBlank(message = "name cannot be blank.")
     private String name;
 
+    @Override
+    public String toString() {
+        return String.format("%s %s", id, name);
+    }
+
+    //RELATIIONS
+
     @ManyToMany(mappedBy = "roles", fetch = FetchType.EAGER)
     @JsonBackReference 
     private Set<User> users;

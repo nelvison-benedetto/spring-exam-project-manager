@@ -41,6 +41,13 @@ public class User implements Serializable{
     @NotBlank(message = "password cannot be blank.")
     private String password;
 
+    @Override
+    public String toString() {
+        return String.format("%s %s %s", id, username, roles);
+    }
+
+    //RELATIONS
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(  
         name = "role_user",  //ordered in alphabetic order X_Y
@@ -48,6 +55,7 @@ public class User implements Serializable{
         inverseJoinColumns = @JoinColumn(name="role_id"),  
         uniqueConstraints = @UniqueConstraint(columnNames = {"user_id", "role_id"})  //doesn't allow duplicates couples user_id-role_id at db level
         )
+    @Size(min = 1, message = "Select at least one role.")
     private Set<Role> roles;  //<set> doesn't allow duplicates (same role linked to same user) 
 
 }

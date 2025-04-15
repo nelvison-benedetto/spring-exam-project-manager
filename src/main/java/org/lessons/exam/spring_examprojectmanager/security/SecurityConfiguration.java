@@ -15,15 +15,23 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfiguration {
     
     @Bean
-    @SuppressWarnings("deprecation")  //to avoid deprecation's errors or settings not perfectly right
+    @SuppressWarnings("removal")  //to avoid deprecation's errors or settings not perfectly right
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests()
 
+            .requestMatchers("/projects/create", "/projects/edit/**").hasAuthority("ADMIN")
+            .requestMatchers("/users/create", "/users/store", "/security/sign-in", "/css/**", "/js/**").permitAll()
+            .requestMatchers("/", "/home").authenticated()
+            //.requestMatchers("/**").permitAll()  overwrite on all rules!
+            .anyRequest().permitAll()
 
-            .requestMatchers("/**").permitAll()
-
-            .and().formLogin()
+            .and().formLogin().loginPage("/security/sign-in").loginProcessingUrl("/sign-in").permitAll()  //!!!set custom form + use custom POST url (x sign-in submit)(managed auto by spring security)
             .and().logout()
+                    .logoutUrl("/sign-out")
+                    .logoutSuccessUrl("/")
+                    .invalidateHttpSession(true)
+                    .deleteCookies("JSESSIONID")
+                    .permitAll()
             .and().exceptionHandling();
 
         return http.build();

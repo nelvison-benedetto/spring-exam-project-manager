@@ -19,6 +19,7 @@ img{max-width: 100%;}
     --purple: #6A4CFF;
     --purple2: #5736D6;
     --purple_ms_teams: #6264A7;
+    --form: #f4f6f9;
 }
 .bg-planned{background-color: var(--planned);}
 .bg-in_progress{background-color: var(--in_progress);}
@@ -40,6 +41,10 @@ img{max-width: 100%;}
     background-color: var(--purple_ms_teams) !important;
     color: white !important;
 }
+.bg-form{
+    background-color: var(--form);
+}
+
 
 .form-select:hover {
     background-color: #f0f0f0;
