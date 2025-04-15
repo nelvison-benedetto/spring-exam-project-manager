@@ -1,5 +1,5 @@
-const budgetInput = document.getElementById('budget');
-const budgetHidden = document.getElementById('budgetHidden');
+const budgetInput = document.getElementById('budgetRendered');
+const budgetHidden = document.getElementById('budget');
 
 function formatBudgetInput(rawValue) {
     // Rimuove tutti i caratteri non numerici
@@ -47,8 +47,9 @@ window.addEventListener('DOMContentLoaded', function () {
     if (existingValue) {
         const cents = Math.round(parseFloat(existingValue) * 100);
         formatBudgetInput(String(cents));
-    } else {
-        // Se non c'è valore, inizializza a 0.00
-        formatBudgetInput('0');
     }
+    // } else {
+    //     // Se non c'è valore, inizializza a 0.00
+    //     formatBudgetInput('0');
+    // }
 });

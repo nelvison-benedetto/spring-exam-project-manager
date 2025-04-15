@@ -39,25 +39,35 @@
             </div>
 
             <div class="form-group mb-2">
-                <label for="companyEIN" class="form-label">Company EIN</label>
-                <input type="text" class="form-control" id="companyEIN" placeholder="e.g. 12-3456789" th:field="*{companyEIN}" th:errorClass="is-invalid">
+                <label for="companyEINRendered" class="form-label">Company EIN</label>
+                <input type="hidden" name="companyEIN" id="companyEIN" th:field="*{companyEIN}" />
+                <input type="text" class="form-control"
+                    id="companyEINRendered"
+                    placeholder="e.g. 12-3456789"
+                    th:value="*{companyEIN}"
+                    th:classappend="${#fields.hasErrors('companyEIN')} ? ' is-invalid' : ''">
                 
-                
-                <!-- <div class="invalid-feedback" th:if="${#fields.hasErrors('companyEIN')}">
+                <div class="invalid-feedback" th:if="${#fields.hasErrors('companyEIN')}">
                     <ul style="margin-bottom: -0.02rem;">
                         <li th:each="error : ${#fields.errors('companyEIN')}" th:text="${error}" />
                     </ul>
-                </div> -->
+                </div>
             </div>
 
             <div class="form-group mb-2">
                 <label for="companyStateTaxID" class="form-label">State Tax ID</label>
-                <input type="text" class="form-control" id="companyStateTaxID" placeholder="e.g. 123-4567-8" th:field="*{companyStateTaxID}" th:errorClass="is-invalid">
-                <!-- <div class="invalid-feedback" th:if="${#fields.hasErrors('companyStateTaxID')}">
+                <input type="hidden" name="companyStateTaxID" id="companyStateTaxID" th:field="*{companyStateTaxID}" />
+                <input type="text" class="form-control"
+                id="companyStateTaxIDRendered"
+                placeholder="e.g. 123-4567-8"
+                th:value="*{companyStateTaxID}"
+                th:classappend="${#fields.hasErrors('companyStateTaxID')} ? ' is-invalid' : ''">
+                
+                <div class="invalid-feedback" th:if="${#fields.hasErrors('companyStateTaxID')}">
                     <ul style="margin-bottom: -0.02rem;">
                         <li th:each="error : ${#fields.errors('companyStateTaxID')}" th:text="${error}" />
                     </ul>
-                </div> -->
+                </div>
             </div>
 
             <button class="btn btn-success my-4">

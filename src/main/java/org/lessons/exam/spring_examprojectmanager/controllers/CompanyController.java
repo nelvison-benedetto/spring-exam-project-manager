@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import jakarta.validation.Valid;
 
 @Controller
-@RequestMapping("/company")
+@RequestMapping("/companies")
 public class CompanyController {
     
     private final CompanyService companyService;
@@ -56,7 +56,7 @@ public class CompanyController {
             return "entities/companies/create-or-edit.html";
         }
         companyService.create(company);
-        return "redirect:/";
+        return "redirect:/clients/create";
     }
 
     //UPDATE

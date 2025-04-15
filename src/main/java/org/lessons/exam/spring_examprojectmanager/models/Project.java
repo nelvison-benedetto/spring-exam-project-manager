@@ -56,8 +56,8 @@ public class Project implements Serializable{
 
 
     @Column(nullable = false)
-    @NotBlank(message = "status cannot be blank.")
-    private String status = "Planned"; 
+    @NotBlank(message = "status cannot be null.")
+    private String status; 
 
     @Column(nullable = false)
     @NotNull(message = "is active cannot be null.")
@@ -72,8 +72,8 @@ public class Project implements Serializable{
     private String category;
 
     @Column(nullable = false)
-    @NotNull(message = "budget cannot be null.")
-    private BigDecimal budget = new BigDecimal("0.00");
+    @NotNull(message = "budget cannot be blank.")
+    private BigDecimal budget;  // = new BigDecimal("0.00"); default, but now return correctly also w a blank
 
     @Column(nullable = false)
     @NotBlank(message = "priority cannot be blank.")

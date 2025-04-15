@@ -53,16 +53,16 @@ public class PersonController {
     @PostMapping("/store")
     public String personsStore(@Valid @ModelAttribute("person") Person person,
     BindingResult bindingResult, Model model){
+        System.out.println(person);
         if (bindingResult.hasErrors()) {
             return "entities/persons/create-or-edit.html";
         }
-        System.out.println(person);
         personService.create(person);
         return "redirect:/persons/single-or-company";
     }
 
     @GetMapping("/single-or-company")
-    public String continueAsPerson() {
+    public String personsChoosePersonOrCompany() {
         return "entities/persons/single-or-company.html";
     }
 

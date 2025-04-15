@@ -12,8 +12,8 @@
 <body>
 
     <div class="container mt-4">
-        <h1 th:if="${edit}" class="fw-bold text-primary">Edit Person</h1>
-        <h1 th:unless="${edit}" class="fw-bold text-primary">Create New Person</h1>
+        <h1 th:if="${edit}" class="fw-bold mb-0 text-primary">Edit Person</h1>
+        <h1 th:unless="${edit}" class="fw-bold mb-0 text-primary">Create New Person</h1>
     
         <form th:action="@{${edit}? @{|/persons/${person.id}/update|} : @{|/persons/store|} }" method="post" th:object="${person}" class="mt-3">
             <input th:if="${edit}" type="hidden" name="_method" value="put">
@@ -23,7 +23,7 @@
                 <input type="text" class="form-control" id="firstname" th:field="*{firstname}" th:errorclass="is-invalid">
                 <div class="invalid-feedback" th:if="${#fields.hasErrors('firstname')}">
                     <ul style="margin-bottom: -0.02rem;">
-                        <li th:each="err : ${#fields.errors('firstname')}" th:text="${err}"></li>
+                        <li th:each="error : ${#fields.errors('firstname')}" th:text="${error}"></li>
                     </ul>
                 </div>
             </div>
@@ -33,7 +33,7 @@
                 <input type="text" class="form-control" id="lastname" th:field="*{lastname}" th:errorclass="is-invalid">
                 <div class="invalid-feedback" th:if="${#fields.hasErrors('lastname')}">
                     <ul style="margin-bottom: -0.02rem;">
-                        <li th:each="err : ${#fields.errors('lastname')}" th:text="${err}"></li>
+                        <li th:each="error : ${#fields.errors('lastname')}" th:text="${error}"></li>
                     </ul>
                 </div>
             </div>
@@ -43,7 +43,7 @@
                 <input type="text" class="form-control" id="username" th:field="*{username}" th:errorclass="is-invalid">
                 <div class="invalid-feedback" th:if="${#fields.hasErrors('username')}">
                     <ul style="margin-bottom: -0.02rem;">
-                        <li th:each="err : ${#fields.errors('username')}" th:text="${err}"></li>
+                        <li th:each="error : ${#fields.errors('username')}" th:text="${error}"></li>
                     </ul>
                 </div>
             </div>
@@ -53,39 +53,44 @@
                 <input type="email" class="form-control" id="email" th:field="*{email}" th:errorclass="is-invalid">
                 <div class="invalid-feedback" th:if="${#fields.hasErrors('email')}">
                     <ul style="margin-bottom: -0.02rem;">
-                        <li th:each="err : ${#fields.errors('email')}" th:text="${err}"></li>
+                        <li th:each="error : ${#fields.errors('email')}" th:text="${error}"></li>
                     </ul>
                 </div>
             </div>
-        
+
             <div class="form-group mb-2">
                 <label for="phoneNumber" class="form-label">Phone Number</label>
-                <input type="text" class="form-control" id="phoneNumber" placeholder="+39 3334567890">
-                <input type="hidden" name="phone" id="phoneHidden" th:field="*{phoneNumber}" />
-
-                <!-- <div class="invalid-feedback" th:if="${#fields.hasErrors('phoneNumber')}">
+                <input type="hidden" name="phoneNumber" id="phoneNumber" th:field="*{phoneNumber}" />
+                <input type="text" class="form-control"
+                    id="phoneNumberRendered"
+                    placeholder="e.g. +33 555 666 8888"
+                    th:value="*{phoneNumber}"
+                    th:classappend="${#fields.hasErrors('phoneNumber')} ? ' is-invalid' : ''">  <!--'is-invalid' x red borders-->
+            
+                <div class="invalid-feedback" th:if="${#fields.hasErrors('phoneNumber')}">  <!--x text in red-->
                     <ul style="margin-bottom: -0.02rem;">
-                        <li th:each="err : ${#fields.errors('phoneNumber')}" th:text="${err}"></li>
+                        <li th:each="error : ${#fields.errors('phoneNumber')}" th:text="${error}"></li>
                     </ul>
-                </div> -->
+                </div>
             </div>
+
         
             <div class="form-group mb-2">
                 <label for="country" class="form-label">Country</label>
                 <input type="text" class="form-control" id="country" th:field="*{country}" th:errorclass="is-invalid">
                 <div class="invalid-feedback" th:if="${#fields.hasErrors('country')}">
                     <ul style="margin-bottom: -0.02rem;">
-                        <li th:each="err : ${#fields.errors('country')}" th:text="${err}"></li>
+                        <li th:each="error : ${#fields.errors('country')}" th:text="${error}"></li>
                     </ul>
                 </div>
             </div>
         
             <div class="form-group mb-2">
                 <label for="birthdate" class="form-label">Birthdate</label>
-                <input type="date" class="form-control applyflatpickr" placeholder="YYYY/MM/dd" id="birthdate" th:field="*{birthdate}" th:errorclass="is-invalid">
+                <input type="text" id="birthdate" name="birthdate" class="form-control applyflatpickr" placeholder="YYYY/MM/dd"  th:field="*{birthdate}" th:errorclass="is-invalid">
                 <div class="invalid-feedback" th:if="${#fields.hasErrors('birthdate')}">
                     <ul style="margin-bottom: -0.02rem;">
-                        <li th:each="err : ${#fields.errors('birthdate')}" th:text="${err}"></li>
+                        <li th:each="error : ${#fields.errors('birthdate')}" th:text="${error}"></li>
                     </ul>
                 </div>
             </div>

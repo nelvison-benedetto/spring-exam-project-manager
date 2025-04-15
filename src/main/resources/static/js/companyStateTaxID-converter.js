@@ -1,5 +1,5 @@
-const taxInput = document.getElementById('companyStateTaxID');
-const taxHidden = document.getElementById('companyStateTaxIDHidden');
+const taxInput = document.getElementById('companyStateTaxIDRendered');
+const taxHidden = document.getElementById('companyStateTaxID');
 
 taxInput.addEventListener('input', function () {
     let raw = taxInput.value.replace(/\D/g, ''); // solo numeri

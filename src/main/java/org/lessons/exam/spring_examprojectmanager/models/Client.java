@@ -46,11 +46,11 @@ public class Client implements Serializable{
 
 
     @Column(nullable = false)
-    @NotBlank(message = "subscription type cannot be blank.")
+    @NotBlank(message = "subscription type cannot be null.")
     private String subscriptionType;
 
     @Column(nullable = false)
-    @NotBlank(message = "status cannot be blank.")
+    @NotBlank(message = "status cannot be null.")
     private String status;
 
     @Column(nullable = false)
@@ -86,7 +86,7 @@ public class Client implements Serializable{
 
     @Override
     public String toString(){
-        return String.format("%s %s %s", id, subscriptionType, status);
+        return String.format("%s %s %s %s %s", id, subscriptionType, status, subscriptionStartDate, subscriptionEndDate);
     }
 
     

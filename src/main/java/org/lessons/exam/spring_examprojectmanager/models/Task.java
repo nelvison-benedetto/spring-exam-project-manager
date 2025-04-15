@@ -50,8 +50,8 @@ public class Task implements Serializable{
 
 
     @Column(nullable = false)
-    @NotBlank(message = "status cannot be blank.")
-    private String status = "Planned"; 
+    @NotBlank(message = "status cannot be null.")  //isn't null is blankerror,'cannot be null' only x render appeal
+    private String status; 
 
     @Column(nullable = false)
     @NotNull(message = "is active cannot be null.")

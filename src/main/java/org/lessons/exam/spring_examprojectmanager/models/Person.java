@@ -53,7 +53,7 @@ public class Person implements Serializable{
 
     @Column(nullable = false)
     @NotBlank(message = "phone number cannot be blank.")
-    private String phoneNumber = "+00";  //w String phonenumber can start w 0!(otherwise w Integer e.g.04664566 would not be saved)
+    private String phoneNumber ;  //w String phonenumber can start w 0!(otherwise w Integer e.g.04664566 would not be saved)
 
     @Column(nullable = false)
     @NotBlank(message = "country cannot be blank.")

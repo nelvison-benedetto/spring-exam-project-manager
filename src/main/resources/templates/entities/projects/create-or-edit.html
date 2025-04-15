@@ -17,7 +17,7 @@
             <h1 th:if="${edit}" class="fw-bold mb-0 text-primary">Edit The Project</h1>
             <h1 th:unless="${edit}" class="fw-bold mb-0 text-primary">Create New Project</h1>
 
-            <form th:action="@{/projects/{id}/delete(id=${project.id})}" method="post">
+            <form th:if="${edit}" th:action="@{/projects/{id}/delete(id=${project.id})}" method="post">
                 <input type="hidden" name="_method" value="delete" />
                 <button class="btn btn-danger">
                     <i class="bi bi-trash me-1"></i>
@@ -54,7 +54,8 @@
 
                 <div class="form-group col-12 col-md-4 mb-2">
                     <label for="status" class="form-label">Status</label>
-                    <select class="form-select" id="status" th:field="*{status}">
+                    <select class="form-select" id="status" th:field="*{status}" th:classappend="${#fields.hasErrors('status')} ? ' is-invalid' : ''">
+                        <option value="">-- Select Your Status --</option>
                         <option value="Planned">Planned</option>
                         <option value="In_Progress">In Progress</option>
                         <option value="On_Hold">On Hold</option>
@@ -65,6 +66,11 @@
                         <option value="In_Test">In Test</option>
                         <option value="In_Debug">In Debug</option>
                     </select>
+                    <div class="invalid-feedback" th:if="${#fields.hasErrors('status')}">
+                        <ul style="margin-bottom: -0.02rem;">
+                            <li th:each="error : ${#fields.errors('status')}" th:text="${error}"></li>
+                        </ul>
+                    </div>
                 </div>
                 
                 <div class="form-group col-4 d-flex flex-column col-12 col-md-4 mb-2">
@@ -107,8 +113,18 @@
 
             <div class="form-group mb-2">
                 <label for="budget" class="form-label">Budget</label>
-                <input type="text" class="form-control" id="budget" placeholder="e.g. $1,000,000.00">
-                <input type="hidden" name="budget" id="budgetHidden" th:field="*{budget}" />
+                <input type="hidden" name="budget" id="budget" th:field="*{budget}" />
+                <input type="text" class="form-control"
+                    id="budgetRendered"
+                    placeholder="e.g. $1,000,000.00"
+                    th:value="*{budget}"
+                    th:classappend="${#fields.hasErrors('budget')} ? ' is-invalid' : ''">
+
+                <div class="invalid-feedback" th:if="${#fields.hasErrors('budget')}">
+                    <ul style="margin-bottom: -0.02rem;">
+                        <li th:each="error : ${#fields.errors('budget')}" th:text="${error}" />
+                    </ul>
+                </div>
             </div>
             
             <div class="form-group mb-2 d-flex flex-column">
