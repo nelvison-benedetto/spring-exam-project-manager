@@ -42,9 +42,10 @@ public class Person implements Serializable{
     @NotBlank(message = "last name cannot be blank.")
     private String lastname;
 
-    @Column(nullable = false)
-    @NotBlank(message = "username cannot be blank.")
-    private String username;
+    //username already setted in sign-up form
+    // @Column(nullable = false)
+    // @NotBlank(message = "username cannot be blank.")
+    // private String username;
 
     @Column(nullable = false)
     @NotBlank(message = "email cannot be blank.")
@@ -66,7 +67,7 @@ public class Person implements Serializable{
 
     @Override
     public String toString(){
-        return String.format("%s %s %s %s %s %s %s", id, firstname, lastname, username, email, phoneNumber, country, birthdate);
+        return String.format("%s %s %s %s %s %s", id, firstname, lastname, email, phoneNumber, country, birthdate);
     }
 
     

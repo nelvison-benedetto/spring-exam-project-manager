@@ -17,7 +17,7 @@ public class RoleSeeder {
     }
 
     public void seed(){
-        if(roleRepo.count() != 0){  //in UserSeeder already created User and Admin
+        //if(roleRepo.count() != 0){  //in UserSeeder already created User and Admin
             List<Role> rolesToSeed = List.of(
                 //new Role(null, "User", null),
                 new Role(null, "Manager", null),
@@ -26,6 +26,6 @@ public class RoleSeeder {
                 new Role(null, "Hr", null)
             );
             roleRepo.saveAll(rolesToSeed);
-        }
+        //}
     }
 }

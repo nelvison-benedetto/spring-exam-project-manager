@@ -3,6 +3,7 @@ package org.lessons.exam.spring_examprojectmanager.models;
 import java.io.Serializable;
 import java.util.Set;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -43,12 +44,12 @@ public class User implements Serializable{
 
     @Override
     public String toString() {
-        return String.format("%s %s %s", id, username, roles);
+        return String.format("%s %s", id, username);
     }
 
     //RELATIONS
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(cascade = { CascadeType.MERGE }, fetch = FetchType.EAGER)
     @JoinTable(  
         name = "role_user",  //ordered in alphabetic order X_Y
         joinColumns = @JoinColumn(name="user_id"),  

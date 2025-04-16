@@ -13,7 +13,7 @@
 
         <div class="d-flex justify-content-between align-items-center gap-2 mb-1 mt-4">
             <h1 th:if="${edit}" class="fw-bold mb-0 text-primary">Edit Subscription</h1>
-            <h1 th:unless="${edit}" class="fw-bold mb-0 text-primary">Register New Subscription</h1>
+            <h1 th:unless="${edit}" class="fw-bold mb-0 text-primary">Register New Subscription - Nubbin™</h1>
         </div>
 
         <form th:action="@{${edit} ? @{|/clients/${client.id}/update|} : @{/clients/store}}" method="post" th:object="${client}" class="mt-3">
@@ -82,9 +82,9 @@
                 </select>
             </div> -->
         
-            <button class="btn btn-success my-4">
-                <i class="bi bi-floppy me-1"></i>
-                <span>Save</span>
+            <button class="btn btn-primary my-4">
+                <i class="bi bi-arrow-right-square me-2"></i>
+                <span>Save and Continue</span>
             </button>
         </form>
         

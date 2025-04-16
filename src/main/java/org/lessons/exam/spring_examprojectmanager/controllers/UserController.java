@@ -65,8 +65,7 @@ public class UserController {
             return "security/sign-up.html";
         }
         userService.create(user);
-        //return "redirect:/persons/create";
-        return "redirect:/";
+        return "redirect:/persons/create";
     }
 
     //UPDATE

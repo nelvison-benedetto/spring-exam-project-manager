@@ -56,7 +56,7 @@ public class ClientController {
             return "entities/clients/create-or-edit.html";
         }
         clientService.create(client);
-        return "redirect:/projects";
+        return "redirect:/security/sign-in";
     }
 
     //UPDATE

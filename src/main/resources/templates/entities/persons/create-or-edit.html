@@ -13,7 +13,7 @@
 
     <div class="container mt-4">
         <h1 th:if="${edit}" class="fw-bold mb-0 text-primary">Edit Person</h1>
-        <h1 th:unless="${edit}" class="fw-bold mb-0 text-primary">Create New Person</h1>
+        <h1 th:unless="${edit}" class="fw-bold mb-0 text-primary">Register New Person - Nubbin™</h1>
     
         <form th:action="@{${edit}? @{|/persons/${person.id}/update|} : @{|/persons/store|} }" method="post" th:object="${person}" class="mt-3">
             <input th:if="${edit}" type="hidden" name="_method" value="put">
@@ -38,7 +38,8 @@
                 </div>
             </div>
         
-            <div class="form-group mb-2">
+            <!--username already setted in sign-up form-->
+            <!-- <div class="form-group mb-2">
                 <label for="username" class="form-label">Username</label>
                 <input type="text" class="form-control" id="username" th:field="*{username}" th:errorclass="is-invalid">
                 <div class="invalid-feedback" th:if="${#fields.hasErrors('username')}">
@@ -46,7 +47,7 @@
                         <li th:each="error : ${#fields.errors('username')}" th:text="${error}"></li>
                     </ul>
                 </div>
-            </div>
+            </div> -->
         
             <div class="form-group mb-2">
                 <label for="email" class="form-label">Email</label>
@@ -95,7 +96,10 @@
                 </div>
             </div>
         
-            <button type="submit" class="btn btn-success my-4">Save</button>
+            <button type="submit" class="btn btn-primary my-4">
+                <i class="bi bi-arrow-right-square me-2"></i>
+                <span>Save and Continue</span>
+            </button>
         </form>
     </div>
     

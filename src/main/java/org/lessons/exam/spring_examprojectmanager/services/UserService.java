@@ -77,11 +77,14 @@ public class UserService {
         for (Role role : validRoles) {
             role.getUsers().add(userToCreate);  //add this user to the obj role
         }
+        System.out.println("Valid roles is setting..."+validRoles);
         userToCreate.setRoles(validRoles);
-        System.out.println("USERtoCREATE saving..."+userToCreate);
-        return userRepo.save(userToCreate);
-    }
+        System.out.println("USERtoCREATE roles saving..."+userToCreate.getRoles());
+        User savedUser = userRepo.save(userToCreate);
+        System.out.println("Saved user from DB: " + userRepo.findById(savedUser.getId()).get().getRoles()); //x debug GET DATA FROM THE DB!
 
+        return savedUser;
+    }
 
 
     // UPDATE

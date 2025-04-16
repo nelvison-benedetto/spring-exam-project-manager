@@ -72,7 +72,7 @@ public class PersonService {
         //update one field at a time!(x security & x help Spring)
         existingPerson.setFirstname(personToEdit.getFirstname());
         existingPerson.setLastname(personToEdit.getLastname());
-        existingPerson.setUsername(personToEdit.getUsername());
+        //existingPerson.setUsername(personToEdit.getUsername());
         existingPerson.setEmail(personToEdit.getEmail());
         existingPerson.setPhoneNumber(personToEdit.getPhoneNumber());
         existingPerson.setCountry(personToEdit.getCountry());
@@ -81,6 +81,7 @@ public class PersonService {
         return personRepo.save(existingPerson);
     }
 
+    
     //DELETE
     public void delete(Person personToDelete){
         if(personToDelete == null){
