@@ -64,8 +64,8 @@ public class UserController {
             model.addAttribute("rolesList", roleService.findAll());
             return "security/sign-up.html";
         }
-        userService.create(user);
-        return "redirect:/persons/create";
+        User savedUser = userService.create(user);
+        return "redirect:/persons/create?userId=" + savedUser.getId();
     }
 
     //UPDATE

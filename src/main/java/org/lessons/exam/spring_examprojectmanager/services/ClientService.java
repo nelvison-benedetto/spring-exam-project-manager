@@ -2,11 +2,13 @@ package org.lessons.exam.spring_examprojectmanager.services;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.lessons.exam.spring_examprojectmanager.exceptions.DuplicateResourceException;
 import org.lessons.exam.spring_examprojectmanager.exceptions.ResourceNotFoundException;
 import org.lessons.exam.spring_examprojectmanager.models.Client;
 import org.lessons.exam.spring_examprojectmanager.models.Company;
+import org.lessons.exam.spring_examprojectmanager.models.Person;
 import org.lessons.exam.spring_examprojectmanager.repository.ClientRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -17,10 +19,12 @@ public class ClientService {
     
     private final ClientRepo clientRepo;
     private final CompanyService companyService;
+    private final PersonService personService;
     @Autowired
-    public ClientService(ClientRepo clientRepo, @Lazy CompanyService companyService){  //USO LAZY OTHERWISE i services client & company call each other without starting
+    public ClientService(ClientRepo clientRepo, @Lazy CompanyService companyService, PersonService personService){  //USO LAZY OTHERWISE i services client & company call each other without starting
         this.clientRepo = clientRepo;
         this.companyService = companyService;
+        this.personService = personService;
     }
 
 
@@ -62,7 +66,31 @@ public class ClientService {
         if(clientToCreate == null){
             throw new IllegalArgumentException("Client to create cannot be null.");
         }
-        return clientRepo.save(clientToCreate);
+        if (clientToCreate.getPerson() != null && clientToCreate.getPerson().getId() != null) {
+            Person fullPerson = personService.checkedExistsById(clientToCreate.getPerson().getId());
+            clientToCreate.setPerson(fullPerson);
+            fullPerson.setClient(clientToCreate);
+        }
+
+        if(clientToCreate.getCompany() != null && clientToCreate.getCompany().getId() != null){
+            Company fullCompany = companyService.checkedExistsById(clientToCreate.getCompany().getId());
+            clientToCreate.setCompany(fullCompany);
+
+            List<Person> validPersons = fullCompany.getPersons().stream()  //questo va bene per only x sign-up form, perche avrai legato alla company appena creata solo 1 person e 1 client
+            .map(person -> personService.checkedExistsById(person.getId()))
+            .collect(Collectors.toList());  //.collect() put the results in a new collection, //.toSet() to specifi collection Set<>
+            
+            for(Person person : validPersons) {
+                person.setClient(clientToCreate);  //add this company to the obj person
+            }
+            
+        }
+
+        System.out.println("CreatedClient...: " + clientToCreate);
+        Client savedClient = clientRepo.save(clientToCreate);
+        System.out.println("Saved client from DB: " + clientRepo.findById(savedClient.getId()).get()); //x debug GET DATA FROM THE DB!
+        return savedClient;
+
     }
 
     //UPDATE
@@ -77,14 +105,14 @@ public class ClientService {
         existingClient.setSubscriptionStartDate(clientToEdit.getSubscriptionStartDate());
         existingClient.setSubscriptionEndDate(clientToEdit.getSubscriptionEndDate());
 
-
+        //!old, but good settings
         //fresh upload from db to avoid errors with incomplete objects
-        List<Company> freshCompanies = existingClient.getCompanies().stream()  
-        .map(c -> companyService.checkedExistsById(c.getId()))
-        .toList();
-        //reset all & overwrite!!
-        existingClient.getCompanies().clear();  //rimuovi tutte le associazioni attuali
-        existingClient.getCompanies().addAll(freshCompanies);  //aggiungi quelle nuove
+        // List<Company> freshCompanies = existingClient.getCompanies().stream()  
+        // .map(c -> companyService.checkedExistsById(c.getId()))
+        // .toList();
+        // //reset all & overwrite!!
+        // existingClient.getCompanies().clear();  //rimuovi tutte le associazioni attuali
+        // existingClient.getCompanies().addAll(freshCompanies);  //aggiungi quelle nuove
 
         
         return clientRepo.save(existingClient);

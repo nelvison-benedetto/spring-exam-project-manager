@@ -11,7 +11,7 @@
     <div class="container  d-flex align-items-center justify-content-center" style="height: 100vh;">
         <div class="row w-100 justify-content-center">
             <div class="col-md-5 mb-4">
-                <a th:href="@{/clients/create}" class="card-link">
+                <a th:href="@{/clients/create(personId=${personId})}" class="card-link">
                     <div class="card card-option shadow-sm">
                         <div class="card-body">
                             <span class="display-5"><i class="bi bi-person text-primary"></i></span>
@@ -23,7 +23,7 @@
                 </a>
             </div>
             <div class="col-md-5 mb-4">
-                <a th:href="@{/companies/create}" class="card-link">
+                <a th:href="@{/companies/create(personId=${personId})}" class="card-link">
                     <div class="card card-option shadow-sm">
                         <div class="card-body">
                             <span class="display-5 "><i class="bi bi-building text-primary"></i></span>

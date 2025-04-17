@@ -17,6 +17,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.PreRemove;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Min;
@@ -68,9 +69,10 @@ public class Company implements Serializable{
     
     //RELATIONS
     
-    @ManyToMany(mappedBy = "companies", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @JsonBackReference
     private List<Client> clients = new ArrayList<>();
+    
 
     @ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE }, fetch = FetchType.LAZY)  
     @JoinTable(
@@ -80,6 +82,11 @@ public class Company implements Serializable{
     )
     @JsonManagedReference
     private List<Project> projects = new ArrayList<>();
+
+
+    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @JsonBackReference
+    private List<Person> persons = new ArrayList<>();
 
 
     //DISCONNECTIONS BEFORE DELETES
@@ -93,7 +100,5 @@ public class Company implements Serializable{
     }
 }
 
-//in bootstrap per avere box vuoti da riempire usa 
-//Cleave.js – ottimo per formattare numeri tipo EIN/SSN/etc.
-//Inputmask – anche ottimo per questo tipo di formattazione
+
 

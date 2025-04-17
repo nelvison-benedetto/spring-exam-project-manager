@@ -2,12 +2,16 @@ package org.lessons.exam.spring_examprojectmanager.services;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.lessons.exam.spring_examprojectmanager.exceptions.DuplicateResourceException;
 import org.lessons.exam.spring_examprojectmanager.exceptions.ResourceNotFoundException;
 import org.lessons.exam.spring_examprojectmanager.models.Client;
 import org.lessons.exam.spring_examprojectmanager.models.Company;
+import org.lessons.exam.spring_examprojectmanager.models.Person;
 import org.lessons.exam.spring_examprojectmanager.models.Project;
+import org.lessons.exam.spring_examprojectmanager.models.Role;
 import org.lessons.exam.spring_examprojectmanager.repository.CompanyRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -21,11 +25,13 @@ public class CompanyService {
     private final CompanyRepo companyRepo;
     private final ClientService clientService;
     private final ProjectService projectService;
+    private final PersonService personService;
     @Autowired  //ora eseguito da Lombok w @RequiredArgsConstructor
-    public CompanyService(CompanyRepo companyRepo, @Lazy ClientService clientService, @Lazy ProjectService projectService){
+    public CompanyService(CompanyRepo companyRepo, @Lazy ClientService clientService, @Lazy ProjectService projectService, PersonService personService){
         this.companyRepo = companyRepo;
         this.clientService = clientService;
         this.projectService = projectService;
+        this.personService = personService;
     }
     
 
@@ -70,7 +76,17 @@ public class CompanyService {
         if(companyRepo.existsByCompanyEIN(companyToCreate.getCompanyEIN())){
             throw new DuplicateResourceException("Company already exists for create.");
         }
-        return companyRepo.save(companyToCreate);
+        List<Person> validPersons = companyToCreate.getPersons().stream()  //LA COMPANY E' APPENA STATA CREATA, QUINDI L'UNICA PERSON LEGATA AD ESSO E LA PERSON APPENA CREATA IN SIGN-UP FLOW, ma poi in edit altre persons possono legarsi a questa company!!
+            .map(person -> personService.checkedExistsById(person.getId()))
+            .collect(Collectors.toList());  //.collect() put the results in a new collection, //.toSet() to specifi collection Set<>
+        for(Person person : validPersons) {
+            person.setCompany(companyToCreate);  //add this company to the obj person
+        }
+        companyToCreate.setPersons(validPersons);
+        System.out.println("CreatedCompany...: " + companyToCreate);
+        Company savedCompany = companyRepo.save(companyToCreate);
+        System.out.println("Saved company from DB: " + companyRepo.findById(savedCompany.getId()).get()); //x debug GET DATA FROM THE DB!
+        return savedCompany;
     }
 
     //UPDATE
@@ -100,6 +116,8 @@ public class CompanyService {
         existingCompany.getProjects().clear(); // Rimuovi tutte le associazioni progetti esistenti
         existingCompany.getProjects().addAll(freshProjects); // Aggiungi i nuovi progetti
         
+        //List<Person> freshPersons = ... TO DO!!
+
         return companyRepo.save(existingCompany);
     }
 

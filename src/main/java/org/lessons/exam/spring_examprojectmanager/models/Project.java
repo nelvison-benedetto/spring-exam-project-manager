@@ -127,7 +127,7 @@ public class Project implements Serializable{
     private List<Company> companies = new ArrayList<>();
 
 
-    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @JsonManagedReference
     private List<Task> tasks = new ArrayList<>();
 

@@ -21,6 +21,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreRemove;
 import jakarta.persistence.PreUpdate;
@@ -92,22 +94,39 @@ public class Client implements Serializable{
     
     //RELATIONS
 
-    @ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE }, fetch = FetchType.LAZY)
-    @JoinTable(
-        name = "client_company",
-        joinColumns = @JoinColumn(name = "client_id"),
-        inverseJoinColumns = @JoinColumn(name = "company_id")
-    )
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "company_id")
     @JsonManagedReference
-    private List<Company> companies = new ArrayList<>();
+    private Company company;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "person_id")
+    @JsonManagedReference
+    private Person person;
+
+
+
+    //old, but setted GOOD
+    // @ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE }, fetch = FetchType.LAZY)
+    // @JoinTable(
+    //     name = "client_company",
+    //     joinColumns = @JoinColumn(name = "client_id"),
+    //     inverseJoinColumns = @JoinColumn(name = "company_id")
+    // )
+    // @JsonManagedReference
+    // private List<Company> companies = new ArrayList<>();
 
 
     //DISCONNECTIONS BEFORE DELETES
-    @PreRemove
-    private void removeCompaniesAssociation() {
-        for(Company company : companies){
-            company.getClients().remove(this);  //disconnect this client from each company
-        }
-        companies.clear();  //disconnect all companies from this client
-    }
+
+    //old, but setted GOOD 
+    // @PreRemove
+    // private void removeCompaniesAssociation() {
+    //     for(Company company : companies){
+    //         company.getClients().remove(this);  //disconnect this client from each company
+    //     }
+    //     companies.clear();  //disconnect all companies from this client
+    // }
+
+
 }

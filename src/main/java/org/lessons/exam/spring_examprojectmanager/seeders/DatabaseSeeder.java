@@ -34,7 +34,7 @@ public class DatabaseSeeder implements CommandLineRunner{
         projectSeeder.seed();  //has relation many-one w nullable=true, so in task you cannot set null in the project field!
         taskSeeder.seed();
 
-        clientSeeder.seed();
+        //clientSeeder.seed();
         companySeeder.seed();
         userSeeder.seed();
         roleSeeder.seed();

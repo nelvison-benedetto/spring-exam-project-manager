@@ -3,7 +3,11 @@ package org.lessons.exam.spring_examprojectmanager.controllers;
 import java.util.List;
 
 import org.lessons.exam.spring_examprojectmanager.models.Client;
+import org.lessons.exam.spring_examprojectmanager.models.Company;
+import org.lessons.exam.spring_examprojectmanager.models.Person;
 import org.lessons.exam.spring_examprojectmanager.services.ClientService;
+import org.lessons.exam.spring_examprojectmanager.services.CompanyService;
+import org.lessons.exam.spring_examprojectmanager.services.PersonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,6 +17,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import jakarta.validation.Valid;
 
@@ -22,9 +27,13 @@ import jakarta.validation.Valid;
 public class ClientController {
     
     private final ClientService clientService;
+    private final PersonService personService;
+    private final CompanyService companyService;
     @Autowired
-    public ClientController(ClientService clientService) {
+    public ClientController(ClientService clientService, PersonService personService, CompanyService companyService) {
         this.clientService = clientService;
+        this.personService = personService;
+        this.companyService = companyService;
     }
 
     //READ
@@ -44,18 +53,30 @@ public class ClientController {
 
     //CREATE
     @GetMapping("/create")
-    public String clientsCreate(Model model){
-        model.addAttribute("client", new Client());
+    public String clientsCreate(@RequestParam(value = "personId", required = false) Integer personId,
+    @RequestParam(value = "companyId", required = false) Integer companyId,
+    Model model){
+        Client client = new Client();
+
+        if(personId != null){
+            Person person = personService.checkedExistsById(personId);
+            client.setPerson(person);
+        }
+        if(companyId != null){
+            Company company = companyService.checkedExistsById(companyId);
+            client.setCompany(company);
+        }
+
+        model.addAttribute("client", client);
         return "entities/clients/create-or-edit.html";
     }   
     @PostMapping("/store")
     public String clientsStore(@Valid @ModelAttribute("client") Client client,
     BindingResult bindingResult, Model model){
         if(bindingResult.hasErrors()){
-            //add even the lists
             return "entities/clients/create-or-edit.html";
         }
-        clientService.create(client);
+        Client savedClient = clientService.create(client);
         return "redirect:/security/sign-in";
     }
 

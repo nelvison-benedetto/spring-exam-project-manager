@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.lessons.exam.spring_examprojectmanager.exceptions.ResourceNotFoundException;
 import org.lessons.exam.spring_examprojectmanager.models.Person;
+import org.lessons.exam.spring_examprojectmanager.models.User;
 import org.lessons.exam.spring_examprojectmanager.repository.PersonRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,9 +14,11 @@ import org.springframework.stereotype.Service;
 public class PersonService {
     
     private final PersonRepo personRepo;
+    private final UserService userService;
     @Autowired 
-    public PersonService(PersonRepo personRepo) {
+    public PersonService(PersonRepo personRepo, UserService userService) {
         this.personRepo = personRepo;
+        this.userService = userService;
     }
 
 
@@ -56,10 +59,20 @@ public class PersonService {
     
     //CREATE
     public Person create(Person personToCreate){
-        if(personToCreate == null){
-            throw new IllegalArgumentException("Person to create cannot be null.");
+        if(personToCreate == null || personToCreate.getUser() == null){
+            throw new IllegalArgumentException("Person or associated User cannot benull.");
         }
-        return personRepo.save(personToCreate);
+        User fullUser = userService.checkedExistsById(personToCreate.getUser().getId());
+        if (fullUser.getPerson() != null) {
+            throw new IllegalStateException("User already linked to a Person.");
+        }
+        personToCreate.setUser(fullUser);
+        fullUser.setPerson(personToCreate);  //!important to manually set also this x help java!
+
+        System.out.println("CreatedPerson...: " + personToCreate);
+        Person savedPerson = personRepo.save(personToCreate);
+        System.out.println("Saved person from DB: " + personRepo.findById(savedPerson.getId()).get()); //x debug GET DATA FROM THE DB!
+        return savedPerson;
     }
 
     //UPDATE

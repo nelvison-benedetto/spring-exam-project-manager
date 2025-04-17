@@ -7,6 +7,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.lessons.exam.spring_examprojectmanager.models.Client;
+import org.lessons.exam.spring_examprojectmanager.models.Company;
+import org.lessons.exam.spring_examprojectmanager.models.Person;
 import org.lessons.exam.spring_examprojectmanager.repository.ClientRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -29,15 +31,8 @@ public class ClientSeeder {
                 LocalDate.of(2025, 1, 15), 
                 LocalDateTime.now(), 
                 LocalDateTime.now(),
-                new ArrayList<>()
-            ),
-
-            new Client(null, "BASIC", "INACTIVE", 
-                LocalDate.of(2024, 5, 10), 
-                LocalDate.of(2025, 5, 10), 
-                LocalDateTime.now(), 
-                LocalDateTime.now(), 
-                new ArrayList<>()
+                new Company(null, "ACME Corp", "acme", "12-3456789", "123-4567-8", new ArrayList<>(), new ArrayList<>(), new ArrayList<>()),
+                new Person()
             ),
 
             new Client(null, "ENTERPRISE", "ACTIVE", 
@@ -45,7 +40,8 @@ public class ClientSeeder {
                 LocalDate.of(2025, 3, 1), 
                 LocalDateTime.now(), 
                 LocalDateTime.now(), 
-                new ArrayList<>()
+                new Company(null, "Gamma Solutions", "gamma_solutions", "23-4567890", "987-6543-8", new ArrayList<>(), new ArrayList<>(), new ArrayList<>()),
+                new Person()
             ),
 
             new Client(null, "TRIAL", "PENDING", 
@@ -53,7 +49,8 @@ public class ClientSeeder {
                 LocalDate.of(2025, 6, 1), 
                 LocalDateTime.now(), 
                 LocalDateTime.now(), 
-                new ArrayList<>()
+                new Company(null, "Delta Innovations", "delta_innov", "34-5678901", "345-6789-0", new ArrayList<>(), new ArrayList<>(), new ArrayList<>()),
+                new Person()
             )
 
             ));

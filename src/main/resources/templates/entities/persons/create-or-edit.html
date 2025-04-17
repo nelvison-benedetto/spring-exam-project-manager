@@ -17,6 +17,7 @@
     
         <form th:action="@{${edit}? @{|/persons/${person.id}/update|} : @{|/persons/store|} }" method="post" th:object="${person}" class="mt-3">
             <input th:if="${edit}" type="hidden" name="_method" value="put">
+            <input type="hidden" th:field="*{user.id}" id="user-linked" readonly />
 
             <div class="form-group mb-2">
                 <label for="firstname" class="form-label">First Name</label>

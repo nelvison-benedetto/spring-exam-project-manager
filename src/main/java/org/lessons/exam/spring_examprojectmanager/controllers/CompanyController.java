@@ -1,10 +1,13 @@
 package org.lessons.exam.spring_examprojectmanager.controllers;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.lessons.exam.spring_examprojectmanager.models.Client;
 import org.lessons.exam.spring_examprojectmanager.models.Company;
+import org.lessons.exam.spring_examprojectmanager.models.Person;
 import org.lessons.exam.spring_examprojectmanager.services.CompanyService;
+import org.lessons.exam.spring_examprojectmanager.services.PersonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,6 +17,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import jakarta.validation.Valid;
 
@@ -22,9 +26,11 @@ import jakarta.validation.Valid;
 public class CompanyController {
     
     private final CompanyService companyService;
+    private final PersonService personService;
     @Autowired
-    public CompanyController(CompanyService companyService) {
+    public CompanyController(CompanyService companyService, PersonService personService) {
         this.companyService = companyService;
+        this.personService = personService;
     }   
 
     //READ
@@ -44,19 +50,25 @@ public class CompanyController {
 
     //CREATE
     @GetMapping("/create")
-    public String companiesCreate(Model model){
-        model.addAttribute("company", new Company());
+    public String companiesCreate(@RequestParam("personId") Integer personId, Model model){
+        Company company = new Company();
+        Person person = personService.checkedExistsById(personId);
+
+        List<Person> personList = new ArrayList<>();
+        personList.add(person);
+        company.setPersons(personList);  //easy logic only x pass the person of personId to the render
+
+        model.addAttribute("company", company);
         return "entities/companies/create-or-edit.html";
     }   
     @PostMapping("/store")
     public String companiesStore(@Valid @ModelAttribute("company") Company company,
     BindingResult bindingResult, Model model){
         if(bindingResult.hasErrors()){
-            //add even the lists
             return "entities/companies/create-or-edit.html";
         }
-        companyService.create(company);
-        return "redirect:/clients/create";
+        Company savedCompany = companyService.create(company);
+        return "redirect:/clients/create?companyId=" + savedCompany.getId();
     }
 
     //UPDATE

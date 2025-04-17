@@ -13,6 +13,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.NotBlank;
@@ -58,5 +59,12 @@ public class User implements Serializable{
         )
     @Size(min = 1, message = "Select at least one role.")
     private Set<Role> roles;  //<set> doesn't allow duplicates (same role linked to same user) 
+
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(  //x relation one-to-one isn't necessary create a custom table person_user
+        name="person_id"
+    )
+    private Person person;
 
 }

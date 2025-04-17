@@ -18,7 +18,9 @@
 
         <form th:action="@{${edit} ? @{|/clients/${client.id}/update|} : @{/clients/store}}" method="post" th:object="${client}" class="mt-3">
             <input th:if="${edit}" type="hidden" name="_method" value="put">
-        
+            <input th:if="${client.person != null}" type="hidden" th:field="*{person.id}" id="linked-person" readonly />
+            <input th:if="${client.company != null}" type="hidden" th:field="*{company.id}" id="linked-company" readonly />
+
             <div class="form-group mb-2">
                 <label for="subscriptionType" class="form-label">Subscription Type</label>
                 <select id="subscriptionType" class="form-select" th:field="*{subscriptionType}" th:classappend="${#fields.hasErrors('subscriptionType')} ? ' is-invalid' : ''">

@@ -4,14 +4,21 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
@@ -73,16 +80,18 @@ public class Person implements Serializable{
     
     //RELATIONS
 
-    // @OneToOne(mappedBy = "person") // Relazione con User
-    // private User user; // L'utente (relazione con l'entità User che è usata per la logica di sicurezza)
+    @OneToOne(mappedBy = "person", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @NotNull(message = "User is required")
+    private User user;
 
-    // @ManyToMany(mappedBy = "persons") // Relazione con le aziende
-    // private List<Company> companies = new ArrayList<>(); // Le aziende associate
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="company_id")
+    @JsonManagedReference
+    private Company company;
 
-    // @ManyToMany(mappedBy = "persons") // Relazione con i progetti
-    // private List<Project> projects = new ArrayList<>(); // I progetti associati
+    @OneToOne(mappedBy = "person", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @JsonBackReference
+    private Client client;
 
-    // @ManyToMany(mappedBy = "persons") // Relazione con i task
-    // private List<Task> tasks = new ArrayList<>(); // I task associati
-
+    
 }
