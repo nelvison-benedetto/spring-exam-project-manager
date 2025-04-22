@@ -34,6 +34,7 @@ public class SecurityConfiguration {
                     .permitAll()
             .and().exceptionHandling();
 
+
         return http.build();
     }
 

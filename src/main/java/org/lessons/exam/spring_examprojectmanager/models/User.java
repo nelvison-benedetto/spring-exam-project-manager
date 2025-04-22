@@ -27,7 +27,7 @@ import lombok.Setter;
 @Table(name = "users")
 @Getter @Setter @NoArgsConstructor
 @AllArgsConstructor
-public class User implements Serializable{
+public class User implements Serializable  {
     
     private static final long serialVersionUID = 1L; 
     

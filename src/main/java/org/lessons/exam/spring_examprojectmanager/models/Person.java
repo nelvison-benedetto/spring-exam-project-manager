@@ -3,6 +3,7 @@ package org.lessons.exam.spring_examprojectmanager.models;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -16,10 +17,12 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.PreRemove;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -93,5 +96,25 @@ public class Person implements Serializable{
     @JsonBackReference
     private Client client;
 
+
+
+    @ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE }, fetch = FetchType.LAZY)
+    @JoinTable(
+        name = "person_project",
+        joinColumns = @JoinColumn(name = "person_id"),
+        inverseJoinColumns = @JoinColumn(name = "project_id")
+    )
+    @JsonManagedReference
+    private List<Project> projects = new ArrayList<>();
+
     
+    //DISCONNECTIONS BEFORE DELETES
+
+    @PreRemove
+    private void removeProjectsAssociation(){  //add this where you have @jointable(name,joincolumns,inversejoincolumns)
+        for(Project project : projects){
+            project.getPersons().remove(this);  //disconnect this person from each project
+        }
+        projects.clear();  //disconnect all projects from this person
+    }
 }

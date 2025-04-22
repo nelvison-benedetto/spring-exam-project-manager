@@ -63,7 +63,7 @@ nav a:hover{
 .card-option {
     transition: all 0.3s ease;
     border-radius: 1rem;
-    border: none;
+    /* border: none; */
 }
 .card-option:hover {
     transform: translateY(-6px);

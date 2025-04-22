@@ -19,6 +19,7 @@ public class CustomUserDetailsService implements UserDetailsService{
     public CustomUserDetails loadUserByUsername(String username) throws UsernameNotFoundException{
         Optional<User> userOptional = userRepo.findByUsername(username);
         if(userOptional.isPresent()){
+            System.out.println("User found w .loadUserByUsername: " + username);  //x debug
             return new CustomUserDetails(userOptional.get());
         }
         else{

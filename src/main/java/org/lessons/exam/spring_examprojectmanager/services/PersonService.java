@@ -3,6 +3,7 @@ package org.lessons.exam.spring_examprojectmanager.services;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.context.annotation.Lazy;
 import org.lessons.exam.spring_examprojectmanager.exceptions.ResourceNotFoundException;
 import org.lessons.exam.spring_examprojectmanager.models.Person;
 import org.lessons.exam.spring_examprojectmanager.models.User;
@@ -15,10 +16,12 @@ public class PersonService {
     
     private final PersonRepo personRepo;
     private final UserService userService;
+    private final ProjectService projectService;
     @Autowired 
-    public PersonService(PersonRepo personRepo, UserService userService) {
+    public PersonService(PersonRepo personRepo, UserService userService, @Lazy ProjectService projectService) {
         this.personRepo = personRepo;
         this.userService = userService;
+        this.projectService = projectService;
     }
 
 

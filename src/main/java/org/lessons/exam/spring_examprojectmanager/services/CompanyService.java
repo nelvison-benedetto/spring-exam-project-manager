@@ -27,7 +27,7 @@ public class CompanyService {
     private final ProjectService projectService;
     private final PersonService personService;
     @Autowired  //ora eseguito da Lombok w @RequiredArgsConstructor
-    public CompanyService(CompanyRepo companyRepo, @Lazy ClientService clientService, @Lazy ProjectService projectService, PersonService personService){
+    public CompanyService(CompanyRepo companyRepo, @Lazy ClientService clientService, @Lazy ProjectService projectService, @Lazy PersonService personService){
         this.companyRepo = companyRepo;
         this.clientService = clientService;
         this.projectService = projectService;

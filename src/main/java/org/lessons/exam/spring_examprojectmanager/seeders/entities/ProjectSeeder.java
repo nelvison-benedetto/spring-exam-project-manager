@@ -40,6 +40,7 @@ public class ProjectSeeder {
                     LocalDateTime.now(), 
                     LocalDateTime.now(),
                     new ArrayList<>(),
+                    new ArrayList<>(),
                     new ArrayList<>()
                 ),
     
@@ -58,6 +59,7 @@ public class ProjectSeeder {
                     LocalDate.of(2024, 8, 30), 
                     LocalDateTime.now(), 
                     LocalDateTime.now(),
+                    new ArrayList<>(),
                     new ArrayList<>(),
                     new ArrayList<>()
                 ),
@@ -78,6 +80,7 @@ public class ProjectSeeder {
                     LocalDateTime.now(), 
                     LocalDateTime.now(),
                     new ArrayList<>(),
+                    new ArrayList<>(),
                     new ArrayList<>()
                 ),
     
@@ -96,6 +99,7 @@ public class ProjectSeeder {
                     LocalDate.of(2024, 11, 1), 
                     LocalDateTime.now(), 
                     LocalDateTime.now(),
+                    new ArrayList<>(),
                     new ArrayList<>(),
                     new ArrayList<>()
                 )

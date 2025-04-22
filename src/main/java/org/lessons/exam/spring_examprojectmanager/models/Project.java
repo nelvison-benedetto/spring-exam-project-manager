@@ -131,5 +131,10 @@ public class Project implements Serializable{
     @JsonManagedReference
     private List<Task> tasks = new ArrayList<>();
 
+
     
+    @ManyToMany(mappedBy = "projects", fetch = FetchType.LAZY)
+    @JsonBackReference
+    private List<Person> persons = new ArrayList<>();
+
 }
