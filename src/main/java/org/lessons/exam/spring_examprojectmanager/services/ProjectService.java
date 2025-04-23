@@ -7,11 +7,13 @@ import org.lessons.exam.spring_examprojectmanager.exceptions.DuplicateResourceEx
 import org.lessons.exam.spring_examprojectmanager.exceptions.ResourceNotFoundException;
 import org.lessons.exam.spring_examprojectmanager.models.Client;
 import org.lessons.exam.spring_examprojectmanager.models.Company;
+import org.lessons.exam.spring_examprojectmanager.models.Person;
 import org.lessons.exam.spring_examprojectmanager.models.Project;
 import org.lessons.exam.spring_examprojectmanager.models.Task;
 import org.lessons.exam.spring_examprojectmanager.repository.ProjectRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -129,4 +131,24 @@ public class ProjectService {
         Project projectToDelete = checkedExistsById(id);
         projectRepo.delete(projectToDelete);
     }
+
+
+    //FILTERS
+
+    public List<Project> findByPersonsContaining(Person person){
+        return projectRepo.findByPersonsContaining(person);
+    }
+
+    public List<Project> findByCompaniesContaining(Company company){
+        return projectRepo.findByCompaniesContaining(company);
+    }
+
+    public Project findByIdAndPersonsContaining(Integer projectId, Person person){
+        Project project = projectRepo.findByIdAndPersonsContaining(projectId, person);
+        if(project == null) {
+            throw new AccessDeniedException("You do not have access to this project.");
+        }
+        return project;
+    }
+
 }

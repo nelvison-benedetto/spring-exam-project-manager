@@ -61,7 +61,7 @@ public class User implements Serializable  {
     private Set<Role> roles;  //<set> doesn't allow duplicates (same role linked to same user) 
 
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(  //x relation one-to-one isn't necessary create a custom table person_user
         name="person_id"
     )

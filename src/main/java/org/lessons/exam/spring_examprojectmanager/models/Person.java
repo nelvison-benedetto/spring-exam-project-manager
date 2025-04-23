@@ -83,8 +83,8 @@ public class Person implements Serializable{
     
     //RELATIONS
 
-    @OneToOne(mappedBy = "person", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    @NotNull(message = "User is required")
+    @OneToOne(mappedBy = "person", orphanRemoval = true, fetch = FetchType.LAZY)
+    //@NotNull(message = "User is required")
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)

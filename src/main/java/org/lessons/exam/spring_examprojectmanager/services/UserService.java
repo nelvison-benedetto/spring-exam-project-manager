@@ -47,7 +47,7 @@ public class UserService {
         if(userOptional.isPresent()){
             return userOptional.get();
         }else{
-            throw new ResourceNotFoundException("User not found.");
+            throw new ResourceNotFoundException("User not found, this exception is in Service checkedExistsById");
         } 
     }
 

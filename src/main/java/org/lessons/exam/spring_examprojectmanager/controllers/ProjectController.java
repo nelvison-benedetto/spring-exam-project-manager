@@ -7,10 +7,15 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.lessons.exam.spring_examprojectmanager.models.Client;
+import org.lessons.exam.spring_examprojectmanager.models.Person;
 import org.lessons.exam.spring_examprojectmanager.models.Project;
+import org.lessons.exam.spring_examprojectmanager.models.User;
 import org.lessons.exam.spring_examprojectmanager.repository.ProjectRepo;
+import org.lessons.exam.spring_examprojectmanager.security.CustomUserDetails;
 import org.lessons.exam.spring_examprojectmanager.services.ProjectService;
+import org.lessons.exam.spring_examprojectmanager.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -30,22 +35,40 @@ import jakarta.validation.Valid;
 public class ProjectController {
     
     private final ProjectService projectService;
+    private final UserService userService;
     @Autowired
-    public ProjectController(ProjectService projectService) {
+    public ProjectController(ProjectService projectService, UserService userService) {
         this.projectService = projectService;
+        this.userService = userService;
     }
 
     //READ
     @GetMapping
-    public String projectsIndex(Model model){
-        List<Project> projects = projectService.findAll();
+    public String projectsIndex(Model model, @AuthenticationPrincipal CustomUserDetails customUserDetails){
+        User user = userService.checkedExistsById(customUserDetails.getId());
+        Person person = user.getPerson();
+        List<Project> projects;
+        if(person.getCompany() != null) {
+            projects = projectService.findByCompaniesContaining(person.getCompany());
+        } else {
+            projects = projectService.findByPersonsContaining(person);
+        }
+
+        //List<Project> projects = projectService.findAll();
         model.addAttribute("projects", projects);
         return "entities/projects/index.html";
     }
 
     @GetMapping("/{id}")
-    public String projectsShow(@PathVariable Integer id, Model model){
-        Project project = projectService.getById(id);
+    public String projectsShow(@PathVariable Integer id, Model model, @AuthenticationPrincipal CustomUserDetails customUserDetails){
+        User user = userService.checkedExistsById(customUserDetails.getId());
+        Person person = user.getPerson();
+        Project project = projectService.findByIdAndPersonsContaining(id, person);
+        if(project == null){
+            return "errors/404.html";
+        }
+
+        //Project project = projectService.getById(id);
         model.addAttribute("project", project);
         return "entities/projects/show.html";
     }
@@ -95,5 +118,5 @@ public class ProjectController {
         return "redirect:/projects";
     }
 
-    //FILTERS
+    
 }
