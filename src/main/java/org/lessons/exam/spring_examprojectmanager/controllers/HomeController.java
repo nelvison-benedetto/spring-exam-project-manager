@@ -32,10 +32,9 @@ public class HomeController {
             Person person = user.getPerson();
             List<Project> projects = person.getProjects(); 
 
-
             model.addAttribute("user", user);
         }else {
-            System.out.println("No user found in HomeController.");
+            System.out.println("Logout ok, no user found in HomeController.");
         }
         return "index.html";
     }

@@ -10,10 +10,15 @@ import org.lessons.exam.spring_examprojectmanager.models.Company;
 import org.lessons.exam.spring_examprojectmanager.models.Person;
 import org.lessons.exam.spring_examprojectmanager.models.Project;
 import org.lessons.exam.spring_examprojectmanager.models.Task;
+import org.lessons.exam.spring_examprojectmanager.models.User;
+import org.lessons.exam.spring_examprojectmanager.repository.CompanyRepo;
+import org.lessons.exam.spring_examprojectmanager.repository.PersonRepo;
 import org.lessons.exam.spring_examprojectmanager.repository.ProjectRepo;
+import org.lessons.exam.spring_examprojectmanager.security.CustomUserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -22,11 +27,20 @@ public class ProjectService {
     private final ProjectRepo projectRepo;
     private final CompanyService companyService;
     private final TaskService taskService;
+    private final UserService userService;
+    private final PersonRepo personRepo;
+    private final PersonService personService;
+    private final CompanyRepo companyRepo;
     @Autowired
-    public ProjectService(ProjectRepo projectRepo, @Lazy CompanyService companyService, TaskService taskService){
+    public ProjectService(ProjectRepo projectRepo, @Lazy CompanyService companyService, TaskService taskService, UserService userService,
+    PersonRepo personRepo, PersonService personService, CompanyRepo companyRepo){
         this.projectRepo = projectRepo;
         this.companyService = companyService;
         this.taskService = taskService;
+        this.userService = userService;
+        this.personRepo = personRepo;
+        this.personService = personService;
+        this.companyRepo = companyRepo;
     }   
     
 
@@ -56,31 +70,73 @@ public class ProjectService {
 
 
     //READ
+    @PreAuthorize("isAuthenticated()")
     public List<Project> findAll(){
         return projectRepo.findAll();
     }
 
+    @PreAuthorize("@securityService.hasAccessToProject(#id, authentication)")
     public Project getById(Integer id){
         Project projectFound = checkedExistsById(id);
         return projectFound;
     }
 
+    public Person checkPersonForActualUser(CustomUserDetails customUserDetails){
+        Person person = userService.checkedExistsById(customUserDetails.getId()).getPerson();
+        if(person == null){
+            throw new RuntimeException("Person for this Security not found.");
+        }
+        return person;
+    }
+
+
+    @PreAuthorize("isAuthenticated()")
+    public List<Project> securityGetAllProjects(CustomUserDetails customUserDetails){
+        Person person = checkPersonForActualUser(customUserDetails);
+        List<Project> projects;
+        if(person.getCompany() != null) {
+            return projects = findByCompaniesContaining(person.getCompany());
+        } else {
+            return projects = findByPersonsContaining(person);
+        }
+    }
+
+    @PreAuthorize("@securityService.hasAccessToProject(#id, authentication)")  //run method hasAccessToProject passing params id & customUserDetails logged, if returns true run the method below
+    public Project securityGetSingleProject(Integer id, CustomUserDetails customUserDetails){
+        Person person = checkPersonForActualUser(customUserDetails);
+        Project project = findByIdAndPersonsContaining(id, person);
+        return project;
+    }
+
 
     //CREATE
-    public Project create(Project projectToCreate){
+    @PreAuthorize("isAuthenticated()")
+    public Project create(Project projectToCreate, CustomUserDetails customUserDetails){
         if(projectToCreate == null){
             throw new IllegalArgumentException("Project to create cannot be null.");
         }
-        return projectRepo.save(projectToCreate);
+        Person person = checkPersonForActualUser(customUserDetails);
+        projectToCreate.getPersons().add(person);  //non faccio controllo se esiste gia, xk alla creazione avra sempre solo 1 person linkato iniziale
+        //qua faccio lato person x salvare
+        
+        System.out.println("projectToCreate...: " + projectToCreate);
+        Project savedProject = projectRepo.save(projectToCreate);  //personRepo.save(person);  thanks to PERSISTS, would save anyway this
+        System.out.println("Saved project from DB: " + projectRepo.findById(savedProject.getId()).get());
+        person.getProjects().add(savedProject);
+        personRepo.save(person); 
+        return savedProject;
     }
 
     //UPDATE
-    public Project edit(Project projectToEdit){
+    @PreAuthorize("@securityService.hasAccessToProject(#projectToEdit.id, authentication)")
+    public Project edit(Project projectToEdit, CustomUserDetails customUserDetails){
         if(projectToEdit == null){
             throw new IllegalArgumentException("Project to update cannot be null.");
         }
+        Person person = checkPersonForActualUser(customUserDetails);
         Project existingProject = checkedExistsById(projectToEdit.getId());
         //!!x security(choose exactly which fields change) & x help spring persistenza(Spring Data/JPA) Edit always by setting fields one at a time!
+        
         existingProject.setTitle(projectToEdit.getTitle());
         existingProject.setDescription(projectToEdit.getDescription());
         existingProject.setStatus(projectToEdit.getStatus());
@@ -96,40 +152,70 @@ public class ProjectService {
 
         //fresh upload from db to avoid errors with incomplete objects
         List<Company> freshCompanies = existingProject.getCompanies().stream()   //use existingProject, because projectToEdit is coming from a form(no field tasks)
-        .map(c -> companyService.checkedExistsById(c.getId()))
-        .toList();
-        //reset all & overwrite (relation MANY-TO-MANY)!!
+        .map(c -> companyService.checkedExistsById(c.getId())).toList();    
         existingProject.getCompanies().clear();  //rimuovi tutte le associazioni attuali
         existingProject.getCompanies().addAll(freshCompanies);  //aggiungi quelle nuove
+
+        //fresh upload from db
+        List<Person> freshPersons = existingProject.getPersons().stream()   //use existingProject, because projectToEdit is coming from a form(no field tasks)
+        .map(c -> personService.checkedExistsById(c.getId())).toList();
+        existingProject.getPersons().clear();
+        existingProject.getPersons().addAll(freshPersons);
 
         //RELATION MANY-ONE  tasks-project
         //fresh upload from db
         List<Task> freshTasks = existingProject.getTasks().stream()  
-        .map(c -> taskService.checkedExistsById(c.getId()))
-        .toList();
+        .map(c -> taskService.checkedExistsById(c.getId())).toList();
         //reset all & overwrite
         existingProject.getTasks().clear();
-        for (Task task : freshTasks){  //!!x RELATION MANY-ONE add THIS to who has LIST<> (cioe in rel project-tasks add here)
+        for(Task task : freshTasks){  //!!x RELATION MANY-ONE add THIS to who has LIST<> (cioe in rel project-tasks add here)
             task.setProject(existingProject); //!important Imposta la relazione sul lato owner
         }
-        System.out.println("freshTasks" + freshTasks);
+        //System.out.println("freshTasks" + freshTasks);
         existingProject.getTasks().addAll(freshTasks);
-        System.out.println("advanced existingProject" + existingProject);
+        System.out.println("advanced existingProject tasks" + existingProject.getTasks());
 
-        return projectRepo.save(existingProject);
+        Project savedProject = projectRepo.save(existingProject);
+        System.out.println("Saved project from DB: " + projectRepo.findById(savedProject.getId()).get());
+        return savedProject;
     }
 
     //DELETE
-    public void delete(Project projectToDelete){
+    @PreAuthorize("hasRole('ROLE_ADMIN') or @securityService.hasAccessToProject(#projectToDelete.id, authentication)")
+    public void delete(Project projectToDelete, CustomUserDetails customUserDetails){
         if(projectToDelete == null){
             throw new IllegalArgumentException("Project to delete cannot be null.");
         }
+        Person person = checkPersonForActualUser(customUserDetails);  //already thrown excp id doesn't find existing person
         projectRepo.delete(projectToDelete);
     }
 
-    public void deleteById(Integer id){
-        Project projectToDelete = checkedExistsById(id);
-        projectRepo.delete(projectToDelete);
+    @PreAuthorize("hasRole('ROLE_ADMIN') or @securityService.hasAccessToProject(#id, authentication)")
+    public void deleteById(Integer id, CustomUserDetails customUserDetails){
+        //Project projectToDelete = checkedExistsById(id);
+        Project project = securityGetSingleProject(id, customUserDetails);
+        
+        for(Company company : project.getCompanies()){
+            company.getProjects().remove(project);
+            companyRepo.save(company);
+        }
+        project.getCompanies().clear();
+
+        for(Task task : project.getTasks()){
+            task.setProject(null);
+            //taskService.edit(task);
+            //TO FINISH
+        }
+        project.getTasks().clear();
+
+        for(Person person : project.getPersons()){
+            person.getProjects().remove(project);
+            personRepo.save(person);
+        }
+        project.getPersons().clear();
+        
+        projectRepo.save(project);
+        projectRepo.delete(project);
     }
 
 

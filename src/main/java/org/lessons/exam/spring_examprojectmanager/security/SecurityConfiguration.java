@@ -4,6 +4,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configurers.userdetails.DaoAuthenticationConfigurer;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
@@ -12,6 +13,7 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity  //tells to spring to use this config x all 'web security' requests 
+@EnableMethodSecurity  //x use @PreAuthorize
 public class SecurityConfiguration {
     
     @Bean
@@ -19,7 +21,7 @@ public class SecurityConfiguration {
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests()
 
-            .requestMatchers("/projects/create", "/projects/edit/**").hasAuthority("ADMIN")
+            .requestMatchers("/projects/create", "/projects/edit/**").hasAuthority("Admin")
             .requestMatchers("/users/create", "/users/store", "/security/sign-in", "/css/**", "/js/**").permitAll()
             .requestMatchers("/", "/home").authenticated()
             //.requestMatchers("/**").permitAll()  overwrite on all rules!

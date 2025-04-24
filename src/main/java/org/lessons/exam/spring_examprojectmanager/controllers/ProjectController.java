@@ -45,15 +45,7 @@ public class ProjectController {
     //READ
     @GetMapping
     public String projectsIndex(Model model, @AuthenticationPrincipal CustomUserDetails customUserDetails){
-        User user = userService.checkedExistsById(customUserDetails.getId());
-        Person person = user.getPerson();
-        List<Project> projects;
-        if(person.getCompany() != null) {
-            projects = projectService.findByCompaniesContaining(person.getCompany());
-        } else {
-            projects = projectService.findByPersonsContaining(person);
-        }
-
+        List<Project> projects = projectService.securityGetAllProjects(customUserDetails);
         //List<Project> projects = projectService.findAll();
         model.addAttribute("projects", projects);
         return "entities/projects/index.html";
@@ -61,13 +53,10 @@ public class ProjectController {
 
     @GetMapping("/{id}")
     public String projectsShow(@PathVariable Integer id, Model model, @AuthenticationPrincipal CustomUserDetails customUserDetails){
-        User user = userService.checkedExistsById(customUserDetails.getId());
-        Person person = user.getPerson();
-        Project project = projectService.findByIdAndPersonsContaining(id, person);
+        Project project = projectService.securityGetSingleProject(id, customUserDetails);
         if(project == null){
             return "errors/404.html";
         }
-
         //Project project = projectService.getById(id);
         model.addAttribute("project", project);
         return "entities/projects/show.html";
@@ -82,39 +71,41 @@ public class ProjectController {
     }   
     @PostMapping("/store")
     public String projectsStore(@Valid @ModelAttribute("project") Project project,
-    BindingResult bindingResult, Model model){
-        
+    BindingResult bindingResult, @AuthenticationPrincipal CustomUserDetails customUserDetails, Model model){
         if(bindingResult.hasErrors()){
             //add even the lists
             return "entities/projects/create-or-edit.html";
         }
-        projectService.create(project);
+        projectService.create(project, customUserDetails);
         return "redirect:/projects";
     }
 
     
     //UPDATE
     @GetMapping("/{id}/edit")
-    public String projectsUpdate(@PathVariable Integer id, Model model){
-        model.addAttribute("project", projectService.getById(id));
+    public String projectsUpdate(@PathVariable Integer id, @AuthenticationPrincipal CustomUserDetails customUserDetails, Model model){
+        //model.addAttribute("project", projectService.getById(id));
+        Project project = projectService.securityGetSingleProject(id, customUserDetails);
+        model.addAttribute("project", project);
         model.addAttribute("edit", true);
         return "entities/projects/create-or-edit.html";
     }
+
     @PutMapping("/{id}/update")
     public String projectsUpdate(@Valid @ModelAttribute("project") Project project,
-    BindingResult bindingResult, @PathVariable Integer id, Model model){
+    BindingResult bindingResult, @PathVariable Integer id, @AuthenticationPrincipal CustomUserDetails customUserDetails, Model model){
         if(bindingResult.hasErrors()){
             model.addAttribute("edit", true);
             return "entities/projects/create-or-edit.html";
         }
-        projectService.edit(project);
-        return "redirect:/projects/" + id;
+        projectService.edit(project, customUserDetails);
+        return "redirect:/projects/" + projectService.securityGetSingleProject(id, customUserDetails).getId();
     }
 
     //DELETE
     @DeleteMapping("/{id}/delete")
-    public String projectsDelete(@PathVariable Integer id){
-        projectService.deleteById(id);
+    public String projectsDelete(@PathVariable Integer id, @AuthenticationPrincipal CustomUserDetails customUserDetails){
+        projectService.deleteById(id, customUserDetails);
         return "redirect:/projects";
     }
 

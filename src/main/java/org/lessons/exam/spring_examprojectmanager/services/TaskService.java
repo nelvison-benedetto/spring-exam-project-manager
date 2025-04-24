@@ -7,24 +7,31 @@ import org.lessons.exam.spring_examprojectmanager.exceptions.DuplicateResourceEx
 import org.lessons.exam.spring_examprojectmanager.exceptions.ResourceNotFoundException;
 import org.lessons.exam.spring_examprojectmanager.models.Client;
 import org.lessons.exam.spring_examprojectmanager.models.Company;
+import org.lessons.exam.spring_examprojectmanager.models.Person;
 import org.lessons.exam.spring_examprojectmanager.models.Project;
 import org.lessons.exam.spring_examprojectmanager.models.Task;
 import org.lessons.exam.spring_examprojectmanager.repository.TaskRepo;
+import org.lessons.exam.spring_examprojectmanager.security.CustomUserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 @Service
 public class TaskService {
     
     private final TaskRepo taskRepo;
+    private final SecurityService securityService;
     @Autowired
-    public TaskService(TaskRepo taskRepo) {
+    public TaskService(TaskRepo taskRepo, SecurityService securityService) {
         this.taskRepo = taskRepo;
+        this.securityService = securityService;
     }
 
     public Boolean boolExistsById(Integer id){
         return taskRepo.existsById(id);
     }
+
     public Boolean boolExists(Task taskAskIfExists){  //more compact boolExistsById(companyAskIfExists.getId()) but i wanted to show this logic as well
         Optional<Task> taskOptional = taskRepo.findById(taskAskIfExists.getId());
         if(taskOptional.isPresent()){return true;}
@@ -45,6 +52,8 @@ public class TaskService {
     }
 
     //READ
+
+    @PreAuthorize("isAuthenticated()")
     public List<Task> findAll(){
         return taskRepo.findAll();
     }
@@ -54,12 +63,34 @@ public class TaskService {
         return taskFound;
     }
 
+    @PreAuthorize("isAuthenticated()")
+    public List<Task> securityGetAllTasks(Project project, CustomUserDetails customUserDetails){
+        Person person = securityService.checkPersonForActualUser(customUserDetails);
+        List<Task> tasks = taskRepo.findByProject(project);
+        return tasks;
+    }
+
+    @PreAuthorize("@securityService.hasAccessToProject(#id, authentication)")  //run method hasAccessToProject passing params id & customUserDetails logged, if returns true run the method below
+    public Task securityGetSingleTask(Integer id, Project project, CustomUserDetails customUserDetails){
+        Person person = securityService.checkPersonForActualUser(customUserDetails);
+        Task task = findByIdAndProject(id, project);
+        return task;
+    }
+
+
     //CREATE
-    public Task create(Task taskToCreate){
+    @PreAuthorize("isAuthenticated()")
+    public Task create(Task taskToCreate, CustomUserDetails customUserDetails){
         if(taskToCreate == null){
             throw new IllegalArgumentException("Task to create cannot be null.");
         }
-        return taskRepo.save(taskToCreate);
+        Person person = securityService.checkPersonForActualUser(customUserDetails);
+        
+        //WORKING HERE, TO SAVE SIDE PROJECT
+
+        Task savedTask = taskRepo.save(taskToCreate);
+        System.out.println("Saved task from DB: " + taskRepo.findById(savedTask.getId()).get()); //x debug GET DATA FROM THE DB!
+        return savedTask;
     }
 
     //UPDATE
@@ -95,5 +126,20 @@ public class TaskService {
     public void deleteById(Integer id){
         Task taskToDelete = checkedExistsById(id);
         taskRepo.delete(taskToDelete);
+    }
+
+
+    //FILTERS
+
+    public List<Task> findByProject(Project project){
+        return taskRepo.findByProject(project);
+    }
+    
+    public Task findByIdAndProject(Integer taskId, Project project){
+        Task task = taskRepo.findByIdAndProject(taskId, project);
+        if(task == null) {
+            throw new AccessDeniedException("You do not have access to this task.");
+        }
+        return task;
     }
 }
