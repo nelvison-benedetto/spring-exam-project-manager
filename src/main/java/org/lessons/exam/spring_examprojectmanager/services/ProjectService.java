@@ -31,6 +31,7 @@ public class ProjectService {
     private final PersonRepo personRepo;
     private final PersonService personService;
     private final CompanyRepo companyRepo;
+
     @Autowired
     public ProjectService(ProjectRepo projectRepo, @Lazy CompanyService companyService, TaskService taskService, UserService userService,
     PersonRepo personRepo, PersonService personService, CompanyRepo companyRepo){
@@ -96,7 +97,7 @@ public class ProjectService {
         List<Project> projects;
         if(person.getCompany() != null) {
             return projects = findByCompaniesContaining(person.getCompany());
-        } else {
+        } else {  //TO FINISH, A PERSON LOGGED IN CAN ALSO SEE THE PROJECTS X HIS COMPANY
             return projects = findByPersonsContaining(person);
         }
     }

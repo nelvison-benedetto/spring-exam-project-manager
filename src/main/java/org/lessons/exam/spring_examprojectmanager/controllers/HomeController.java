@@ -27,14 +27,14 @@ public class HomeController {
     @GetMapping
     public String homePage(Model model, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
         if(customUserDetails != null){
-            System.out.println("User authenticated in HomeController: " + customUserDetails.getUsername());
+            //System.out.println("User authenticated in HomeController: " + customUserDetails.getUsername());
             User user = userService.getById(customUserDetails.getId());
             Person person = user.getPerson();
             List<Project> projects = person.getProjects(); 
 
             model.addAttribute("user", user);
         }else {
-            System.out.println("Logout ok, no user found in HomeController.");
+            //System.out.println("Logout ok, no user found in HomeController.");
         }
         return "index.html";
     }

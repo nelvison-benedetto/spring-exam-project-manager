@@ -33,7 +33,7 @@ public class SecurityService {
     }
 
     //x Projects
-    public boolean hasAccessToProject(Integer projectId, Authentication authentication) {  //correct is org.springframework.security.core.Authentication;
+    public Boolean hasAccessToProject(Integer projectId, Authentication authentication) {  //correct is org.springframework.security.core.Authentication;
         if(authentication == null || !authentication.isAuthenticated()) {
             return false;
         }
@@ -50,7 +50,7 @@ public class SecurityService {
     }
 
     //x Tasks
-    public boolean hasAccessToTask(Integer taskId, Authentication authentication) {
+    public Boolean hasAccessToTask(Integer taskId, Authentication authentication) {
         if (authentication == null || !authentication.isAuthenticated()) {
             return false;
         }

@@ -10,6 +10,7 @@ import org.lessons.exam.spring_examprojectmanager.models.Company;
 import org.lessons.exam.spring_examprojectmanager.models.Person;
 import org.lessons.exam.spring_examprojectmanager.models.Project;
 import org.lessons.exam.spring_examprojectmanager.models.Task;
+import org.lessons.exam.spring_examprojectmanager.repository.ProjectRepo;
 import org.lessons.exam.spring_examprojectmanager.repository.TaskRepo;
 import org.lessons.exam.spring_examprojectmanager.security.CustomUserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,10 +23,13 @@ public class TaskService {
     
     private final TaskRepo taskRepo;
     private final SecurityService securityService;
+    private final ProjectRepo projectRepo;
+
     @Autowired
-    public TaskService(TaskRepo taskRepo, SecurityService securityService) {
+    public TaskService(TaskRepo taskRepo, SecurityService securityService, ProjectRepo projectRepo) {
         this.taskRepo = taskRepo;
         this.securityService = securityService;
+        this.projectRepo = projectRepo;
     }
 
     public Boolean boolExistsById(Integer id){
@@ -58,6 +62,7 @@ public class TaskService {
         return taskRepo.findAll();
     }
 
+    @PreAuthorize("@securityService.hasAccessToTask(#id, authentication)")
     public Task getById(Integer id){
         Task taskFound = checkedExistsById(id);
         return taskFound;
@@ -70,7 +75,7 @@ public class TaskService {
         return tasks;
     }
 
-    @PreAuthorize("@securityService.hasAccessToProject(#id, authentication)")  //run method hasAccessToProject passing params id & customUserDetails logged, if returns true run the method below
+    @PreAuthorize("@securityService.hasAccessToTask(#id, authentication)")  //run method hasAccessToProject passing params id & customUserDetails logged, if returns true run the method below
     public Task securityGetSingleTask(Integer id, Project project, CustomUserDetails customUserDetails){
         Person person = securityService.checkPersonForActualUser(customUserDetails);
         Task task = findByIdAndProject(id, project);
@@ -85,8 +90,7 @@ public class TaskService {
             throw new IllegalArgumentException("Task to create cannot be null.");
         }
         Person person = securityService.checkPersonForActualUser(customUserDetails);
-        
-        //WORKING HERE, TO SAVE SIDE PROJECT
+        projectRepo.save(taskToCreate.getProject());
 
         Task savedTask = taskRepo.save(taskToCreate);
         System.out.println("Saved task from DB: " + taskRepo.findById(savedTask.getId()).get()); //x debug GET DATA FROM THE DB!
@@ -94,10 +98,12 @@ public class TaskService {
     }
 
     //UPDATE
-    public Task edit(Task taskToEdit){
+    @PreAuthorize("@securityService.hasAccessToTask(#taskToEdit.id, authentication)")
+    public Task edit(Task taskToEdit, CustomUserDetails customUserDetails){
         if(taskToEdit == null){
             throw new IllegalArgumentException("Task to update cannot be null.");
         }
+        Person person = securityService.checkPersonForActualUser(customUserDetails);
         Task existingTask = checkedExistsById(taskToEdit.getId());
         
         existingTask.setTitle(taskToEdit.getTitle());
@@ -112,20 +118,26 @@ public class TaskService {
 
         existingTask.setProject(taskToEdit.getProject());
 
-        return taskRepo.save(existingTask);
+        Task updatedTask = taskRepo.save(existingTask);
+        System.out.println("Updated task from DB: " + taskRepo.findById(updatedTask.getId()).get());
+        return updatedTask;
     }
 
     //DELETE
-    public void delete(Task taskToDelete){
+    @PreAuthorize("hasRole('ROLE_ADMIN') or @securityService.hasAccessToTask(#taskToDelete.id, authentication)")
+    public void delete(Task taskToDelete, CustomUserDetails customUserDetails){
         if(taskToDelete == null){
             throw new IllegalArgumentException("Task to delete cannot be null.");
         }
+        Person person = securityService.checkPersonForActualUser(customUserDetails);
         taskRepo.delete(taskToDelete);
     }
 
-    public void deleteById(Integer id){
+    @PreAuthorize("hasRole('ROLE_ADMIN') or @securityService.hasAccessToTask(#id, authentication)")
+    public void deleteById(Integer id, CustomUserDetails customUserDetails){
         Task taskToDelete = checkedExistsById(id);
-        taskRepo.delete(taskToDelete);
+        Task task = securityGetSingleTask(id, taskToDelete.getProject(), customUserDetails);
+        taskRepo.delete(task);
     }
 
 
