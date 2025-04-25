@@ -84,3 +84,19 @@ a.card-link {
     text-decoration: none;
     color: inherit;
 }
+
+.bg-imageHome{
+    height: 34rem;
+    overflow: hidden;
+    background-image: url('/images/nubbinHome1edit.png');
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center top;
+    position: relative;
+}
+.overlay{
+    background-color: rgba(0, 0, 0, 0.15);
+    position: absolute;
+    top: 0;
+    left: 0;
+}

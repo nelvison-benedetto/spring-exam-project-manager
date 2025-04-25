@@ -87,10 +87,10 @@
                 </div>
             </div>
 
-            <hr class="w-80 mb-3">
+            <hr class="w-80 mb-4" >
 
-            <article>
-                <h2 class="mb-2">Tasks</h2>
+            <article class="mt-3">
+                <h2 class="mb-4">Tasks</h2>
                 <a th:href="@{/tasks/{id}/create(id=${project.id})}" class="btn btn-primary mb-4">
                     <i class="bi bi-plus-circle me-2"></i>
                     <span class="">Add</span>
@@ -173,7 +173,10 @@
 
                 </div>
                 
-                <h3 th:if="${ #lists.isEmpty(project.tasks)}" th:text="|No tasks found.|" class="text-center text-muted ">No Tasks found</h3>
+                <h4 th:if="${ #lists.isEmpty(project.tasks)}" class="text-center text-muted d-flex flex-column justify-content-center align-items-center gap-3 py-4" >
+                    <i class="bi bi-clipboard2-x"></i>
+                    <span style="font-size: 1.3rem;">No Tasks found.</span>
+                </h4>
             </article>
 
 
