@@ -13,8 +13,10 @@ import org.lessons.exam.spring_examprojectmanager.models.Person;
 import org.lessons.exam.spring_examprojectmanager.models.Project;
 import org.lessons.exam.spring_examprojectmanager.models.Role;
 import org.lessons.exam.spring_examprojectmanager.repository.CompanyRepo;
+import org.lessons.exam.spring_examprojectmanager.security.CustomUserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
@@ -26,12 +28,15 @@ public class CompanyService {
     private final ClientService clientService;
     private final ProjectService projectService;
     private final PersonService personService;
+    private final SecurityService securityService;
+
     @Autowired  //ora eseguito da Lombok w @RequiredArgsConstructor
-    public CompanyService(CompanyRepo companyRepo, @Lazy ClientService clientService, @Lazy ProjectService projectService, @Lazy PersonService personService){
+    public CompanyService(CompanyRepo companyRepo, @Lazy ClientService clientService, @Lazy ProjectService projectService, @Lazy PersonService personService, SecurityService securityService){
         this.companyRepo = companyRepo;
         this.clientService = clientService;
         this.projectService = projectService;
         this.personService = personService;
+        this.securityService = securityService;
     }
     
 
@@ -58,24 +63,46 @@ public class CompanyService {
     }
 
     //READ
+    @PreAuthorize("isAuthenticated()")
     public List<Company> findAll(){
         return companyRepo.findAll();
     }
 
+    @PreAuthorize("@securityService.hasAccessToCompany(#id, authentication)")
     public Company getById(Integer id){
         Company companyFound = checkedExistsById(id);
         return companyFound;
     }
 
+
+    @PreAuthorize("isAuthenticated()")
+    public List<Company> securityGetAllCompanies(CustomUserDetails customUserDetails){
+        Person person = securityService.checkPersonForActualUser(customUserDetails);
+        List<Company> companies;
+
+        return companies = findByPersonsContaining(person);
+    }
+
+    @PreAuthorize("@securityService.hasAccessToCompany(#id, authentication)")  //run method hasAccessToProject passing params id & customUserDetails logged, if returns true run the method below
+    public Company securityGetSingleCompany(Integer id, CustomUserDetails customUserDetails){
+        Person person = securityService.checkPersonForActualUser(customUserDetails);
+        Company company = findByIdAndPersonsContaining(id, person);
+        return company;
+    }
     
     //CREATE
+    //@PreAuthorize("isAuthenticated()")    //at the creation i haven't logged in yet
     public Company create(Company companyToCreate){
+        //System.out.println("whithin .create() method x Company");
+
         if(companyToCreate == null){
             throw new IllegalArgumentException("Company to create cannot be null.");
         }
+        //Person personSec = securityService.checkPersonForActualUser(customUserDetails);
         if(companyRepo.existsByCompanyEIN(companyToCreate.getCompanyEIN())){
             throw new DuplicateResourceException("Company already exists for create.");
         }
+
         List<Person> validPersons = companyToCreate.getPersons().stream()  //LA COMPANY E' APPENA STATA CREATA, QUINDI L'UNICA PERSON LEGATA AD ESSO E LA PERSON APPENA CREATA IN SIGN-UP FLOW, ma poi in edit altre persons possono legarsi a questa company!!
             .map(person -> personService.checkedExistsById(person.getId()))
             .collect(Collectors.toList());  //.collect() put the results in a new collection, //.toSet() to specifi collection Set<>
@@ -90,18 +117,19 @@ public class CompanyService {
     }
 
     //UPDATE
-    public Company edit(Company companyToEdit){
+    @PreAuthorize("@securityService.hasAccessToCompany(#companyToEdit.id, authentication)")
+    public Company edit(Company companyToEdit, CustomUserDetails customUserDetails){
         if(companyToEdit == null){
             throw new IllegalArgumentException("Company to update cannot be null.");
         }
-        Company existingCompany = checkedExistsById(companyToEdit.getId());
+        Company existingCompany = securityGetSingleCompany(companyToEdit.getId(), customUserDetails);
         
         existingCompany.setCompanyLegalName(companyToEdit.getCompanyLegalName());
         existingCompany.setCompanyUsername(companyToEdit.getCompanyUsername());
         existingCompany.setCompanyEIN(companyToEdit.getCompanyEIN());
         existingCompany.setCompanyStateTaxID(companyToEdit.getCompanyStateTaxID());
 
-
+        //why have multiple clients(subscriptions) per company??) TO DO
         List<Client> freshClients = existingCompany.getClients().stream()  //fresh upload from db
         .map(client -> clientService.checkedExistsById(client.getId())) 
         .toList();
@@ -122,14 +150,31 @@ public class CompanyService {
     }
 
     //DELETE
-    public void delete(Company companyToDelete){
+    @PreAuthorize("hasRole('ROLE_ADMIN') or @securityService.hasAccessToCompany(#companyToDelete.id, authentication)")
+    public void delete(Company companyToDelete, CustomUserDetails customUserDetails){
         if(companyToDelete == null){
             throw new IllegalArgumentException("Company to delete cannot be null.");
         }
+        Person person = securityService.checkPersonForActualUser(customUserDetails);
         companyRepo.delete(companyToDelete);
     }
-    public void deleteById(Integer id){
-        Company companyToDelete = checkedExistsById(id);
+    @PreAuthorize("hasRole('ROLE_ADMIN') or @securityService.hasAccessToCompany(#id, authentication)")
+    public void deleteById(Integer id, CustomUserDetails customUserDetails){
+        Company companyToDelete = securityGetSingleCompany(id, customUserDetails);
+        
+        //detach all! TO DO
+        
         companyRepo.delete(companyToDelete);
+    }
+
+
+    //FILTERS
+
+    public List<Company> findByPersonsContaining(Person person){
+        return companyRepo.findByPersonsContaining(person);
+    }
+
+    public Company findByIdAndPersonsContaining(Integer companyId, Person person){
+        return companyRepo.findByIdAndPersonsContaining(companyId, person);
     }
 }

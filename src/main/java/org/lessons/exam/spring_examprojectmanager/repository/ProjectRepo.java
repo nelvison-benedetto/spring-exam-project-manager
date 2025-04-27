@@ -14,5 +14,5 @@ public interface ProjectRepo extends JpaRepository<Project, Integer>{
     public List<Project> findByPersonsContaining(Person person);
     public List<Project> findByCompaniesContaining(Company company);
     public Project findByIdAndPersonsContaining(Integer projectId, Person person);
-
+    public Project findByIdAndCompaniesContaining(Integer projectId, Company company);
 }

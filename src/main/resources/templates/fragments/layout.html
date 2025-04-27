@@ -75,13 +75,33 @@
 
                 <!--SECURITY-->
                 <th:block th:if="${#authorization.expression('isAuthenticated()')}">
-                    <li class="">
-                        <p class="text-white bg-success " style="margin: 0.5rem 0.2rem 0 0; padding-right: 0.4rem;"> 
+                    <span>I am authenticated!!!</span>
+                    <span th:text="${personHeader.email}">fallback</span>
+                    <li class="d-flex align-items-center ">
+
+                        <a th:if="${personHeader != null and personHeader.company != null}" th:href="@{'/companies/' + ${personHeader.company.id}}" class="d-flex align-items-center bg-success text-white" >
+                                <i class="bi bi-building-fill me-1 fs-5"></i>
+                                <span sec:authentication="name" ></span>
+                                <span style="text-decoration: none;">
+                                    <span sec:authentication="principal.authorities"></span>
+                                </span>
+                        </a>
+
+                        <a th:if="${personHeader != null and personHeader.company == null}" th:href="@{'/persons/' + ${personHeader.id}}" class="d-flex align-items-center bg-success text-white" >
+                            <i class="bi bi-building-fill me-1 fs-5"></i>
+                            <span sec:authentication="name" ></span>
+                            <span style="text-decoration: none;">
+                                <span sec:authentication="principal.authorities"></span>
+                            </span>
+                        </a>
+
+                        <!-- <p class="text-white bg-success " style="margin: 0.5rem 0.2rem 0 0; padding-right: 0.4rem;"> 
                             <span>👋</span>
-                            <!-- <span th:text="|${username}|" class="text-decoration-underline" />  is the same as that below-->
+                            <span th:text="|${username}|" class="text-decoration-underline" />  is the same as that below
                             <span sec:authentication="name" class="text-decoration-underline"></span>
                             <span sec:authentication="principal.authorities"></span>
-                        </p>
+                        </p> -->
+
                     </li>
                 </th:block>
                 <!---->
@@ -117,6 +137,8 @@
         </div>
     </div>
 </nav>
+
+
 
 <footer th:fragment="footerNubbin" class="bg-dark text-light" style="padding: 4.5rem 0 2rem 0;">
     <div class="container">

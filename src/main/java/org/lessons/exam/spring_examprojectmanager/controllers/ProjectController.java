@@ -44,7 +44,7 @@ public class ProjectController {
 
     //READ
     @GetMapping
-    public String projectsIndex(Model model, @AuthenticationPrincipal CustomUserDetails customUserDetails){
+    public String projectsIndex(@AuthenticationPrincipal CustomUserDetails customUserDetails, Model model){
         List<Project> projects = projectService.securityGetAllProjects(customUserDetails);
         //List<Project> projects = projectService.findAll();
         model.addAttribute("projects", projects);
@@ -52,7 +52,7 @@ public class ProjectController {
     }
 
     @GetMapping("/{id}")
-    public String projectsShow(@PathVariable Integer id, Model model, @AuthenticationPrincipal CustomUserDetails customUserDetails){
+    public String projectsShow(@PathVariable Integer id, @AuthenticationPrincipal CustomUserDetails customUserDetails, Model model){
         Project project = projectService.securityGetSingleProject(id, customUserDetails);
         if(project == null){
             return "errors/404.html";
@@ -65,7 +65,8 @@ public class ProjectController {
 
     //CREATE
     @GetMapping("/create")
-    public String projectsCreate(Model model){
+    public String projectsCreate(@AuthenticationPrincipal CustomUserDetails customUserDetails, Model model){
+        System.out.println("userAuthenticated x '/create' template: " + customUserDetails);
         model.addAttribute("project", new Project());
         return "entities/projects/create-or-edit.html";
     }   

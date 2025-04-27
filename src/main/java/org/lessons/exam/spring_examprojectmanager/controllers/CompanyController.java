@@ -6,9 +6,11 @@ import java.util.List;
 import org.lessons.exam.spring_examprojectmanager.models.Client;
 import org.lessons.exam.spring_examprojectmanager.models.Company;
 import org.lessons.exam.spring_examprojectmanager.models.Person;
+import org.lessons.exam.spring_examprojectmanager.security.CustomUserDetails;
 import org.lessons.exam.spring_examprojectmanager.services.CompanyService;
 import org.lessons.exam.spring_examprojectmanager.services.PersonService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -27,6 +29,7 @@ public class CompanyController {
     
     private final CompanyService companyService;
     private final PersonService personService;
+
     @Autowired
     public CompanyController(CompanyService companyService, PersonService personService) {
         this.companyService = companyService;
@@ -35,15 +38,18 @@ public class CompanyController {
 
     //READ
     @GetMapping
-    public String companiesIndex(Model model){
-        List<Company> companies = companyService.findAll();
+    public String companiesIndex(@AuthenticationPrincipal CustomUserDetails customUserDetails, Model model){
+        List<Company> companies = companyService.securityGetAllCompanies(customUserDetails);
         model.addAttribute("companies", companies);
         return "entities/companies/index.html";
     }
 
     @GetMapping("/{id}")
-    public String companiesShow(@PathVariable Integer id, Model model){
-        Company company = companyService.getById(id);
+    public String companiesShow(@PathVariable Integer id, @AuthenticationPrincipal CustomUserDetails customUserDetails, Model model){
+        Company company = companyService.securityGetSingleCompany(id, customUserDetails);
+        if(company == null){
+            return "errors/404.html";
+        }
         model.addAttribute("company", company);
         return "entities/companies/show.html";
     }
@@ -61,41 +67,46 @@ public class CompanyController {
         model.addAttribute("company", company);
         return "entities/companies/create-or-edit.html";
     }   
+
     @PostMapping("/store")
     public String companiesStore(@Valid @ModelAttribute("company") Company company,
-    BindingResult bindingResult, Model model){
+    BindingResult bindingResult,  Model model){
         if(bindingResult.hasErrors()){
             return "entities/companies/create-or-edit.html";
         }
+        System.out.println(company);
         Company savedCompany = companyService.create(company);
+        System.out.println("after .create() method...");
         return "redirect:/clients/create?companyId=" + savedCompany.getId();
     }
 
     //UPDATE
     @GetMapping("/edit/{id}")
-    public String companiesUpdate(@PathVariable Integer id, Model model){
-        model.addAttribute("company", companyService.getById(id));
+    public String companiesUpdate(@PathVariable Integer id, @AuthenticationPrincipal CustomUserDetails customUserDetails, Model model){
+        Company company = companyService.securityGetSingleCompany(id, customUserDetails);
+        model.addAttribute("company", company);
         model.addAttribute("edit", true);
         return "entities/companies/create-or-edit.html";
     }
     @PostMapping("/update/{id}")
     public String companiesUpdate(@Valid @ModelAttribute("company") Company company, @PathVariable Integer id,
-    BindingResult bindingResult, Model model){
+    BindingResult bindingResult, @AuthenticationPrincipal CustomUserDetails customUserDetails, Model model){
         if(bindingResult.hasErrors()){
             model.addAttribute("edit", true);
             return "entities/companies/create-or-edit.html";
         }
-        companyService.edit(company);
-        return "redirect:/companies";
+        companyService.edit(company, customUserDetails);
+        return "redirect:/projects";  //TODO To redirect better
     }
+
 
     //DELETE
     @GetMapping("/delete/{id}")
-    public String companiesDelete(@PathVariable Integer id){
-        companyService.deleteById(id);
-        return "redirect:/companies";
+    public String companiesDelete(@PathVariable Integer id, @AuthenticationPrincipal CustomUserDetails customUserDetails){
+        companyService.deleteById(id, customUserDetails);
+        return "redirect:/projects";  //TODO To redirect better
     }
 
-    //FILTERS
 
+    
 }

@@ -5,10 +5,12 @@ import java.util.List;
 import org.lessons.exam.spring_examprojectmanager.models.Client;
 import org.lessons.exam.spring_examprojectmanager.models.Company;
 import org.lessons.exam.spring_examprojectmanager.models.Person;
+import org.lessons.exam.spring_examprojectmanager.security.CustomUserDetails;
 import org.lessons.exam.spring_examprojectmanager.services.ClientService;
 import org.lessons.exam.spring_examprojectmanager.services.CompanyService;
 import org.lessons.exam.spring_examprojectmanager.services.PersonService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -29,6 +31,7 @@ public class ClientController {
     private final ClientService clientService;
     private final PersonService personService;
     private final CompanyService companyService;
+
     @Autowired
     public ClientController(ClientService clientService, PersonService personService, CompanyService companyService) {
         this.clientService = clientService;
@@ -37,16 +40,19 @@ public class ClientController {
     }
 
     //READ
-    @GetMapping
-    public String clientsIndex(Model model){
-        List<Client> clients = clientService.findAll();
-        model.addAttribute("clients", clients);
-        return "entities/clients/index.html";
-    }
+    // @GetMapping
+    // public String clientsIndex(@AuthenticationPrincipal CustomUserDetails customUserDetails, Model model){
+    //     List<Client> clients = clientService.findAll();
+    //     model.addAttribute("clients", clients);
+    //     return "entities/clients/index.html";
+    // }
 
     @GetMapping("/{id}")
-    public String clientsShow(@PathVariable Integer id, Model model){
-        Client client = clientService.getById(id);
+    public String clientsShow(@PathVariable Integer id, @AuthenticationPrincipal CustomUserDetails customUserDetails, Model model){
+        Client client = clientService.securityGetSingleClient(id, customUserDetails);
+        if(client == null){
+            return "errors/404.html";
+        }
         model.addAttribute("client", client);
         return "entities/clients/show.html";
     }
@@ -55,15 +61,15 @@ public class ClientController {
     @GetMapping("/create")
     public String clientsCreate(@RequestParam(value = "personId", required = false) Integer personId,
     @RequestParam(value = "companyId", required = false) Integer companyId,
-    Model model){
+     Model model){
         Client client = new Client();
 
         if(personId != null){
-            Person person = personService.checkedExistsById(personId);
+            Person person = personService.checkedExistsById(personId);   //TO DO SECURITY HERE 
             client.setPerson(person);
         }
         if(companyId != null){
-            Company company = companyService.checkedExistsById(companyId);
+            Company company = companyService.checkedExistsById(companyId);   //TO DO SECURITY HERE 
             client.setCompany(company);
         }
 
@@ -72,7 +78,7 @@ public class ClientController {
     }   
     @PostMapping("/store")
     public String clientsStore(@Valid @ModelAttribute("client") Client client,
-    BindingResult bindingResult, Model model){
+    BindingResult bindingResult,  Model model){
         if(bindingResult.hasErrors()){
             return "entities/clients/create-or-edit.html";
         }
@@ -82,29 +88,31 @@ public class ClientController {
 
     //UPDATE
     @GetMapping("/edit/{id}")
-    public String clientsUpdate(@PathVariable Integer id, Model model){
-        model.addAttribute("client", clientService.getById(id));
+    public String clientsUpdate(@PathVariable Integer id, @AuthenticationPrincipal CustomUserDetails customUserDetails, Model model){
+        Client client = clientService.securityGetSingleClient(id, customUserDetails);
+        model.addAttribute("client", client);
         model.addAttribute("edit", true);
         return "entities/clients/create-or-edit.html";
     }
+    
     @PostMapping("/update/{id}")
     public String clientsUpdate(@Valid @ModelAttribute("client") Client client, @PathVariable Integer id,
-    BindingResult bindingResult, Model model){
+    BindingResult bindingResult, @AuthenticationPrincipal CustomUserDetails customUserDetails, Model model){
         if(bindingResult.hasErrors()){
             model.addAttribute("edit", true);
             return "entities/clients/create-or-edit.html";
         }
-        clientService.edit(client);
-        return "redirect:/clients";
+        clientService.edit(client, customUserDetails);
+        return "redirect:/projects";  //TODO To redirect better
     }
 
     //DELETE
     @GetMapping("/delete/{id}")
-    public String clientsDelete(@PathVariable Integer id){
-        clientService.deleteById(id);
-        return "redirect:/clients";
+    public String clientsDelete(@PathVariable Integer id, @AuthenticationPrincipal CustomUserDetails customUserDetails){
+        clientService.deleteById(id, customUserDetails);
+        return "redirect:/projects";  //TODO To redirect better
     }
 
-    //FILTERS
+
 
 }

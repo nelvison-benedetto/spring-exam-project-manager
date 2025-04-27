@@ -9,9 +9,12 @@ import org.lessons.exam.spring_examprojectmanager.exceptions.ResourceNotFoundExc
 import org.lessons.exam.spring_examprojectmanager.models.Client;
 import org.lessons.exam.spring_examprojectmanager.models.Company;
 import org.lessons.exam.spring_examprojectmanager.models.Person;
+import org.lessons.exam.spring_examprojectmanager.models.Project;
 import org.lessons.exam.spring_examprojectmanager.repository.ClientRepo;
+import org.lessons.exam.spring_examprojectmanager.security.CustomUserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -20,11 +23,14 @@ public class ClientService {
     private final ClientRepo clientRepo;
     private final CompanyService companyService;
     private final PersonService personService;
+    private final SecurityService securityService;
+
     @Autowired
-    public ClientService(ClientRepo clientRepo, @Lazy CompanyService companyService, PersonService personService){  //USO LAZY OTHERWISE i services client & company call each other without starting
+    public ClientService(ClientRepo clientRepo, @Lazy CompanyService companyService, PersonService personService, SecurityService securityService){  //USO LAZY OTHERWISE i services client & company call each other without starting
         this.clientRepo = clientRepo;
         this.companyService = companyService;
         this.personService = personService;
+        this.securityService = securityService;
     }
 
 
@@ -51,22 +57,47 @@ public class ClientService {
     }
 
 
+
     //READ
+    @PreAuthorize("isAuthenticated()")
     public List<Client> findAll(){
         return clientRepo.findAll();
     }
 
+    @PreAuthorize("@securityService.hasAccessToClient(#id, authentication)")
     public Client getById(Integer id){
         Client clientFound = checkedExistsById(id);
         return clientFound;
     }
 
+    // @PreAuthorize("isAuthenticated()")
+    // public List<Project> securityGetAllProjects(CustomUserDetails customUserDetails){
+    //     Person person = checkPersonForActualUser(customUserDetails);
+    //     List<Project> projects;
+    //     if(person.getCompany() != null) {
+    //         return projects = findByCompaniesContaining(person.getCompany());
+    //     } else {  //TO FINISH, A PERSON LOGGED IN CAN ALSO SEE THE PROJECTS X HIS COMPANY
+    //         return projects = findByPersonsContaining(person);
+    //     }
+    // }
+
+    @PreAuthorize("@securityService.hasAccessToClient(#id, authentication)")  //run method hasAccessToClient passing params id & customUserDetails logged, if returns true run the method below
+    public Client securityGetSingleClient(Integer id, CustomUserDetails customUserDetails){
+        Person person = securityService.checkPersonForActualUser(customUserDetails);
+        Client client = findByIdAndPerson(id, person);
+        return client;
+    }
+
+
+
     //CREATE
+    //@PreAuthorize("isAuthenticated()")   //at the creation i haven't logged in yet
     public Client create(Client clientToCreate){
         if(clientToCreate == null){
             throw new IllegalArgumentException("Client to create cannot be null.");
         }
-        if (clientToCreate.getPerson() != null && clientToCreate.getPerson().getId() != null) {
+        //Person personSec = securityService.checkPersonForActualUser(customUserDetails);
+        if(clientToCreate.getPerson() != null && clientToCreate.getPerson().getId() != null) {
             Person fullPerson = personService.checkedExistsById(clientToCreate.getPerson().getId());
             clientToCreate.setPerson(fullPerson);
             fullPerson.setClient(clientToCreate);
@@ -94,11 +125,12 @@ public class ClientService {
     }
 
     //UPDATE
-    public Client edit(Client clientToEdit){
+    @PreAuthorize("@securityService.hasAccessToClient(#clientToEdit.id, authentication)")
+    public Client edit(Client clientToEdit, CustomUserDetails customUserDetails){
         if(clientToEdit == null){
             throw new IllegalArgumentException("Client to update cannot be null.");
         }
-        Client existingClient = checkedExistsById(clientToEdit.getId());
+        Client existingClient = securityGetSingleClient(clientToEdit.getId(), customUserDetails);
         
         existingClient.setSubscriptionType(clientToEdit.getSubscriptionType());
         existingClient.setStatus(clientToEdit.getStatus());
@@ -119,15 +151,32 @@ public class ClientService {
     }
 
     //DELETE
-    public void delete(Client clientToDelete){
+    @PreAuthorize("hasRole('ROLE_ADMIN') or @securityService.hasAccessToClient(#clientToDelete.id, authentication)")
+    public void delete(Client clientToDelete, CustomUserDetails customUserDetails){
         if(clientToDelete == null){
             throw new IllegalArgumentException("Client to delete cannot be null.");
         }
+        Person person = securityService.checkPersonForActualUser(customUserDetails);
         clientRepo.delete(clientToDelete);
     }
 
-    public void deleteById(Integer id){
-        Client clientToDelete = checkedExistsById(id);
+    @PreAuthorize("hasRole('ROLE_ADMIN') or @securityService.hasAccessToClient(#id, authentication)")
+    public void deleteById(Integer id, CustomUserDetails customUserDetails){
+        Client clientToDelete = securityGetSingleClient(id, customUserDetails);
         clientRepo.delete(clientToDelete);
     }
+
+
+
+    //FILTERS
+
+    public Client findByPerson(Person person){
+        return clientRepo.findByPerson(person);
+    }
+
+    public Client findByIdAndPerson(Integer clientId, Person person){
+        return clientRepo.findByIdAndPerson(clientId, person);
+    }
+
+
 }

@@ -97,7 +97,7 @@ public class ProjectService {
         List<Project> projects;
         if(person.getCompany() != null) {
             return projects = findByCompaniesContaining(person.getCompany());
-        } else {  //TO FINISH, A PERSON LOGGED IN CAN ALSO SEE THE PROJECTS X HIS COMPANY
+        } else { 
             return projects = findByPersonsContaining(person);
         }
     }
@@ -105,7 +105,12 @@ public class ProjectService {
     @PreAuthorize("@securityService.hasAccessToProject(#id, authentication)")  //run method hasAccessToProject passing params id & customUserDetails logged, if returns true run the method below
     public Project securityGetSingleProject(Integer id, CustomUserDetails customUserDetails){
         Person person = checkPersonForActualUser(customUserDetails);
-        Project project = findByIdAndPersonsContaining(id, person);
+        Project project;
+        if(person.getCompany() != null){
+            project = findByIdAndCompaniesContaining(id, person.getCompany());
+        }else{
+            project = findByIdAndPersonsContaining(id, person);
+        }
         return project;
     }
 
@@ -117,14 +122,17 @@ public class ProjectService {
             throw new IllegalArgumentException("Project to create cannot be null.");
         }
         Person person = checkPersonForActualUser(customUserDetails);
-        projectToCreate.getPersons().add(person);  //non faccio controllo se esiste gia, xk alla creazione avra sempre solo 1 person linkato iniziale
-        //qua faccio lato person x salvare
-        
-        System.out.println("projectToCreate...: " + projectToCreate);
-        Project savedProject = projectRepo.save(projectToCreate);  //personRepo.save(person);  thanks to PERSISTS, would save anyway this
-        System.out.println("Saved project from DB: " + projectRepo.findById(savedProject.getId()).get());
-        person.getProjects().add(savedProject);
-        personRepo.save(person); 
+        if(person.getCompany() != null){
+            Company company = person.getCompany();
+            projectToCreate.getCompanies().add(company);
+            company.getProjects().add(projectToCreate);
+        }
+        else{
+            projectToCreate.getPersons().add(person);   //SETTO DA ENTRAMBI I LATI...
+            person.getProjects().add(projectToCreate);   //SETTO DA ENTRAMBI I LATI...
+        }
+        Project savedProject = projectRepo.save(projectToCreate);  //E POI SOLO DOPO SALVO!
+        System.out.println("Saved project from DB: " + projectRepo.findById(savedProject.getId()).get());   
         return savedProject;
     }
 
@@ -134,8 +142,7 @@ public class ProjectService {
         if(projectToEdit == null){
             throw new IllegalArgumentException("Project to update cannot be null.");
         }
-        Person person = checkPersonForActualUser(customUserDetails);
-        Project existingProject = checkedExistsById(projectToEdit.getId());
+        Project existingProject = securityGetSingleProject(projectToEdit.getId(), customUserDetails);
         //!!x security(choose exactly which fields change) & x help spring persistenza(Spring Data/JPA) Edit always by setting fields one at a time!
         
         existingProject.setTitle(projectToEdit.getTitle());
@@ -174,7 +181,7 @@ public class ProjectService {
         }
         //System.out.println("freshTasks" + freshTasks);
         existingProject.getTasks().addAll(freshTasks);
-        System.out.println("advanced existingProject tasks" + existingProject.getTasks());
+        //System.out.println("advanced existingProject tasks" + existingProject.getTasks());
 
         Project savedProject = projectRepo.save(existingProject);
         System.out.println("Saved project from DB: " + projectRepo.findById(savedProject.getId()).get());
@@ -232,6 +239,13 @@ public class ProjectService {
 
     public Project findByIdAndPersonsContaining(Integer projectId, Person person){
         Project project = projectRepo.findByIdAndPersonsContaining(projectId, person);
+        if(project == null) {
+            throw new AccessDeniedException("You do not have access to this project.");
+        }
+        return project;
+    }
+    public Project findByIdAndCompaniesContaining(Integer projectId, Company company){
+        Project project = projectRepo.findByIdAndCompaniesContaining(projectId, company);
         if(project == null) {
             throw new AccessDeniedException("You do not have access to this project.");
         }

@@ -128,7 +128,7 @@ public class Project implements Serializable{
 
 
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    @JsonManagedReference
+    @JsonBackReference
     private List<Task> tasks = new ArrayList<>();
 
 

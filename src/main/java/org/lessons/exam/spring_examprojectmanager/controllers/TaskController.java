@@ -66,7 +66,6 @@ public class TaskController {
     BindingResult bindingResult, @AuthenticationPrincipal CustomUserDetails customUserDetails, Model model){
         System.out.println(task);
         if(bindingResult.hasErrors()){
-            //add even the lists
             return "entities/tasks/create-or-edit.html";
         }
         taskService.create(task, customUserDetails);

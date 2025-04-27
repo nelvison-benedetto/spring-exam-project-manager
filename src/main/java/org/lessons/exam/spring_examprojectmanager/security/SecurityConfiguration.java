@@ -21,9 +21,10 @@ public class SecurityConfiguration {
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests()
 
-            .requestMatchers("/projects/create", "/projects/edit/**").hasAuthority("Admin")
-            .requestMatchers("/users/create", "/users/store", "/security/sign-in", "/css/**", "/js/**").permitAll()
-            .requestMatchers("/", "/home").authenticated()
+            //FINORA TUTTI POSSONO FARE TUTTO
+            // .requestMatchers("/projects/create", "/projects/edit/**").hasAuthority("Admin")
+            // .requestMatchers("/users/create", "/users/store", "/security/sign-in", "/css/**", "/js/**").permitAll()
+            // .requestMatchers("/", "/home").authenticated()
             //.requestMatchers("/**").permitAll()  overwrite on all rules!
             .anyRequest().permitAll()
 
