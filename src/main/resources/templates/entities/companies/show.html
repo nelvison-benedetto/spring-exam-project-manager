@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Companies Show Page</title>
+    <th:block th:replace="~{fragments/head.html::bootstrap}" />  <!-- ~ :  Alt+126(numerini)-->
+    <th:block th:replace="~{fragments/head.html::style_jsscript}" />
+</head>
+<body>
+    
+    <nav th:replace="~{fragments/layout.html::navbarNubbin}"></nav>
+
+    <div class="container my-5">
+        <div class="card shadow-lg border-0 rounded-4">
+            <div class="card-header bg-gradient bg-success text-white rounded-top-4">
+                <h3 class="mb-0"><i class="bi bi-building me-2"></i>Company Profile</h3>
+            </div>
+    
+            <div class="card-body p-4">
+                <div class="row g-4">
+    
+                    <div class="col-md-6">
+                        <p class="mb-1 fw-bold text-secondary">Legal Name</p>
+                        <p class="form-control-plaintext" th:text="${company.companyLegalName}"></p>
+                    </div>
+    
+                    <div class="col-md-6">
+                        <p class="mb-1 fw-bold text-secondary">Username</p>
+                        <p class="form-control-plaintext" th:text="${company.companyUsername}"></p>
+                    </div>
+    
+                    <div class="col-md-6">
+                        <p class="mb-1 fw-bold text-secondary">EIN</p>
+                        <p class="form-control-plaintext" th:text="${company.companyEIN}"></p>
+                    </div>
+    
+                    <div class="col-md-6">
+                        <p class="mb-1 fw-bold text-secondary">State Tax ID</p>
+                        <p class="form-control-plaintext" th:text="${company.companyStateTaxID}"></p>
+                    </div>
+    
+                    <!-- <div class="col-md-6">
+                        <p class="mb-1 fw-bold text-secondary">Projects</p>
+                        <ul class="list-group">
+                            <li th:each="project : ${company.projects}" class="list-group-item d-flex justify-content-between align-items-center">
+                                <a th:href="@{'/projects/' + ${project.id}}" th:text="${project.name}" class="text-decoration-none"></a>
+                                <i class="bi bi-chevron-right"></i>
+                            </li>
+                            <li th:if="${company.projects.empty}" class="list-group-item text-muted">No projects</li>
+                        </ul>
+                    </div>
+    
+                    <div class="col-md-6">
+                        <p class="mb-1 fw-bold text-secondary">Clients</p>
+                        <ul class="list-group">
+                            <li th:each="client : ${company.clients}" class="list-group-item d-flex justify-content-between align-items-center">
+                                <a th:href="@{'/clients/' + ${client.id}}" th:text="${client.person.firstname + ' ' + client.person.lastname}" class="text-decoration-none"></a>
+                                <i class="bi bi-chevron-right"></i>
+                            </li>
+                            <li th:if="${company.clients.empty}" class="list-group-item text-muted">No clients</li>
+                        </ul>
+                    </div> -->
+    
+                    <div class="col-md-12">
+                        <p class="mb-1 fw-bold text-secondary">Associated People</p>  <!--HERE ONLY OTHER PEOPLE NOT ME (ME IN FIRST POSITION )-->
+                        <ul class="list-group">
+                            <li th:each="person : ${company.persons}" class="list-group-item d-flex justify-content-between align-items-center">
+                                <a th:href="@{'/persons/'+${person.id}}" th:text="${person.firstname + ' ' + person.lastname}" class="text-decoration-none"></a>
+                                <i class="bi bi-person-lines-fill"></i>
+                            </li>
+                            <li th:if="${company.persons.empty}" class="list-group-item text-muted">No employees</li>
+                        </ul>
+                    </div>
+    
+                </div>
+            </div>
+    
+            <div class="card-footer bg-light text-end rounded-bottom-4">
+                <a th:href="@{/companies/{id}/edit(id=${company.id})}" class="btn bg-purple text-white me-1">
+                    <i class="bi bi-pencil me-1"></i>
+                    <span>Edit</span>
+                </a>
+                <a th:href="@{/}" class="btn btn-outline-success">
+                    <i class="bi bi-arrow-left-circle me-1"></i>
+                    <span>Back to Home</span>
+                </a>
+            </div>
+        </div>
+    </div>
+    
+
+</body>
+</html>

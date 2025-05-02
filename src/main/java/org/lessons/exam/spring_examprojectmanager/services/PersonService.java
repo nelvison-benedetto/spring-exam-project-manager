@@ -4,10 +4,13 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.context.annotation.Lazy;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.lessons.exam.spring_examprojectmanager.exceptions.ResourceNotFoundException;
 import org.lessons.exam.spring_examprojectmanager.models.Person;
+import org.lessons.exam.spring_examprojectmanager.models.Project;
 import org.lessons.exam.spring_examprojectmanager.models.User;
 import org.lessons.exam.spring_examprojectmanager.repository.PersonRepo;
+import org.lessons.exam.spring_examprojectmanager.security.CustomUserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -50,16 +53,43 @@ public class PersonService {
 
     
     //READ
+    @PreAuthorize("isAuthenticated()")
     public List<Person> findAll(){
         return personRepo.findAll();
     }
 
+    @PreAuthorize("@securityService.hasAccessToPerson(#id, authentication)")
     public Person getById(Integer id){
         Person personFound = checkedExistsById(id);
         return personFound;
     }
 
+    public Person checkPersonForActualUser(CustomUserDetails customUserDetails){
+        Person person = userService.checkedExistsById(customUserDetails.getId()).getPerson();
+        if(person == null){
+            throw new RuntimeException("Person for this Security not found.");
+        }
+        return person;
+    }
+
+
+    @PreAuthorize("isAuthenticated()")
+    public List<Person> securityGetAllPersons(CustomUserDetails customUserDetails){
+        //Person person = checkPersonForActualUser(customUserDetails);
+        List<Person> persons = personRepo.findAll();
+        return persons;
+        //no necessary sec to get all of them
+    }
+
+    @PreAuthorize("@securityService.hasAccessToPerson(#id, authentication)")  //run method hasAccessToProject passing params id & customUserDetails logged, if returns true run the method below
+    public Person securityGetSinglePerson(Integer id, CustomUserDetails customUserDetails){
+        Person personTarget = getById(id);
+        return personTarget;
+        //already checked sec in securityServ
+    }
     
+
+
     //CREATE
     public Person create(Person personToCreate){
         if(personToCreate == null || personToCreate.getUser() == null){

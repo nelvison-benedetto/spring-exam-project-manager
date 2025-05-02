@@ -37,5 +37,4 @@ public class GlobalControllerAdvice {
             System.out.println(personHeader);
         }
     }
-
 }

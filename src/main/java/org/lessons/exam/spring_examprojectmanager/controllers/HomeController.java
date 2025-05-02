@@ -28,6 +28,12 @@ public class HomeController {
         this.securityService = securityService;
     }
 
+    @GetMapping()
+    public String homePage() {
+        return "index.html";
+    }
+
+    
     // @GetMapping
     // public String homePage(Model model, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
     //     if(customUserDetails != null){

@@ -41,7 +41,21 @@ public class SecurityService {
         return person;
     }
 
-
+    //x Persons
+    public Boolean hasAccessToPerson(Integer personId, Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return false;
+        }
+        Object principal = authentication.getPrincipal();
+        if (!(principal instanceof CustomUserDetails customUserDetails)) {
+            return false;
+        }
+        Person authenticatedPerson = userService.checkedExistsById(customUserDetails.getId()).getPerson();
+        if (authenticatedPerson == null) {
+            return false;
+        }
+        return authenticatedPerson.getId().equals(personId);
+    }
 
     //x Projects
     public Boolean hasAccessToProject(Integer projectId, Authentication authentication) {  //correct is org.springframework.security.core.Authentication;

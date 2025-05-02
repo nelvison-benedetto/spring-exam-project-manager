@@ -81,14 +81,14 @@ public class CompanyController {
     }
 
     //UPDATE
-    @GetMapping("/edit/{id}")
+    @GetMapping("/{id}/edit")
     public String companiesUpdate(@PathVariable Integer id, @AuthenticationPrincipal CustomUserDetails customUserDetails, Model model){
         Company company = companyService.securityGetSingleCompany(id, customUserDetails);
         model.addAttribute("company", company);
         model.addAttribute("edit", true);
         return "entities/companies/create-or-edit.html";
     }
-    @PostMapping("/update/{id}")
+    @PostMapping("/{id}/update")
     public String companiesUpdate(@Valid @ModelAttribute("company") Company company, @PathVariable Integer id,
     BindingResult bindingResult, @AuthenticationPrincipal CustomUserDetails customUserDetails, Model model){
         if(bindingResult.hasErrors()){
@@ -101,7 +101,7 @@ public class CompanyController {
 
 
     //DELETE
-    @GetMapping("/delete/{id}")
+    @GetMapping("/{id}/delete")
     public String companiesDelete(@PathVariable Integer id, @AuthenticationPrincipal CustomUserDetails customUserDetails){
         companyService.deleteById(id, customUserDetails);
         return "redirect:/projects";  //TODO To redirect better

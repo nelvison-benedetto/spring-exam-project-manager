@@ -75,24 +75,21 @@
 
                 <!--SECURITY-->
                 <th:block th:if="${#authorization.expression('isAuthenticated()')}">
-                    <span>I am authenticated!!!</span>
-                    <span th:text="${personHeader.email}">fallback</span>
+                    <!-- <span th:text="${personHeader.email}">fallback</span> -->
                     <li class="d-flex align-items-center ">
 
-                        <a th:if="${personHeader != null and personHeader.company != null}" th:href="@{'/companies/' + ${personHeader.company.id}}" class="d-flex align-items-center bg-success text-white" >
-                                <i class="bi bi-building-fill me-1 fs-5"></i>
-                                <span sec:authentication="name" ></span>
-                                <span style="text-decoration: none;">
-                                    <span sec:authentication="principal.authorities"></span>
-                                </span>
+                        <a th:if="${personHeader != null and personHeader.company != null}" th:href="@{'/companies/' + ${personHeader.company.id}}" class="btn btn-outline-success btn-sm rounded-1 d-flex align-items-center" >
+                            <span class="me-1" >Hello,</span>
+                            <i class="bi bi-building-fill me-1"></i>
+                            <span th:text="${personHeader.company.companyLegalName}" class="me-1"></span>
+                            <!-- <span sec:authentication="principal.authorities"></span> -->
                         </a>
 
-                        <a th:if="${personHeader != null and personHeader.company == null}" th:href="@{'/persons/' + ${personHeader.id}}" class="d-flex align-items-center bg-success text-white" >
-                            <i class="bi bi-building-fill me-1 fs-5"></i>
-                            <span sec:authentication="name" ></span>
-                            <span style="text-decoration: none;">
-                                <span sec:authentication="principal.authorities"></span>
-                            </span>
+                        <a th:if="${personHeader != null and personHeader.company == null}" th:href="@{'/persons/' + ${personHeader.id}}" class="btn btn-outline-success btn-sm rounded-1 d-flex align-items-center" >
+                            <span class="me-1" >Hello,</span>
+                            <i class="bi bi-person-fill me-1 "></i>
+                            <span sec:authentication="name" class="me-1"></span>
+                            <span sec:authentication="principal.authorities"></span>
                         </a>
 
                         <!-- <p class="text-white bg-success " style="margin: 0.5rem 0.2rem 0 0; padding-right: 0.4rem;"> 

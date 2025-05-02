@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Persons Show Page</title>
+    <th:block th:replace="~{fragments/head.html::bootstrap}" />  <!-- ~ :  Alt+126(numerini)-->
+    <th:block th:replace="~{fragments/head.html::style_jsscript}" />
+</head>
+<body>
+
+    <nav th:replace="~{fragments/layout.html::navbarNubbin}"></nav>
+        
+    <div class="container my-5">
+        <div class="card shadow-lg border-0 rounded-4">
+            <div class="card-header bg-gradient bg-primary text-white rounded-top-4">
+                <h3 class="mb-0"><i class="bi bi-person-circle me-2"></i>Person Profile</h3>
+            </div>
+
+            <div class="card-body p-4">
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <p class="mb-1 fw-bold text-secondary">First Name</p>
+                        <p class="form-control-plaintext" th:text="${person.firstname}"></p>
+                    </div>
+                    <div class="col-md-6">
+                        <p class="mb-1 fw-bold text-secondary">Last Name</p>
+                        <p class="form-control-plaintext" th:text="${person.lastname}"></p>
+                    </div>
+
+                    <div class="col-md-6">
+                        <p class="mb-1 fw-bold text-secondary">Email</p>
+                        <p class="form-control-plaintext" th:text="${person.email}"></p>
+                    </div>
+                    <div class="col-md-6">
+                        <p class="mb-1 fw-bold text-secondary">Phone Number</p>
+                        <p class="form-control-plaintext" th:text="${person.phoneNumber}"></p>
+                    </div>
+
+                    <div class="col-md-6">
+                        <p class="mb-1 fw-bold text-secondary">Country</p>
+                        <p class="form-control-plaintext" th:text="${person.country}"></p>
+                    </div>
+                    <div class="col-md-6">
+                        <p class="mb-1 fw-bold text-secondary">Birthdate</p>
+                        <p class="form-control-plaintext" th:text="${#temporals.format(person.birthdate, 'dd MMM yyyy')}"></p>
+                    </div>
+
+                    <div class="col-md-6">
+                        <p class="mb-1 fw-bold text-secondary">Company</p>
+                        <p class="form-control-plaintext">
+                            <a th:if="${person.company != null}"
+                            th:href="@{'/companies/' + ${person.company.id}}"
+                            class="badge bg-info text-dark text-decoration-none"
+                            th:text="${person.company.companyLegalName}"></a>
+                            <span th:if="${person.company == null}" class="text-muted">
+                                <span class="me-1">No company.</span>
+                                <a th:href="@{/companies/create}">Create new company</a>
+                            </span>
+                        </p>
+                    </div>
+
+                    <!-- <div class="col-md-6">
+                        <p class="mb-1 fw-bold text-secondary">Projects</p>
+                        <ul class="list-group">
+                            <li th:each="project : ${person.projects}" class="list-group-item d-flex justify-content-between align-items-center">
+                                <a th:href="@{'/projects/' + ${project.id}}" th:text="${project.name}" class="text-decoration-none"></a>
+                                <i class="bi bi-chevron-right"></i>
+                            </li>
+                            <li th:if="${person.projects.empty}" class="list-group-item text-muted">No projects</li>
+                        </ul>
+                    </div> -->
+                </div>
+            </div>
+
+            <div class="card-footer bg-light text-end rounded-bottom-4">
+                <a th:href="@{/persons/{id}/edit(id=${person.id})}" class="btn bg-purple text-white me-1">
+                    <i class="bi bi-pencil me-1"></i>
+                    <span>Edit</span>
+                </a>
+                <a th:href="@{/}" class="btn btn-outline-success">
+                    <i class="bi bi-arrow-left-circle me-1"></i>
+                    <span>Back to Home</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+<!-- <footer th:replace="~{fragments/layout.html::footerNubbin}"></footer> -->
+
+</body>
+</html>
