@@ -1,5 +1,6 @@
 package org.lessons.exam.spring_examprojectmanager.services;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -129,24 +130,61 @@ public class CompanyService {
         existingCompany.setCompanyEIN(companyToEdit.getCompanyEIN());
         existingCompany.setCompanyStateTaxID(companyToEdit.getCompanyStateTaxID());
 
-        //why have multiple clients(subscriptions) per company??) TO DO
-        List<Client> freshClients = existingCompany.getClients().stream()  //fresh upload from db
-        .map(client -> clientService.checkedExistsById(client.getId())) 
-        .toList();
-        //reset all & overwrite!!
-        existingCompany.getClients().clear(); 
-        existingCompany.getClients().addAll(freshClients); 
+
+        if(companyToEdit.getClient() != null){
+            Client freshClient = clientService.checkedExistsById(companyToEdit.getClient().getId());  //TODO , use securityFGetSingleClient()
+            existingCompany.setClient(freshClient);
+            freshClient.setCompany(existingCompany);
+        }
+
 
         List<Project> freshProjects = companyToEdit.getProjects().stream()  //fresh upload from db
         .map(project -> projectService.checkedExistsById(project.getId())) 
         .toList();
-        //reset all & overwrite!!
-        existingCompany.getProjects().clear(); // Rimuovi tutte le associazioni progetti esistenti
-        existingCompany.getProjects().addAll(freshProjects); // Aggiungi i nuovi progetti
-        
-        //List<Person> freshPersons = ... TO DO!!
+        List<Project> oldProjects = new ArrayList<>(existingCompany.getProjects()); //create clone list x security!!
+        for (Project oldProject : oldProjects) {
+            oldProject.getCompanies().remove(existingCompany);
+        }
+        existingCompany.getProjects().clear();  //clear all old projects list
+        existingCompany.getProjects().addAll(freshProjects);  //reassign
+        for (Project project : freshProjects){
+            if (!project.getCompanies().contains(existingCompany)){
+                project.getCompanies().add(existingCompany);  //reassign
+            }
+        }
+
+
+        // List<Person> freshPersons = companyToEdit.getPersons().stream()
+        // .map(person -> personService.checkedExistsById(person.getId()))
+        // .toList();
+        // for(Person oldPerson : existingCompany.getPersons()){
+        //     //oldPerson.getCompany().getPersons().remove(oldPerson);   //remove from the list
+        //     oldPerson.setCompany(null);
+        // }
+        // existingCompany.getPersons().clear();
+        // existingCompany.getPersons().addAll(freshPersons);
+        // for(Person person : freshPersons) {
+        //     person.setCompany(existingCompany);  // Mantiene la relazione bidirezionale coerente
+        // }
+
+        // Rimozione sicura dei vecchi Person
+        List<Person> oldPersons = new ArrayList<>(existingCompany.getPersons());  //create clone list x security!
+        for (Person oldPerson : oldPersons) {
+            oldPerson.setCompany(null);
+        }
+        existingCompany.getPersons().clear();
+
+        // Aggiunta dei nuovi Person
+        List<Person> freshPersons = companyToEdit.getPersons().stream()
+            .map(person -> personService.checkedExistsById(person.getId()))
+            .toList();
+        existingCompany.getPersons().addAll(freshPersons);  //reassign
+        for(Person person : freshPersons) {
+            person.setCompany(existingCompany);  //reassign
+        }
 
         return companyRepo.save(existingCompany);
+    
     }
 
     //DELETE
@@ -158,14 +196,26 @@ public class CompanyService {
         Person person = securityService.checkPersonForActualUser(customUserDetails);
         companyRepo.delete(companyToDelete);
     }
+
     @PreAuthorize("hasRole('ROLE_ADMIN') or @securityService.hasAccessToCompany(#id, authentication)")
     public void deleteById(Integer id, CustomUserDetails customUserDetails){
         Company companyToDelete = securityGetSingleCompany(id, customUserDetails);
         
-        //detach all! TO DO
-        
+       if(companyToDelete.getClient() != null){
+            clientService.delete(companyToDelete.getClient(), customUserDetails);
+       }
+
+       for(Person person : companyToDelete.getPersons()){  //THE PERSON AWAYS REMAINS ALSO IF HIS COMPANY IS DELETED!!
+            person.setCompany(null);
+            //personService.delete(person);  //don't need delete the person!
+       }
+
+       for( Project project : companyToDelete.getProjects()){
+            projectService.delete(project, customUserDetails);
+       }
+
         companyRepo.delete(companyToDelete);
-    }
+    }   
 
 
     //FILTERS

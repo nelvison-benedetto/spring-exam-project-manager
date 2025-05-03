@@ -4,9 +4,11 @@ import java.util.List;
 
 import org.lessons.exam.spring_examprojectmanager.models.Person;
 import org.lessons.exam.spring_examprojectmanager.models.User;
+import org.lessons.exam.spring_examprojectmanager.security.CustomUserDetails;
 import org.lessons.exam.spring_examprojectmanager.services.PersonService;
 import org.lessons.exam.spring_examprojectmanager.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -35,14 +37,14 @@ public class PersonController {
 
     //READ
     @GetMapping
-    public String personsIndex(Model model){
+    public String personsIndex(@AuthenticationPrincipal CustomUserDetails customUserDetails, Model model){
         List<Person> persons = personService.findAll();
         model.addAttribute("persons", persons);
         return "entities/persons/index.html";
     }
 
     @GetMapping("/{id}")
-    public String personsShow(@PathVariable Integer id, Model model){
+    public String personsShow(@PathVariable Integer id, @AuthenticationPrincipal CustomUserDetails customUserDetails, Model model){
         Person person = personService.getById(id);
         model.addAttribute("person", person);
         return "entities/persons/show.html";
@@ -77,7 +79,7 @@ public class PersonController {
 
     //UPDATE
     @GetMapping("/{id}/edit")
-    public String personsEdit(@PathVariable Integer id, Model model) {
+    public String personsEdit(@PathVariable Integer id, @AuthenticationPrincipal CustomUserDetails customUserDetails, Model model) {
         Person person = personService.getById(id);
         model.addAttribute("person", person);
         model.addAttribute("edit", true);
@@ -86,20 +88,22 @@ public class PersonController {
 
     @PutMapping("/{id}/update")
     public String personsUpdate(@Valid @ModelAttribute("person") Person person,
-    BindingResult bindingResult, @PathVariable Integer id, Model model) {
+    BindingResult bindingResult, @PathVariable Integer id, @AuthenticationPrincipal CustomUserDetails customUserDetails, Model model) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("edit", true);
             return "entities/persons/create-or-edit.html";
         }
-        personService.edit(person);
-        return "redirect:/persons/" + id;
+        personService.edit(person, customUserDetails);
+        return "redirect:/persons/" + personService.securityGetSinglePerson(id, customUserDetails).getId();
     }
 
     //DELETE
+
+    //this never used, if u want to delete ur account delete the User
     @DeleteMapping("/{id}/delete")
-    public String personsDelete(@PathVariable Integer id) {
+    public String personsDelete(@PathVariable Integer id, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
         personService.deleteById(id);
-        return "redirect:/persons";
+        return "redirect:/";
     }
 
     //FILTERS

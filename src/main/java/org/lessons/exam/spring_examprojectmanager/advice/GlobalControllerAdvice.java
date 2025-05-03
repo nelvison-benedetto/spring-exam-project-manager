@@ -29,12 +29,11 @@ public class GlobalControllerAdvice {
     @ModelAttribute
     public void addPersonToModel(@AuthenticationPrincipal CustomUserDetails customUserDetails, Model model) {
         if(customUserDetails != null){
-            System.out.println("CustomUserDetails FROM GLOBAL ADVICE: " + customUserDetails);
+            //System.out.println("CustomUserDetails FROM GLOBAL ADVICE: " + customUserDetails);
             Person personHeader = securityService.checkPersonForActualUser(customUserDetails);
             if(personHeader != null){
                 model.addAttribute("personHeader", personHeader);
             }
-            System.out.println(personHeader);
         }
     }
 }

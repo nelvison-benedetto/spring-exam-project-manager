@@ -26,7 +26,7 @@ public class ClientService {
     private final SecurityService securityService;
 
     @Autowired
-    public ClientService(ClientRepo clientRepo, @Lazy CompanyService companyService, PersonService personService, SecurityService securityService){  //USO LAZY OTHERWISE i services client & company call each other without starting
+    public ClientService(ClientRepo clientRepo, @Lazy CompanyService companyService,@Lazy PersonService personService, SecurityService securityService){  //USO LAZY OTHERWISE i services client & company call each other without starting
         this.clientRepo = clientRepo;
         this.companyService = companyService;
         this.personService = personService;

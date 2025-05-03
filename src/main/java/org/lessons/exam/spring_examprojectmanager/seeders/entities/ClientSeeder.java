@@ -31,7 +31,7 @@ public class ClientSeeder {
                 LocalDate.of(2025, 1, 15), 
                 LocalDateTime.now(), 
                 LocalDateTime.now(),
-                new Company(null, "ACME Corp", "acme", "12-3456789", "123-4567-8", new ArrayList<>(), new ArrayList<>(), new ArrayList<>()),
+                new Company(null, "ACME Corp", "acme", "12-3456789", "123-4567-8", null, new ArrayList<>(), new ArrayList<>()),
                 new Person()
             ),
 
@@ -40,7 +40,7 @@ public class ClientSeeder {
                 LocalDate.of(2025, 3, 1), 
                 LocalDateTime.now(), 
                 LocalDateTime.now(), 
-                new Company(null, "Gamma Solutions", "gamma_solutions", "23-4567890", "987-6543-8", new ArrayList<>(), new ArrayList<>(), new ArrayList<>()),
+                new Company(null, "Gamma Solutions", "gamma_solutions", "23-4567890", "987-6543-8", null, new ArrayList<>(), new ArrayList<>()),
                 new Person()
             ),
 
@@ -49,7 +49,7 @@ public class ClientSeeder {
                 LocalDate.of(2025, 6, 1), 
                 LocalDateTime.now(), 
                 LocalDateTime.now(), 
-                new Company(null, "Delta Innovations", "delta_innov", "34-5678901", "345-6789-0", new ArrayList<>(), new ArrayList<>(), new ArrayList<>()),
+                new Company(null, "Delta Innovations", "delta_innov", "34-5678901", "345-6789-0", null, new ArrayList<>(), new ArrayList<>()),
                 new Person()
             )
 

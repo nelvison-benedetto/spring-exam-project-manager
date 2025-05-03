@@ -108,13 +108,12 @@ public class Person implements Serializable{
     private List<Project> projects = new ArrayList<>();
 
     
-    //DISCONNECTIONS BEFORE DELETES
-
-    @PreRemove
-    private void removeProjectsAssociation(){  //add this where you have @jointable(name,joincolumns,inversejoincolumns)
-        for(Project project : projects){
-            project.getPersons().remove(this);  //disconnect this person from each project
-        }
-        projects.clear();  //disconnect all projects from this person
-    }
+    //DISCONNECTIONS BEFORE DELETES, better do it manually!!!
+    // @PreRemove
+    // private void removeProjectsAssociation(){  //add this where you have @jointable(name,joincolumns,inversejoincolumns)
+    //     for(Project project : projects){
+    //         project.getPersons().remove(this);  //disconnect this person from each project
+    //     }
+    //     projects.clear();  //disconnect all projects from this person
+    // }
 }

@@ -1,5 +1,6 @@
 package org.lessons.exam.spring_examprojectmanager.controllers;
 
+import java.security.Security;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,15 +10,18 @@ import org.lessons.exam.spring_examprojectmanager.models.Person;
 import org.lessons.exam.spring_examprojectmanager.security.CustomUserDetails;
 import org.lessons.exam.spring_examprojectmanager.services.CompanyService;
 import org.lessons.exam.spring_examprojectmanager.services.PersonService;
+import org.lessons.exam.spring_examprojectmanager.services.SecurityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -29,11 +33,13 @@ public class CompanyController {
     
     private final CompanyService companyService;
     private final PersonService personService;
+    private final SecurityService securityService;
 
     @Autowired
-    public CompanyController(CompanyService companyService, PersonService personService) {
+    public CompanyController(CompanyService companyService, PersonService personService, SecurityService securityService) {
         this.companyService = companyService;
         this.personService = personService;
+        this.securityService = securityService;
     }   
 
     //READ
@@ -74,9 +80,7 @@ public class CompanyController {
         if(bindingResult.hasErrors()){
             return "entities/companies/create-or-edit.html";
         }
-        System.out.println(company);
         Company savedCompany = companyService.create(company);
-        System.out.println("after .create() method...");
         return "redirect:/clients/create?companyId=" + savedCompany.getId();
     }
 
@@ -88,25 +92,25 @@ public class CompanyController {
         model.addAttribute("edit", true);
         return "entities/companies/create-or-edit.html";
     }
-    @PostMapping("/{id}/update")
-    public String companiesUpdate(@Valid @ModelAttribute("company") Company company, @PathVariable Integer id,
-    BindingResult bindingResult, @AuthenticationPrincipal CustomUserDetails customUserDetails, Model model){
+    @PutMapping("/{id}/update")
+    public String companiesUpdate(@Valid @ModelAttribute("company") Company company,
+    BindingResult bindingResult, @PathVariable Integer id, @AuthenticationPrincipal CustomUserDetails customUserDetails, Model model){
         if(bindingResult.hasErrors()){
             model.addAttribute("edit", true);
             return "entities/companies/create-or-edit.html";
         }
         companyService.edit(company, customUserDetails);
-        return "redirect:/projects";  //TODO To redirect better
+        return "redirect:/companies/" + companyService.securityGetSingleCompany(id, customUserDetails).getId();
     }
 
 
     //DELETE
-    @GetMapping("/{id}/delete")
-    public String companiesDelete(@PathVariable Integer id, @AuthenticationPrincipal CustomUserDetails customUserDetails){
+    @DeleteMapping("/{id}/delete")
+    public String companiesDelete(@PathVariable Integer id, @AuthenticationPrincipal CustomUserDetails customUserDetails, Model model){
+        Person person = securityService.checkPersonForActualUser(customUserDetails);
         companyService.deleteById(id, customUserDetails);
-        return "redirect:/projects";  //TODO To redirect better
+        return "redirect:/persons/single-or-company?personId="+person.getId();
+        //return "redirect:/";
     }
 
-
-    
 }

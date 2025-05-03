@@ -6,6 +6,8 @@ import java.util.Optional;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.lessons.exam.spring_examprojectmanager.exceptions.ResourceNotFoundException;
+import org.lessons.exam.spring_examprojectmanager.models.Client;
+import org.lessons.exam.spring_examprojectmanager.models.Company;
 import org.lessons.exam.spring_examprojectmanager.models.Person;
 import org.lessons.exam.spring_examprojectmanager.models.Project;
 import org.lessons.exam.spring_examprojectmanager.models.User;
@@ -20,11 +22,16 @@ public class PersonService {
     private final PersonRepo personRepo;
     private final UserService userService;
     private final ProjectService projectService;
+    private final CompanyService companyService;
+    private final ClientService clientService;
+
     @Autowired 
-    public PersonService(PersonRepo personRepo, UserService userService, @Lazy ProjectService projectService) {
+    public PersonService(PersonRepo personRepo, UserService userService, @Lazy ProjectService projectService, CompanyService companyService, ClientService clientService) {
         this.personRepo = personRepo;
         this.userService = userService;
         this.projectService = projectService;
+        this.companyService = companyService;
+        this.clientService = clientService;
     }
 
 
@@ -109,7 +116,8 @@ public class PersonService {
     }
 
     //UPDATE
-    public Person edit(Person personToEdit){
+    @PreAuthorize("@securityService.hasAccessToPerson(#personToEdit.id, authentication)")
+    public Person edit(Person personToEdit, CustomUserDetails customUserDetails){
         if(personToEdit == null){
             throw new IllegalArgumentException("Person to update cannot be null.");
         }
@@ -118,17 +126,48 @@ public class PersonService {
         //update one field at a time!(x security & x help Spring)
         existingPerson.setFirstname(personToEdit.getFirstname());
         existingPerson.setLastname(personToEdit.getLastname());
-        //existingPerson.setUsername(personToEdit.getUsername());
         existingPerson.setEmail(personToEdit.getEmail());
         existingPerson.setPhoneNumber(personToEdit.getPhoneNumber());
         existingPerson.setCountry(personToEdit.getCountry());
         existingPerson.setBirthdate(personToEdit.getBirthdate());
+
+        //refresh all
+        User freshUser = userService.checkedExistsById(personToEdit.getUser().getId());
+        existingPerson.setUser(freshUser);
+        freshUser.setPerson(existingPerson);
+
+        if(personToEdit.getCompany() != null){
+            Company freshCompany = companyService.checkedExistsById(personToEdit.getCompany().getId());
+            existingPerson.setCompany(freshCompany);
+            freshCompany.getPersons().add(existingPerson);
+        }
+
+        if(personToEdit.getClient() != null){
+            Client freshClient = clientService.checkedExistsById(personToEdit.getClient().getId());
+            existingPerson.setClient(freshClient);
+            freshClient.setPerson(existingPerson);
+        }
+
+        List<Project> freshProjects = personToEdit.getProjects().stream()  //fresh upload from db
+        .map(project -> projectService.checkedExistsById(project.getId())) 
+        .toList();
+        for(Project oldProject : existingPerson.getProjects()){
+            oldProject.getPersons().remove(existingPerson);  //remove this person from any single old proj
+        }
+        existingPerson.getProjects().clear();  //clear all old projects list
+        existingPerson.getProjects().addAll(freshProjects);  //reassign
+        for (Project project : freshProjects){
+            if (!project.getPersons().contains(existingPerson)){
+                project.getPersons().add(existingPerson);  //reassign
+            }
+        }
 
         return personRepo.save(existingPerson);
     }
 
     
     //DELETE
+    @PreAuthorize("hasRole('ROLE_ADMIN') or @securityService.hasAccessToPerson(#personToDelete.id, authentication)")
     public void delete(Person personToDelete){
         if(personToDelete == null){
             throw new IllegalArgumentException("Person to delete cannot be null.");
@@ -136,8 +175,10 @@ public class PersonService {
         personRepo.delete(personToDelete);
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN') or @securityService.hasAccessToPerson(#id, authentication)")
     public void deleteById(Integer id){
         Person personToDelete = checkedExistsById(id);
+        //IF U WANT DELETE ACCOUNT(cascade delete person->company->client->projects->task) do it from 'user delete'
         personRepo.delete(personToDelete);
     }
 

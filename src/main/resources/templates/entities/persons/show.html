@@ -55,7 +55,7 @@
                             th:text="${person.company.companyLegalName}"></a>
                             <span th:if="${person.company == null}" class="text-muted">
                                 <span class="me-1">No company.</span>
-                                <a th:href="@{/companies/create}">Create new company</a>
+                                <a th:href="@{/companies/create(personId=${person.id})}">Create new company</a>
                             </span>
                         </p>
                     </div>

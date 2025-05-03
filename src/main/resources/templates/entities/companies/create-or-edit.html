@@ -30,9 +30,14 @@
 
         <form th:action="@{${edit}? @{|/companies/${company.id}/update|} : @{|/companies/store|}  }" method="post" th:object="${company}" class="mt-3">
             <input th:if="${edit}" type="hidden" name="_method" value="put">
+            <input type="hidden" th:field="*{client}" />
+            <th:block th:each="p, iterStat : *{projects}">
+                <input type="hidden" th:field="*{projects[__${iterStat.index}__].id}" />  <!--x regex in a *{} of thymeleaf-->
+            </th:block>
             <th:block th:each="p, iterStat : *{persons}">
                 <input type="hidden" th:field="*{persons[__${iterStat.index}__].id}" />  <!--x regex in a *{} of thymeleaf-->
             </th:block>
+
 
             <div class="form-group mb-2">
                 <label for="companyLegalName" class="form-label">Company Legal Name</label>

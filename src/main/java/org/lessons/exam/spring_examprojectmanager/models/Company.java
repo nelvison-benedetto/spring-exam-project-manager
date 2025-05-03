@@ -18,6 +18,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.PreRemove;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Min;
@@ -63,15 +64,15 @@ public class Company implements Serializable{
     
     @Override
     public String toString(){
-        return String.format("%s %s %s %s %s %s", id, companyLegalName, companyUsername, companyEIN, companyStateTaxID, clients, projects);
+        return String.format("%s %s %s %s %s %s", id, companyLegalName, companyUsername, companyEIN, companyStateTaxID, client, projects);
     }
 
     
     //RELATIONS
     
-    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @JsonBackReference
-    private List<Client> clients = new ArrayList<>();
+    private Client client;
     
 
     @ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE }, fetch = FetchType.LAZY)  
@@ -84,20 +85,19 @@ public class Company implements Serializable{
     private List<Project> projects = new ArrayList<>();
 
 
-    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "company", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = false, fetch = FetchType.LAZY)
     @JsonBackReference
     private List<Person> persons = new ArrayList<>();
 
 
-    //DISCONNECTIONS BEFORE DELETES
-    
-    @PreRemove
-    private void removeProjectsAssociation() {  //add this where you have @jointable(name,joincolumns,inversejoincolumns)
-        for(Project project : projects){
-            project.getCompanies().remove(this);  //disconnect this company from each project
-        }
-        projects.clear();  //disconnect all projects from this company
-    }
+    // //DISCONNECTIONS BEFORE DELETE,  //THIS ISN'T SUGGESTED BECAUSE THE DELETED IS ALWAYS COMPLICATED TO MANAGE, manage it manually!
+    // @PreRemove
+    // private void removeProjectsAssociation() {  //add this where you have @jointable(name,joincolumns,inversejoincolumns)
+    //     for(Project project : projects){
+    //         project.getCompanies().remove(this);  //disconnect this company from each project
+    //     }
+    //     projects.clear();  //disconnect all projects from this company
+    // }
 }
 
 

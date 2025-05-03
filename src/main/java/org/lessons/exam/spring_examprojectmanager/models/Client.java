@@ -94,7 +94,7 @@ public class Client implements Serializable{
     
     //RELATIONS
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "company_id")
     @JsonManagedReference
     private Company company;

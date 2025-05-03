@@ -25,22 +25,22 @@ public class CompanySeeder {
 
                 new Company(null, "TechNova Solutions", "technova", 
                 "12-3456789", "123-4567-8", 
-                            new ArrayList<>(), new ArrayList<>(), new ArrayList<>()
+                            null, new ArrayList<>(), new ArrayList<>()
                 ),
 
                 new Company(null, "DarkOcean Inc", "darkocean", 
                 "23-4567890", "234-5678-3",
-                            new ArrayList<>(), new ArrayList<>(), new ArrayList<>()
+                            null, new ArrayList<>(), new ArrayList<>()
                 ),
 
                 new Company(null, "GreenByte LLC", "greenbyte", 
                 "98-7654321", "987-6543-2",
-                            new ArrayList<>(), new ArrayList<>(), new ArrayList<>()
+                            null, new ArrayList<>(), new ArrayList<>()
                 ),
                 
                 new Company(null, "PixelCraft Studios", "pixelcraft", 
                 "45-1234567", "456-7890-1",
-                            new ArrayList<>(), new ArrayList<>(), new ArrayList<>()
+                            null, new ArrayList<>(), new ArrayList<>()
                 )
             
             ));
