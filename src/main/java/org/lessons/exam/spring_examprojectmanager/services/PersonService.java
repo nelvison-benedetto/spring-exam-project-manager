@@ -65,7 +65,8 @@ public class PersonService {
         return personRepo.findAll();
     }
 
-    @PreAuthorize("@securityService.hasAccessToPerson(#id, authentication)")
+    //@PreAuthorize("@securityService.hasAccessToPerson(#id, authentication)")  //removed so persons(auth but not main) can see persons/{id} page !
+    @PreAuthorize("isAuthenticated()")
     public Person getById(Integer id){
         Person personFound = checkedExistsById(id);
         return personFound;
@@ -185,13 +186,34 @@ public class PersonService {
 
     //OTHERS
     @PreAuthorize("isAuthenticated()")
-    public List<Person> personsRecruitPerson(CustomUserDetails customUserDetails){
+    public List<Person> personsFindAllLessMain(CustomUserDetails customUserDetails){
         Person person = checkPersonForActualUser(customUserDetails);
         List<Person> persons = findAll()
             .stream()
             .filter(p -> ! p.getId().equals(person.getId())).toList();
         return persons;
     }
+
+    @PreAuthorize("isAuthenticated()")
+    public List<Person> personsSearchByForm(String email, String phoneNumber, CustomUserDetails customUserDetails ){
+        Person person = checkPersonForActualUser(customUserDetails);
+
+        boolean hasEmail = email != null && !email.isBlank();
+        boolean hasPhone = phoneNumber != null && !phoneNumber.isBlank();
+
+        if (hasEmail && hasPhone) {
+            return personRepo.findByEmailContainingAndPhoneNumberContainingAndIdNot(email, phoneNumber, person.getId());
+        } else if (hasEmail) {
+            return personRepo.findByEmailContainingAndIdNot(email, person.getId());
+        } else if (hasPhone) {
+            return personRepo.findByPhoneNumberContainingAndIdNot(phoneNumber, person.getId());
+        } else {
+            return personRepo.findByIdNot(person.getId());
+        }
+
+    }
+
+
 
 
 }

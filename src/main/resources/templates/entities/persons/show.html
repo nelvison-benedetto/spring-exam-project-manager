@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -51,11 +51,11 @@
                         <p class="form-control-plaintext">
                             <a th:if="${person.company != null}"
                             th:href="@{'/companies/' + ${person.company.id}}"
-                            class="badge bg-info text-dark text-decoration-none"
+                            class="badge bg-info text-white text-decoration-none"
                             th:text="${person.company.companyLegalName}"></a>
                             <span th:if="${person.company == null}" class="text-muted">
                                 <span class="me-1">No company.</span>
-                                <a th:href="@{/companies/create(personId=${person.id})}">Create new company</a>
+                                <a th:if="${canEditPerson}"  th:href="@{/companies/create(personId=${person.id})}">Create new company</a>
                             </span>
                         </p>
                     </div>
@@ -74,7 +74,7 @@
             </div>
 
             <div class="card-footer bg-light text-end rounded-bottom-4">
-                <a th:href="@{/persons/{id}/edit(id=${person.id})}" class="btn bg-purple text-white me-1">
+                <a th:if="${canEditPerson}" th:href="@{/persons/{id}/edit(id=${person.id})}" class="btn bg-purple text-white me-1">
                     <i class="bi bi-pencil me-1"></i>
                     <span>Edit</span>
                 </a>

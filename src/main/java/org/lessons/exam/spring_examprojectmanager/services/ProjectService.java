@@ -71,6 +71,13 @@ public class ProjectService {
 
 
     //READ
+
+    @PreAuthorize("isAuthenticated()")
+    public Project getByIdNoSecMain(Integer id){
+        Project projectFound = getById(id);
+        return projectFound;
+    }
+
     @PreAuthorize("isAuthenticated()")
     public List<Project> findAll(){
         return projectRepo.findAll();

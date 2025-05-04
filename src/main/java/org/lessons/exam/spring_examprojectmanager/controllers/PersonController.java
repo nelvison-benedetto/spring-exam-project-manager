@@ -4,11 +4,15 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.lessons.exam.spring_examprojectmanager.models.Person;
+import org.lessons.exam.spring_examprojectmanager.models.Project;
 import org.lessons.exam.spring_examprojectmanager.models.User;
 import org.lessons.exam.spring_examprojectmanager.security.CustomUserDetails;
 import org.lessons.exam.spring_examprojectmanager.services.PersonService;
+import org.lessons.exam.spring_examprojectmanager.services.ProjectService;
+import org.lessons.exam.spring_examprojectmanager.services.SecurityService;
 import org.lessons.exam.spring_examprojectmanager.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -30,10 +34,15 @@ public class PersonController {
     
     private final PersonService personService;
     private final UserService userService;
+    private final SecurityService securityService;
+    private final ProjectService projectService;
+
     @Autowired
-    public PersonController(PersonService personService, UserService userService) {
+    public PersonController(PersonService personService, UserService userService, SecurityService securityService, ProjectService projectService) {
         this.personService = personService;
         this.userService = userService;
+        this.securityService = securityService;
+        this.projectService = projectService;
     }
 
     //READ
@@ -45,9 +54,10 @@ public class PersonController {
     }
 
     @GetMapping("/{id}")
-    public String personsShow(@PathVariable Integer id, @AuthenticationPrincipal CustomUserDetails customUserDetails, Model model){
+    public String personsShow(@PathVariable Integer id, @AuthenticationPrincipal CustomUserDetails customUserDetails, Authentication authentication, Model model){  //Authentication from 'security.core....' !
         Person person = personService.getById(id);
         model.addAttribute("person", person);
+        model.addAttribute("canEditPerson", securityService.hasAccessToPerson(person.getId(), authentication));
         return "entities/persons/show.html";
     }
 
@@ -101,7 +111,7 @@ public class PersonController {
         return "redirect:/";
     }
 
-    
+
     //OTHERS
 
     @GetMapping("/single-or-company")
@@ -110,12 +120,27 @@ public class PersonController {
         return "entities/persons/single-or-company.html";
     }
 
-    @GetMapping("/recruit-person")
-    public String personsRecruitPerson(@AuthenticationPrincipal CustomUserDetails customUserDetails, Model model) {
-        List<Person> persons = personService.personsRecruitPerson(customUserDetails);
+    @GetMapping("/recruit-person")  //TODO se riceve projectId allora link project-person, se no link company-person (questo lo setti se arrivi da page persons/{id}). 
+    public String personsRecruitPerson(@RequestParam(value = "projectId", required = false, defaultValue = "") Integer projectId, @AuthenticationPrincipal CustomUserDetails customUserDetails, Model model ) {
+        //personService.personsRecruitSets(projectId, customUserDetails); 
+        
+        List<Person> persons = personService.personsFindAllLessMain(customUserDetails);
+        Project project = projectService.getByIdNoSecMain(projectId);
         model.addAttribute("persons", persons);
+        model.addAttribute("project", project);
         return "entities/persons/recruit-person.html";
     }
 
+    @GetMapping("/searchByForm")
+    public String personsSearchByForm(@AuthenticationPrincipal CustomUserDetails customUserDetails,
+        @RequestParam(name="email", required = false, defaultValue = "") String email,
+        @RequestParam(name="phoneNumber", required = false, defaultValue = "") String phoneNumber,
+        Model model
+    ){
+        List<Person> persons = personService.personsSearchByForm(email, phoneNumber, customUserDetails);
+
+        model.addAttribute("persons", persons);
+        return "entities/persons/recruit-person.html";
+    }
 
 }

@@ -1,16 +1,36 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Persons Recruit</title>
+    <th:block th:replace="~{fragments/head.html::bootstrap}" />  <!-- ~ :  Alt+126(numerini)-->
     <th:block th:replace="~{fragments/head.html::style_jsscript}" />
-    <th:block th:replace="~{fragments/head.html::dayjs_x_prettydate}" />
 </head>
-<body class="debug">
+<body class="bg-form">
+
+    <nav th:replace="~{fragments/layout.html::navbarNubbin}"></nav>
+
     <div class="container my-5">
 
-        <h1 class="mb-4">Recruitable Persons</h1>
+        <h1 class="mb-4 fw-bold text-primary">Recruitable Persons</h1>
+
+        <form th:action="@{/persons/searchByForm}" method="get" class="card p-4 rounded mb-4">
+            <h3 class="fs-2">Filter by</h3>
+            <div class="form-group mb-2">
+                <label for="email">Email</label>
+                <input type="text" class="form-control" name="email" id="email">
+            </div>
+            <div class="form-group mb-4">
+                <label for="phoneNumber">Phone Number</label>
+                <input type="text" class="form-control" name="phoneNumber" id="phoneNumber">
+            </div>
+            <div class="text-start d-flex gap-3">
+                <button type="submit" class="btn btn-primary ">Submit</button>
+                <a type="reset" class="btn btn-secondary" th:href="@{/persons/recruit-person}">Clean all</a>
+            </div>
+        </form>
+
 
         <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
             <div class="col" th:each="person : ${persons}">
@@ -31,8 +51,12 @@
                                 th:text="${#temporals.format(person.birthdate, 'yyyy-MM-dd')}"></span>
                         </p>
                     </div>
-                    <div class="card-footer bg-transparent border-top-0">
-                        <a href="#" class="btn btn-outline-primary w-100">View Profile</a>
+                    <div class="card-footer bg-transparent border-top-0 d-flex flex-column gap-2">
+                        <a th:href="@{/persons/{id}(id=${person.id})}" class="btn btn-outline-primary w-100">View Profile</a>
+                        <a th:href="@{/persons}" class="btn bg-purple text-white w-100">  <!-- TODO url target-->
+                            <span>Associate to Project</span>
+                            <strong th:if="${project != null}" th:text="${project.title}" class="fw-bolder">fallback</strong>
+                        </a>
                     </div>
                 </div>
             </div>
