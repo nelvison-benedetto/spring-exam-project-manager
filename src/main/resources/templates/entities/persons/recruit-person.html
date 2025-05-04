@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Persons Recruit</title>
+    <th:block th:replace="~{fragments/head.html::style_jsscript}" />
+    <th:block th:replace="~{fragments/head.html::dayjs_x_prettydate}" />
+</head>
+<body class="debug">
+    <div class="container my-5">
+
+        <h1 class="mb-4">Recruitable Persons</h1>
+
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            <div class="col" th:each="person : ${persons}">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body">
+                        <h5 class="card-title" th:text="${person.firstname + ' ' + person.lastname}"></h5>
+                        <p class="card-text mb-1">
+                            <strong>Email:</strong> <span th:text="${person.email}"></span>
+                        </p>
+                        <p class="card-text mb-1">
+                            <strong>Phone:</strong> <span th:text="${person.phoneNumber}"></span>
+                        </p>
+                        <p class="card-text mb-1">
+                            <strong>Country:</strong> <span th:text="${person.country}"></span>
+                        </p>
+                        <p class="card-text mb-1">
+                            <strong>Birthdate:</strong> <span
+                                th:text="${#temporals.format(person.birthdate, 'yyyy-MM-dd')}"></span>
+                        </p>
+                    </div>
+                    <div class="card-footer bg-transparent border-top-0">
+                        <a href="#" class="btn btn-outline-primary w-100">View Profile</a>
+                    </div>
+                </div>
+            </div>
+            <div th:if="${#lists.isEmpty(persons)}" class="text-center text-muted py-4">
+                <i class="bi bi-folder-x fs-3 d-block mb-2"></i>
+                <span>No projects found.</span>
+            </div>
+        </div>
+
+
+    </div>
+
+</body>
+</html>

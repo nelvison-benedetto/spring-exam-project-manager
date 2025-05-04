@@ -56,6 +56,8 @@ public class CompanyController {
         if(company == null){
             return "errors/404.html";
         }
+        
+
         model.addAttribute("company", company);
         return "entities/companies/show.html";
     }

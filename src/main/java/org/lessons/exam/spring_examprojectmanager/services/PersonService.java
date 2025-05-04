@@ -182,4 +182,16 @@ public class PersonService {
         personRepo.delete(personToDelete);
     }
 
+
+    //OTHERS
+    @PreAuthorize("isAuthenticated()")
+    public List<Person> personsRecruitPerson(CustomUserDetails customUserDetails){
+        Person person = checkPersonForActualUser(customUserDetails);
+        List<Person> persons = findAll()
+            .stream()
+            .filter(p -> ! p.getId().equals(person.getId())).toList();
+        return persons;
+    }
+
+
 }

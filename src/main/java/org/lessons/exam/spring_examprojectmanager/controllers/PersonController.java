@@ -1,6 +1,7 @@
 package org.lessons.exam.spring_examprojectmanager.controllers;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.lessons.exam.spring_examprojectmanager.models.Person;
 import org.lessons.exam.spring_examprojectmanager.models.User;
@@ -71,12 +72,6 @@ public class PersonController {
         return "redirect:/persons/single-or-company?personId=" + savedPerson.getId();
     }
 
-    @GetMapping("/single-or-company")
-    public String personsChoosePersonOrCompany(@RequestParam("personId") Integer personId, Model model) {
-        model.addAttribute("personId", personId);
-        return "entities/persons/single-or-company.html";
-    }
-
     //UPDATE
     @GetMapping("/{id}/edit")
     public String personsEdit(@PathVariable Integer id, @AuthenticationPrincipal CustomUserDetails customUserDetails, Model model) {
@@ -106,5 +101,21 @@ public class PersonController {
         return "redirect:/";
     }
 
-    //FILTERS
+    
+    //OTHERS
+
+    @GetMapping("/single-or-company")
+    public String personsChoosePersonOrCompany(@RequestParam("personId") Integer personId, Model model) {
+        model.addAttribute("personId", personId);
+        return "entities/persons/single-or-company.html";
+    }
+
+    @GetMapping("/recruit-person")
+    public String personsRecruitPerson(@AuthenticationPrincipal CustomUserDetails customUserDetails, Model model) {
+        List<Person> persons = personService.personsRecruitPerson(customUserDetails);
+        model.addAttribute("persons", persons);
+        return "entities/persons/recruit-person.html";
+    }
+
+
 }

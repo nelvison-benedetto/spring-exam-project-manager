@@ -8,7 +8,7 @@
     <th:block th:replace="~{fragments/head.html::style_jsscript}" />
     <th:block th:replace="~{fragments/head.html::dayjs_x_prettydate}" />
 </head>
-<body class="bg-form">
+<body class="bg-form ">
     <nav th:replace="~{fragments/layout.html::navbarNubbin}"></nav>
 
     <div class="container">
@@ -64,6 +64,51 @@
                 </div>
             </div>
 
+
+            <div class="card mb-4" th:if="${personHeader != null}">
+                <div class="card-body">
+                    <h5 class="card-title text-secondary">Associated People</h5>
+                    <ul class="list-group mb-3">
+                        <li th:each="personAssociated : ${project.persons}" th:if="${personAssociated.id != personHeader.id}"
+                            class="list-group-item d-flex justify-content-between align-items-center">
+                            <a th:href="@{'/persons/'+${personAssociated.id}}"
+                               th:text="${personAssociated.firstname + ' ' + personAssociated.lastname}"
+                               class="text-decoration-none"></a>
+                            <i class="bi bi-person-lines-fill"></i>
+                        </li>
+                    </ul>
+                    <div class="text-center">
+                        <a th:href="@{/persons/recruit-person}" class="btn btn-outline-primary">
+                            <i class="bi bi-person-plus me-1"></i> Recruit New Person
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="card mb-4" th:if="${personHeader != null && personHeader.company != null}">  <!--visible only for company, so they can collaborate with others companies-->
+                <div class="card-body">
+                    <h5 class="card-title text-secondary">Associated Companies</h5>
+                    <ul class="list-group mb-3">
+                        <li th:each="companyAssociated : ${project.companies}"
+                            th:if="${companyAssociated.id != personHeader.company.id}"
+                            class="list-group-item d-flex justify-content-between align-items-center">
+                            <a th:href="@{'/companies/'+${companyAssociated.id}}"
+                               th:text="${companyAssociated.companyUsername + ' ' + companyAssociated.companyLegalName}"
+                               class="text-decoration-none"></a>
+                            <i class="bi bi-building"></i>
+                        </li>
+                    </ul>
+                    <div class="text-center">
+                        <a th:href="@{/companies/partner-company}" class="btn btn-outline-primary">
+                            <i class="bi bi-building-add me-1"></i> Invite New Partner Company
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+
+
             <div class="row">
                 <div class="col-12 col-md-6">
                     <div th:if="${project.isActive}" 
@@ -90,11 +135,15 @@
             <hr class="w-80 mb-4" >
 
             <article class="mt-3">
-                <h2 class="mb-4">Tasks</h2>
-                <a th:href="@{/tasks/{id}/create(id=${project.id})}" class="btn btn-primary mb-4">
-                    <i class="bi bi-plus-circle me-2"></i>
-                    <span class="">Add</span>
-                </a>
+                <h2 class="mb-4 d-flex flex-column gap-2">
+                    <d>Tasks</d>
+                    <div>
+                        <a th:href="@{/tasks/{id}/create(id=${project.id})}" class="btn btn-primary ">
+                            <i class="bi bi-plus-circle me-2"></i> Add Task
+                        </a>
+                    </div>
+                </h2>
+                
                 <div class="row g-3" th:if="${not #lists.isEmpty(project.tasks)}">
 
                     <div class="col-12 d-flex" th:each="task : ${project.tasks}">
@@ -155,6 +204,7 @@
                                         <p class="mb-1 pt-1 pb-1"><span class="fw-semibold">End:</span> <span th:text="${#temporals.format(task.taskEndDate, 'yyyy/MM/dd')}">End Date</span></p>
                                     </div>
                                 </div>
+
             
                                 <div class="mt-2 row ">
                                     <div class="col-12 col-md-6">
@@ -173,9 +223,9 @@
 
                 </div>
                 
-                <h4 th:if="${ #lists.isEmpty(project.tasks)}" class="text-center text-muted d-flex flex-column justify-content-center align-items-center gap-3 py-4" >
-                    <i class="bi bi-clipboard2-x"></i>
-                    <span style="font-size: 1.3rem;">No Tasks found.</span>
+                <h4 th:if="${ #lists.isEmpty(project.tasks)}" class="text-center text-muted d-flex flex-column justify-content-center align-items-center gap-3 py-5" >
+                    <i class="bi bi-clipboard2-x fs-1"></i>
+                    <p style="font-size: 1.3rem;">No Tasks found.</p>
                 </h4>
             </article>
 
