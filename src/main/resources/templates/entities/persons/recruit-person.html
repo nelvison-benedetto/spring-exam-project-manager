@@ -16,6 +16,9 @@
         <h1 class="mb-4 fw-bold text-primary">Recruitable Persons</h1>
 
         <form th:action="@{/persons/searchByForm}" method="get" class="card p-4 rounded mb-4">
+            <input th:if="${project != null}" type="hidden" name="projectId" th:value="${project.id}">
+            <input th:if="${company != null}" type="hidden" name="companyId" th:value="${company.id}">
+
             <h3 class="fs-2">Filter by</h3>
             <div class="form-group mb-2">
                 <label for="email">Email</label>
@@ -53,19 +56,22 @@
                     </div>
                     <div class="card-footer bg-transparent border-top-0 d-flex flex-column gap-2">
                         <a th:href="@{/persons/{id}(id=${person.id})}" class="btn btn-outline-primary w-100">View Profile</a>
-                        <a th:href="@{/persons}" class="btn bg-purple text-white w-100">  <!-- TODO url target-->
+                        <a th:if="${project != null}" th:href="@{/projects/{projectId}/associate/{personId}(projectId=${project.id}, personId=${person.id})}" class="btn bg-purple text-white w-100">
                             <span>Associate to Project</span>
-                            <strong th:if="${project != null}" th:text="${project.title}" class="fw-bolder">fallback</strong>
+                            <strong th:text="${project.title}" class="fw-bolder">fallback</strong>
+                        </a>
+                        <a th:if="${company != null}" th:href="@{/companies/{companyId}/associate/{personId}(companyId=${company.id}, personId=${person.id})}" class="btn bg-purple text-white w-100">
+                            <span>Associate to Company</span>
+                            <strong th:text="${company.companyLegalName}" class="fw-bolder">fallback</strong>
                         </a>
                     </div>
                 </div>
             </div>
             <div th:if="${#lists.isEmpty(persons)}" class="text-center text-muted py-4">
-                <i class="bi bi-folder-x fs-3 d-block mb-2"></i>
-                <span>No projects found.</span>
+                <i class="bi bi-person-x fs-3 d-block mb-2"></i>
+                <span>No persons found.</span>
             </div>
         </div>
-
 
     </div>
 

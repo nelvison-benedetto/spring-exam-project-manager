@@ -7,9 +7,11 @@ import java.util.List;
 import org.lessons.exam.spring_examprojectmanager.models.Client;
 import org.lessons.exam.spring_examprojectmanager.models.Company;
 import org.lessons.exam.spring_examprojectmanager.models.Person;
+import org.lessons.exam.spring_examprojectmanager.models.Project;
 import org.lessons.exam.spring_examprojectmanager.security.CustomUserDetails;
 import org.lessons.exam.spring_examprojectmanager.services.CompanyService;
 import org.lessons.exam.spring_examprojectmanager.services.PersonService;
+import org.lessons.exam.spring_examprojectmanager.services.ProjectService;
 import org.lessons.exam.spring_examprojectmanager.services.SecurityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -34,12 +36,14 @@ public class CompanyController {
     private final CompanyService companyService;
     private final PersonService personService;
     private final SecurityService securityService;
+    private final ProjectService projectService;
 
     @Autowired
-    public CompanyController(CompanyService companyService, PersonService personService, SecurityService securityService) {
+    public CompanyController(CompanyService companyService, PersonService personService, SecurityService securityService, ProjectService projectService) {
         this.companyService = companyService;
         this.personService = personService;
         this.securityService = securityService;
+        this.projectService = projectService;
     }   
 
     //READ
@@ -114,5 +118,30 @@ public class CompanyController {
         return "redirect:/persons/single-or-company?personId="+person.getId();
         //return "redirect:/";
     }
+
+    //OTHERS
+
+    @GetMapping("/{companyId}/associate/{personId}")
+    public String associatePersonToCompany(@PathVariable Integer companyId, @PathVariable Integer personId){
+        personService.personsAssociatePersonToCompany(companyId, personId);
+        return "redirect:/companies/" + companyId;
+    }
+
+    @GetMapping("/partner-company")
+    public String companiesPartnerCompany(
+        @RequestParam(value = "projectId", required = false) Integer projectId,
+        @AuthenticationPrincipal CustomUserDetails customUserDetails, Model model){
+
+        List<Company> companies = companyService.companiesFindAllLessMain(customUserDetails);
+        model.addAttribute("companies", companies);
+
+        if (projectId != null){
+            Project project = projectService.getByIdNoSecMain(projectId);
+            model.addAttribute("project", project);
+        }
+
+        return "entities/companies/partner-company.html";
+    }
+
 
 }

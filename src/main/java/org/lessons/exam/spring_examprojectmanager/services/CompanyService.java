@@ -64,6 +64,13 @@ public class CompanyService {
     }
 
     //READ
+
+    @PreAuthorize("isAuthenticated()")
+    public Company getByIdNoSecMain(Integer id){
+        Company companyFound = getById(id);
+        return companyFound;
+    }
+
     @PreAuthorize("isAuthenticated()")
     public List<Company> findAll(){
         return companyRepo.findAll();
@@ -216,6 +223,19 @@ public class CompanyService {
 
         companyRepo.delete(companyToDelete);
     }   
+
+
+    //OTHERS
+
+    @PreAuthorize("isAuthenticated()")
+    public List<Company> companiesFindAllLessMain(CustomUserDetails customUserDetails){
+        
+        Person person = securityService.checkPersonForActualUser(customUserDetails);
+        List<Company> companies = companyRepo.findAll()
+            .stream()
+            .filter(c -> ! c.getId().equals(person.getCompany().getId())).toList();
+        return companies;
+    }
 
 
     //FILTERS

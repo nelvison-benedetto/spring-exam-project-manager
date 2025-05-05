@@ -11,7 +11,9 @@ import org.lessons.exam.spring_examprojectmanager.models.Company;
 import org.lessons.exam.spring_examprojectmanager.models.Person;
 import org.lessons.exam.spring_examprojectmanager.models.Project;
 import org.lessons.exam.spring_examprojectmanager.models.User;
+import org.lessons.exam.spring_examprojectmanager.repository.CompanyRepo;
 import org.lessons.exam.spring_examprojectmanager.repository.PersonRepo;
+import org.lessons.exam.spring_examprojectmanager.repository.ProjectRepo;
 import org.lessons.exam.spring_examprojectmanager.security.CustomUserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,14 +26,18 @@ public class PersonService {
     private final ProjectService projectService;
     private final CompanyService companyService;
     private final ClientService clientService;
+    private final ProjectRepo projectRepo;
+    private final CompanyRepo companyRepo;
 
     @Autowired 
-    public PersonService(PersonRepo personRepo, UserService userService, @Lazy ProjectService projectService, CompanyService companyService, ClientService clientService) {
+    public PersonService(PersonRepo personRepo, UserService userService, @Lazy ProjectService projectService, CompanyService companyService, ClientService clientService, ProjectRepo projectRepo, CompanyRepo companyRepo) {
         this.personRepo = personRepo;
         this.userService = userService;
         this.projectService = projectService;
         this.companyService = companyService;
         this.clientService = clientService;
+        this.projectRepo = projectRepo;
+        this.companyRepo = companyRepo;
     }
 
 
@@ -60,6 +66,13 @@ public class PersonService {
 
     
     //READ
+
+    @PreAuthorize("isAuthenticated()")
+    public Person getByIdNoSecMain(Integer id){
+        Person personFound = getById(id);
+        return personFound;
+    }
+
     @PreAuthorize("isAuthenticated()")
     public List<Person> findAll(){
         return personRepo.findAll();
@@ -193,6 +206,15 @@ public class PersonService {
             .filter(p -> ! p.getId().equals(person.getId())).toList();
         return persons;
     }
+    @PreAuthorize("isAuthenticated()")
+    public List<Person> personsFindAllLessMainLessWithoutCompany(CustomUserDetails customUserDetails){
+        Person person = checkPersonForActualUser(customUserDetails);
+        List<Person> persons = findAll()
+            .stream()
+            .filter(p -> ! p.getId().equals(person.getId()) && p.getCompany() == null).toList();
+        return persons;
+    }
+
 
     @PreAuthorize("isAuthenticated()")
     public List<Person> personsSearchByForm(String email, String phoneNumber, CustomUserDetails customUserDetails ){
@@ -210,10 +232,47 @@ public class PersonService {
         } else {
             return personRepo.findByIdNot(person.getId());
         }
-
     }
 
+    @PreAuthorize("isAuthenticated()")
+    public void personsAssociatePersonToProject(Integer projectId, Integer personId) {
 
+        Project project = projectService.getByIdNoSecMain(projectId);
+        Person person = getByIdNoSecMain(personId);
+
+        if (project != null && person != null) {
+            if (!person.getProjects().contains(project)) {
+                person.getProjects().add(project);
+            }
+        
+            if (!project.getPersons().contains(person)) {
+                project.getPersons().add(person);
+            }
+            personRepo.save(person);
+            projectRepo.save(project);
+        }else{
+            System.out.println("Project or Person .getByIdNoSecMain() not found.");
+        }
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    public void personsAssociatePersonToCompany(Integer companyId, Integer personId){
+
+        Company company = companyService.getByIdNoSecMain(companyId);
+        Person person = getByIdNoSecMain(personId);
+
+        if(company != null && person != null){
+            if(person.getCompany() == null && !company.getPersons().contains(person)){
+                person.setCompany(company);
+                company.getPersons().add(person);
+                personRepo.save(person);
+            }else{
+                System.out.println("Person target already has a company associated || company target has laredy associated this person.");
+            }
+        }else{
+            System.out.println("Company or Person .getByIdNoSecMain() not found.");
+        }
+    }
 
 
 }

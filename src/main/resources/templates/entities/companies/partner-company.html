@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compsnies Partner Company</title>
+    <th:block th:replace="~{fragments/head.html::bootstrap}" />  <!-- ~ :  Alt+126(numerini)-->
+    <th:block th:replace="~{fragments/head.html::style_jsscript}" />
+</head>
+<body>
+
+    <nav th:replace="~{fragments/layout.html::navbarNubbin}"></nav>
+    <div class="container my-5">
+
+        <h1 class="mb-4 fw-bold text-primary">Find Partner Companies</h1>
+
+        <div th:if="${project != null}" class="alert alert-info d-flex align-items-center gap-2">
+            <i class="bi bi-diagram-3-fill fs-4"></i>
+            <span>Associating companies to project: <strong th:text="${project.title}">Project title</strong></span>
+        </div>
+
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            <div class="col" th:each="company : ${companies}">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body">
+                        <h5 class="card-title text-primary fw-bold" th:text="${company.companyLegalName}">Company Name</h5>
+                        <p class="card-text mb-1"><strong>Email:</strong> <span th:text="${company.email}">company@email.com</span></p>
+                        <p class="card-text mb-1"><strong>VAT Number:</strong> <span th:text="${company.vatNumber}">VAT12345</span></p>
+                        <p class="card-text mb-1"><strong>Country:</strong> <span th:text="${company.country}">Italy</span></p>
+                        <p class="card-text mb-1"><strong>Phone:</strong> <span th:text="${company.phoneNumber}">+123456789</span></p>
+                    </div>
+                    <div class="card-footer bg-transparent border-top-0 d-flex flex-column gap-2">
+                        <a th:href="@{/companies/{id}(id=${company.id})}" class="btn btn-outline-primary w-100">View Profile</a>
+                        <a th:if="${project != null}" 
+                           th:href="@{/projects/{projectId}/associate-company/{companyId}(projectId=${project.id}, companyId=${company.id})}" 
+                           class="btn bg-purple text-white w-100">
+                            <span>Associate to Project</span>
+                            <strong th:text="${project.title}" class="fw-bolder">fallback</strong>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div th:if="${#lists.isEmpty(companies)}" class="text-center text-muted py-4">
+                <i class="bi bi-buildings fs-3 d-block mb-2"></i>
+                <span>No partner companies found.</span>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>

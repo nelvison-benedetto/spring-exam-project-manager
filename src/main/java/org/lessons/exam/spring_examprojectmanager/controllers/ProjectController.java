@@ -12,6 +12,7 @@ import org.lessons.exam.spring_examprojectmanager.models.Project;
 import org.lessons.exam.spring_examprojectmanager.models.User;
 import org.lessons.exam.spring_examprojectmanager.repository.ProjectRepo;
 import org.lessons.exam.spring_examprojectmanager.security.CustomUserDetails;
+import org.lessons.exam.spring_examprojectmanager.services.PersonService;
 import org.lessons.exam.spring_examprojectmanager.services.ProjectService;
 import org.lessons.exam.spring_examprojectmanager.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jakarta.persistence.Transient;
 import jakarta.validation.Valid;
@@ -36,10 +38,13 @@ public class ProjectController {
     
     private final ProjectService projectService;
     private final UserService userService;
+    private final PersonService personService;
+
     @Autowired
-    public ProjectController(ProjectService projectService, UserService userService) {
+    public ProjectController(ProjectService projectService, UserService userService, PersonService personService) {
         this.projectService = projectService;
         this.userService = userService;
+        this.personService = personService;
     }
 
     //READ
@@ -110,5 +115,13 @@ public class ProjectController {
         return "redirect:/projects";
     }
 
-    
+    //OTHERS
+
+    @GetMapping("/{projectId}/associate/{personId}")
+    public String associatePersonToProject(@PathVariable Integer projectId, @PathVariable Integer personId){
+        personService.personsAssociatePersonToProject(projectId, personId);
+        return "redirect:/projects/" + projectId;
+    }
+
+
 }

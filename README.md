@@ -1,6 +1,4 @@
 ## Spring Nubbin™ Exam Project Manager
-output:
-
 Project developed...
 
 ![Reference1](./readmefiles/nubbin1.png)
