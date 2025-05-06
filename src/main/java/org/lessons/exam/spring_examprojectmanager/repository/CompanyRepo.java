@@ -15,4 +15,11 @@ public interface CompanyRepo extends JpaRepository<Company, Integer>{
     public List<Company> findByPersonsContaining(Person person);
     public Company findByIdAndPersonsContaining(Integer companyId, Person person);
     
+    
+    public List<Company> findByCompanyLegalNameContainingAndCompanyUsernameContainingAndIdNot(String companyLegalName, String companyUsername, Integer companyId);
+    public List<Company> findByCompanyLegalNameContainingAndIdNot(String companyLegalName, Integer companyId);
+    public List<Company> findByCompanyUsernameContainingAndIdNot(String companyUsername, Integer companyId);
+    public List<Company> findByIdNot(Integer companyId);
+
+
 }

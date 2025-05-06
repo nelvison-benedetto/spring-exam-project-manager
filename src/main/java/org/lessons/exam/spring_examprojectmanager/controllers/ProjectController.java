@@ -123,5 +123,11 @@ public class ProjectController {
         return "redirect:/projects/" + projectId;
     }
 
+    @GetMapping("/projects/{projectId}/associate/{companyId}")
+    public String associateCompanyToProject(@PathVariable Integer projectId, @PathVariable Integer companyId){
+        //personService.personsAssociateCompanyToProject(projectId, companyId);  //TODO
+        return "redirect:/projects/" + projectId;
+    }
+
 
 }

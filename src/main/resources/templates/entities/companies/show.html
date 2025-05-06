@@ -83,7 +83,7 @@
                         </ul>
                     </div>
                     
-                    <div class="col-md-12 text-center mt-3">
+                    <div th:if="${canEditCompany}" class="col-md-12 text-center mt-3">
                         <a th:href="@{/persons/recruit-person(companyId=${company.id})}" class="btn btn-primary">
                             <i class="bi bi-person-plus me-1"></i>
                             <span>Recruit New Person</span>
@@ -95,7 +95,7 @@
             </div>
     
             <div class="card-footer bg-light text-end rounded-bottom-4">
-                <a th:href="@{/companies/{id}/edit(id=${company.id})}" class="btn bg-purple text-white me-1">
+                <a th:if="${canEditCompany}" th:href="@{/companies/{id}/edit(id=${company.id})}" class="btn bg-purple text-white me-1">
                     <i class="bi bi-pencil me-1"></i>
                     <span>Edit</span>
                 </a>

@@ -76,7 +76,8 @@ public class CompanyService {
         return companyRepo.findAll();
     }
 
-    @PreAuthorize("@securityService.hasAccessToCompany(#id, authentication)")
+    //@PreAuthorize("@securityService.hasAccessToCompany(#id, authentication)")
+    @PreAuthorize("isAuthenticated()")
     public Company getById(Integer id){
         Company companyFound = checkedExistsById(id);
         return companyFound;
@@ -237,6 +238,23 @@ public class CompanyService {
         return companies;
     }
 
+    @PreAuthorize("isAuthenticated()")
+    public List<Company> companiesSearchByForm(String companyLegalName, String companyUsername, CustomUserDetails customUserDetails){
+        Person person = securityService.checkPersonForActualUser(customUserDetails);  //actual person auth
+
+        boolean hasLegalName = companyLegalName != null && !companyLegalName.isBlank();
+        boolean hasUsername = companyUsername != null && !companyUsername.isBlank();
+
+        if(hasLegalName && hasUsername){
+            return companyRepo.findByCompanyLegalNameContainingAndCompanyUsernameContainingAndIdNot(companyLegalName, companyUsername, person.getCompany().getId());
+        }else if(hasLegalName){
+            return companyRepo.findByCompanyLegalNameContainingAndIdNot(companyLegalName, person.getCompany().getId());
+        }else if(hasUsername){
+            return companyRepo.findByCompanyUsernameContainingAndIdNot(companyUsername, person.getCompany().getId());
+        }else{
+            return companyRepo.findByIdNot(person.getCompany().getId());
+        }
+    }
 
     //FILTERS
 

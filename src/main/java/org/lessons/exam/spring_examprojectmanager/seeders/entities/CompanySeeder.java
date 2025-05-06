@@ -23,22 +23,22 @@ public class CompanySeeder {
 
             List<Company> companies = new ArrayList<>(Arrays.asList(
 
-                new Company(null, "TechNova Solutions", "technova", 
+                new Company(null, "QuantumArc Technologies", "quantumarc", 
                 "12-3456789", "123-4567-8", 
                             null, new ArrayList<>(), new ArrayList<>()
                 ),
 
-                new Company(null, "DarkOcean Inc", "darkocean", 
+                new Company(null, "DarkOcean Industries", "darkocean", 
                 "23-4567890", "234-5678-3",
                             null, new ArrayList<>(), new ArrayList<>()
                 ),
 
-                new Company(null, "GreenByte LLC", "greenbyte", 
+                new Company(null, "SynthForge AI", "synthforge", 
                 "98-7654321", "987-6543-2",
                             null, new ArrayList<>(), new ArrayList<>()
                 ),
                 
-                new Company(null, "PixelCraft Studios", "pixelcraft", 
+                new Company(null, "SentinelCore Solutions", "sentinelcore", 
                 "45-1234567", "456-7890-1",
                             null, new ArrayList<>(), new ArrayList<>()
                 )

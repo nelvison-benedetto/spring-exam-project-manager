@@ -14,6 +14,7 @@ import org.lessons.exam.spring_examprojectmanager.services.PersonService;
 import org.lessons.exam.spring_examprojectmanager.services.ProjectService;
 import org.lessons.exam.spring_examprojectmanager.services.SecurityService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -55,14 +56,14 @@ public class CompanyController {
     }
 
     @GetMapping("/{id}")
-    public String companiesShow(@PathVariable Integer id, @AuthenticationPrincipal CustomUserDetails customUserDetails, Model model){
-        Company company = companyService.securityGetSingleCompany(id, customUserDetails);
+    public String companiesShow(@PathVariable Integer id, @AuthenticationPrincipal CustomUserDetails customUserDetails, Authentication authentication, Model model){  //Authentication from 'security.core....' !
+        //Company company = companyService.securityGetSingleCompany(id, customUserDetails);
+        Company company = companyService.getById(id);  //using only @PreAuthorize("isAuthenticated()") to show it to anyone!!
         if(company == null){
             return "errors/404.html";
         }
-        
-
         model.addAttribute("company", company);
+        model.addAttribute("canEditCompany", securityService.hasAccessToCompany(company.getId(), authentication));
         return "entities/companies/show.html";
     }
 
@@ -127,7 +128,7 @@ public class CompanyController {
         return "redirect:/companies/" + companyId;
     }
 
-    @GetMapping("/partner-company")
+    @GetMapping("/partner-company")   //equivalent to '@GetMapping("/recruit-person")' of PersonController
     public String companiesPartnerCompany(
         @RequestParam(value = "projectId", required = false) Integer projectId,
         @AuthenticationPrincipal CustomUserDetails customUserDetails, Model model){
@@ -139,9 +140,24 @@ public class CompanyController {
             Project project = projectService.getByIdNoSecMain(projectId);
             model.addAttribute("project", project);
         }
-
         return "entities/companies/partner-company.html";
     }
 
+    @GetMapping("/searchByForm")
+    public String companiesSearchByForm(
+        @AuthenticationPrincipal CustomUserDetails customUserDetails,
+        @RequestParam(value = "projectId", required = false) Integer projectId,
+        @RequestParam(name="companyLegalName", required = false, defaultValue = "") String companyLegalName,
+        @RequestParam(name="companyUsername", required = false, defaultValue = "") String companyUsername,
+        Model model
+    ){
+        List<Company> companies = companyService.companiesSearchByForm(companyLegalName, companyUsername, customUserDetails);
+        if(projectId != null){
+            Project project = projectService.getByIdNoSecMain(projectId);
+            model.addAttribute("project", project);
+        }else{System.out.println("NO PROJECTID FOUND!!!!");}
+        model.addAttribute("companies", companies);
+        return "entities/companies/partner-company.html";
+    }
 
 }
