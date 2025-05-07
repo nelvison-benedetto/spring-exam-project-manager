@@ -12,6 +12,7 @@ import org.lessons.exam.spring_examprojectmanager.models.Project;
 import org.lessons.exam.spring_examprojectmanager.models.User;
 import org.lessons.exam.spring_examprojectmanager.repository.ProjectRepo;
 import org.lessons.exam.spring_examprojectmanager.security.CustomUserDetails;
+import org.lessons.exam.spring_examprojectmanager.services.CompanyService;
 import org.lessons.exam.spring_examprojectmanager.services.PersonService;
 import org.lessons.exam.spring_examprojectmanager.services.ProjectService;
 import org.lessons.exam.spring_examprojectmanager.services.UserService;
@@ -39,12 +40,14 @@ public class ProjectController {
     private final ProjectService projectService;
     private final UserService userService;
     private final PersonService personService;
+    private final CompanyService companyService;
 
     @Autowired
-    public ProjectController(ProjectService projectService, UserService userService, PersonService personService) {
+    public ProjectController(ProjectService projectService, UserService userService, PersonService personService, CompanyService companyService) {
         this.projectService = projectService;
         this.userService = userService;
         this.personService = personService;
+        this.companyService = companyService;
     }
 
     //READ
@@ -117,15 +120,15 @@ public class ProjectController {
 
     //OTHERS
 
-    @GetMapping("/{projectId}/associate/{personId}")
+    @GetMapping("/{projectId}/associate-person/{personId}")
     public String associatePersonToProject(@PathVariable Integer projectId, @PathVariable Integer personId){
         personService.personsAssociatePersonToProject(projectId, personId);
         return "redirect:/projects/" + projectId;
     }
 
-    @GetMapping("/projects/{projectId}/associate/{companyId}")
+    @GetMapping("/{projectId}/associate-company/{companyId}")
     public String associateCompanyToProject(@PathVariable Integer projectId, @PathVariable Integer companyId){
-        //personService.personsAssociateCompanyToProject(projectId, companyId);  //TODO
+        companyService.companiesAssociateCompanyToProject(projectId, companyId);  
         return "redirect:/projects/" + projectId;
     }
 

@@ -50,7 +50,7 @@
                     <div class="card-footer bg-transparent border-top-0 d-flex flex-column gap-2">
                         <a th:href="@{/companies/{id}(id=${company.id})}" class="btn btn-outline-primary w-100">View Company</a>
                         <a th:if="${project != null}" 
-                           th:href="@{/projects/{projectId}/associate/{companyId}(projectId=${project.id}, companyId=${company.id})}" 
+                           th:href="@{/projects/{projectId}/associate-company/{companyId}(projectId=${project.id}, companyId=${company.id})}" 
                            class="btn bg-purple text-white w-100">
                             <span>Associate to Project</span>
                             <strong th:text="${project.title}" class="fw-bolder">fallback</strong>

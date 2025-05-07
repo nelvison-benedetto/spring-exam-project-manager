@@ -43,7 +43,8 @@ public class TaskSeeder {
                     LocalDate.of(2024, 5, 31), 
                     LocalDateTime.now(), 
                     LocalDateTime.now(), 
-                    projects.get(0)
+                    projects.get(0),
+                    new ArrayList<>()
                 ),
 
                 new Task(null, 
@@ -58,7 +59,8 @@ public class TaskSeeder {
                     LocalDate.of(2024, 6, 9), 
                     LocalDateTime.now(), 
                     LocalDateTime.now(), 
-                    projects.get(1)
+                    projects.get(1),
+                    new ArrayList<>()
                 ),
 
                 new Task(null, 
@@ -73,7 +75,8 @@ public class TaskSeeder {
                     LocalDate.of(2024, 6, 19), 
                     LocalDateTime.now(), 
                     LocalDateTime.now(), 
-                    projects.get(2)
+                    projects.get(2),
+                    new ArrayList<>()
                 ),
 
                 new Task(null, 
@@ -88,7 +91,8 @@ public class TaskSeeder {
                     LocalDate.of(2024, 6, 30), 
                     LocalDateTime.now(), 
                     LocalDateTime.now(), 
-                    projects.get(3)
+                    projects.get(3),
+                    new ArrayList<>()
                 )
 
             ));

@@ -14,6 +14,7 @@ import org.lessons.exam.spring_examprojectmanager.models.Person;
 import org.lessons.exam.spring_examprojectmanager.models.Project;
 import org.lessons.exam.spring_examprojectmanager.models.Role;
 import org.lessons.exam.spring_examprojectmanager.repository.CompanyRepo;
+import org.lessons.exam.spring_examprojectmanager.repository.ProjectRepo;
 import org.lessons.exam.spring_examprojectmanager.security.CustomUserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -30,14 +31,16 @@ public class CompanyService {
     private final ProjectService projectService;
     private final PersonService personService;
     private final SecurityService securityService;
+    private final ProjectRepo projectRepo;
 
     @Autowired  //ora eseguito da Lombok w @RequiredArgsConstructor
-    public CompanyService(CompanyRepo companyRepo, @Lazy ClientService clientService, @Lazy ProjectService projectService, @Lazy PersonService personService, SecurityService securityService){
+    public CompanyService(CompanyRepo companyRepo, @Lazy ClientService clientService, @Lazy ProjectService projectService, @Lazy PersonService personService, SecurityService securityService, ProjectRepo projectRepo){
         this.companyRepo = companyRepo;
         this.clientService = clientService;
         this.projectService = projectService;
         this.personService = personService;
         this.securityService = securityService;
+        this.projectRepo = projectRepo;
     }
     
 
@@ -255,6 +258,27 @@ public class CompanyService {
             return companyRepo.findByIdNot(person.getCompany().getId());
         }
     }
+
+    @PreAuthorize("isAuthenticated()")
+    public void companiesAssociateCompanyToProject( Integer projectId, Integer companyId){
+        Project project = projectService.getByIdNoSecMain(projectId);
+        Company company = getByIdNoSecMain(companyId);
+
+        if (project != null && company != null) {
+            if (!company.getProjects().contains(project)) {
+                company.getProjects().add(project);  //assign to company target(chose from the list all of them) this project
+            }
+        
+            if (!project.getCompanies().contains(company)) {
+                project.getCompanies().add(company);
+            }
+            companyRepo.save(company);
+            projectRepo.save(project);
+        }else{
+            System.out.println("Project or Company .getByIdNoSecMain() not found.");
+        }
+    }
+
 
     //FILTERS
 

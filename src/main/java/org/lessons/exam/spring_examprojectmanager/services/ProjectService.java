@@ -233,6 +233,9 @@ public class ProjectService {
         projectRepo.delete(project);
     }
 
+    //OTHERS
+    
+
 
     //FILTERS
 

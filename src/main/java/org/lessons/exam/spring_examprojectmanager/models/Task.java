@@ -3,6 +3,8 @@ package org.lessons.exam.spring_examprojectmanager.models;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -17,6 +19,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
@@ -117,4 +120,7 @@ public class Task implements Serializable{
     @JsonManagedReference
     private Project project;
 
+    @OneToMany(mappedBy = "task", fetch = FetchType.LAZY)
+    @JsonBackReference
+    private List<Message> messages = new ArrayList<>();
 }

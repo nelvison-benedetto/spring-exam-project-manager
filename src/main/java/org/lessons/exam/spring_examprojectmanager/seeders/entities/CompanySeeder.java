@@ -28,7 +28,7 @@ public class CompanySeeder {
                             null, new ArrayList<>(), new ArrayList<>()
                 ),
 
-                new Company(null, "DarkOcean Industries", "darkocean", 
+                new Company(null, "DeepOcean Industries", "deepocean", 
                 "23-4567890", "234-5678-3",
                             null, new ArrayList<>(), new ArrayList<>()
                 ),
@@ -40,6 +40,16 @@ public class CompanySeeder {
                 
                 new Company(null, "SentinelCore Solutions", "sentinelcore", 
                 "45-1234567", "456-7890-1",
+                            null, new ArrayList<>(), new ArrayList<>()
+                ),
+
+                new Company(null, "DarkNova Intel", "darknova", 
+                "63-7910361", "872-5811-6",
+                            null, new ArrayList<>(), new ArrayList<>()
+                ),
+
+                new Company(null, "Aetherion Labs", "aetherion", 
+                "93-8570340", "690-3514-9",
                             null, new ArrayList<>(), new ArrayList<>()
                 )
             
