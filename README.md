@@ -94,7 +94,7 @@ Grouped for clarity (see `pom.xml` for full list):
 - **Development Tools**:
   - `spring-boot-devtools`, `spring-boot-starter-test`
   - `spring-security-test`
-- **UI/Frontend** (via WebJars):
+- **UI/Frontend**:
   - `bootstrap`, `bootstrap-icons`
   - `dayjs`, `flatpickr`
 - **Others**:
