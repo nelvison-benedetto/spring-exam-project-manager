@@ -1,5 +1,5 @@
-## Spring Nubbin™ Exam Project Manager
-Project developed using Spring Boot, this application is designed to manage projects, tasks, companies, and users. It leverages the Model-View-Controller (MVC) architecture, Spring Security for authentication and authorization, and Spring Data JPA for data operations. The application allows users to create and manage projects, assign tasks, collaborate with other users, and manage company-related data within the system.
+## Spring Nubbin™ Technologies Project Manager
+Project developed using Spring Boot, this application offers a robust platform for managing collaborative projects across individuals and companies. It supports task assignment, messaging, and secure access control using Spring Security and method-level authorization. Built with an MVC architecture, it integrates Spring Data JPA for persistence and Thymeleaf for dynamic server-side rendering. Designed with scalability and future expansion in mind, the system supports subscription-based access, positioning it for potential evolution into a paid SaaS platform.
 
 ---
 
