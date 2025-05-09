@@ -25,9 +25,9 @@ A seeder class is included to pre-populate the database with fake data (companie
 - **User**: Used by Spring Security for authentication. Contains username, password, a list of roles, and a reference to a single `Person`
 - **Role**: Defines system roles (`ADMIN`, `USER`, etc.)
 - **Person**: Basic user profile info (name, etc.)
-- **Company**: Represents an organization with users
+- **Company**: Represents an organization with persons
 - **Client**: Represents clients with a subscription plan
-- **Project**: Contains one or more tasks and belongs to a company or person
+- **Project**: A shared work unit that contains one or more tasks. It can involve multiple Persons (e.g., freelancers) and multiple Companies working together collaboratively
 - **Task**: Assignable work items with progress tracking
 - **Message**: Comments/messages related to a task (chat-style)
 
@@ -35,14 +35,30 @@ A seeder class is included to pre-populate the database with fake data (companie
 
 ## 🔐 Security
 
-The application uses Spring Security with role-based access control. Roles are stored in the database and assigned per user.
+The application uses Spring Security to manage authentication and authorization. Security is configured through a combination of annotations, custom logic, and role-based access control.
+
+### Key Features
+- **Custom Login Form**  
+  The login page is available at `/security/sign-in`, and Spring Security handles the login process at `/sign-in`.
+- **Custom UserDetailsService**
+  The app uses a custom CustomUserDetailsService that loads a User (which contains username, password, a list of Roles, and a linked Person entity).
+- **Role-Based Authorization**
+  User roles (e.g., ADMIN, USER) are stored in the database and attached to each User. These roles can be used with @PreAuthorize to restrict access to controller methods.
+- **Method-Level Security**
+  The application enables method-level security using @EnableMethodSecurity, allowing for fine-grained access control using annotations like @PreAuthorize.
+- **SecurityService Component**
+  A central SecurityService class provides methods for checking entity-specific access permissions (e.g., hasAccessToProject, hasAccessToTask, etc.). This enables secure access enforcement using Spring Expression Language (SpEL) inside @PreAuthorize annotations.
+- **@AuthenticationPrincipal & Authentication**
+  Controllers access the currently logged-in user via @AuthenticationPrincipal CustomUserDetails customUserDetails or Authentication authentication.
+  
+### Logout
+Users can sign out via /sign-out. On logout, the session is invalidated and the user is redirected to /.
 
 ---
 
 ## 📡 API Endpoints
 
 RESTful API controllers are provided for external systems to interact with projects, tasks, users, and other entities.
-
 The API supports full **Create, Read, Update, and Delete (CRUD)** operations for all core entities.
 
 ---
@@ -77,15 +93,15 @@ Grouped for clarity (see `pom.xml` for full list):
 - **Database**:
   - `mysql-connector-j`
 - **Development Tools**:
-  - `spring-boot-devtools`
-  - `spring-boot-starter-test`, `spring-security-test`
+  - `spring-boot-devtools`, `spring-boot-starter-test`
+  - `spring-security-test`, `thymeleaf-extras-springsecurity6`
 - **UI/Frontend** (via WebJars):
   - `bootstrap`, `bootstrap-icons`
   - `dayjs`, `flatpickr`
 - **Others**:
   - `lombok`
   - `dotenv-java`
-  - `thymeleaf-extras-springsecurity6`
+  - `datafaker`
 
 ---
 
@@ -129,7 +145,7 @@ mvn spring-boot:run
 ![Referenc23](./readmefiles/nubbintech23.2.png)
 ![Referenc23](./readmefiles/nubbintech24.png)
 ![Referenc23](./readmefiles/nubbintech25.2.png)
-![Referenc23](./readmefiles/nubbintech26.png)
+![Referenc23](./readmefiles/nubbintech26.2.png)
 ![Referenc23](./readmefiles/nubbintech27.png)
 ![Referenc23](./readmefiles/nubbintech28.png)
 ![Referenc23](./readmefiles/nubbintech29.png)
