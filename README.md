@@ -78,9 +78,8 @@ You can define these in an `.env` file or export them:
 SPRING_DATASOURCE_USERNAME=your_db_username
 SPRING_DATASOURCE_PASSWORD=your_db_password
 ```
----
 
-## 📚 Main Dependencies
+### Main Dependencies
 
 Grouped for clarity (see `pom.xml` for full list):
 
