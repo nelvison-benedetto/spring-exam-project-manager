@@ -93,11 +93,12 @@ Grouped for clarity (see `pom.xml` for full list):
   - `mysql-connector-j`
 - **Development Tools**:
   - `spring-boot-devtools`, `spring-boot-starter-test`
-  - `spring-security-test`, `thymeleaf-extras-springsecurity6`
+  - `spring-security-test`
 - **UI/Frontend** (via WebJars):
   - `bootstrap`, `bootstrap-icons`
   - `dayjs`, `flatpickr`
 - **Others**:
+  - `thymeleaf-extras-springsecurity6`
   - `lombok`
   - `dotenv-java`
   - `datafaker`
