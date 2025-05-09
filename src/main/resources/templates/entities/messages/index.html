@@ -32,6 +32,10 @@
                     
                 </div>
             </div>
+            <div th:if="${messages.isEmpty()}" class="d-flex flex-column gap-2 text-muted py-4 align-items-center justify-content-center">
+                <i class="bi bi-chat-left-text fs-3"></i>
+                <span>No messages found.</span>
+            </div>
         </div>
 
         <form th:action="@{/messages/create}" method="post" class="d-flex align-items-center gap-2">
