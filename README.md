@@ -40,19 +40,19 @@ The application uses Spring Security to manage authentication and authorization.
 ### Key Features
 - **Custom Login Form**  
   The login page is available at `/security/sign-in`, and Spring Security handles the login process at `/sign-in`.
-- **Custom UserDetailsService**
-  The app uses a custom CustomUserDetailsService that loads a User (which contains username, password, a list of Roles, and a linked Person entity).
-- **Role-Based Authorization**
-  User roles (e.g., ADMIN, USER) are stored in the database and attached to each User. These roles can be used with @PreAuthorize to restrict access to controller methods.
-- **Method-Level Security**
-  The application enables method-level security using @EnableMethodSecurity, allowing for fine-grained access control using annotations like @PreAuthorize.
-- **SecurityService Component**
-  A central SecurityService class provides methods for checking entity-specific access permissions (e.g., hasAccessToProject, hasAccessToTask, etc.). This enables secure access enforcement using Spring Expression Language (SpEL) inside @PreAuthorize annotations.
-- **@AuthenticationPrincipal & Authentication**
-  Controllers access the currently logged-in user via @AuthenticationPrincipal CustomUserDetails customUserDetails or Authentication authentication.
-  
+- **Custom UserDetailsService**  
+  The app uses a custom `CustomUserDetailsService` that loads a User (which contains username, password, a list of Roles, and a linked Person entity).
+- **Role-Based Authorization**  
+  User roles (e.g., ADMIN, USER) are stored in the database and attached to each User. These roles can be used with `@PreAuthorize` to restrict access to controller methods.
+- **Method-Level Security**  
+  The application enables method-level security using `@EnableMethodSecurity`, allowing for fine-grained access control using annotations like @PreAuthorize.
+- **SecurityService Component**  
+  A central `SecurityService` class provides methods for checking entity-specific access permissions (e.g., hasAccessToProject, hasAccessToTask, etc.). This enables secure access enforcement using Spring Expression Language (SpEL) inside @PreAuthorize annotations.
+- **@AuthenticationPrincipal & Authentication**  
+  Controllers access the currently logged-in user via `@AuthenticationPrincipal CustomUserDetails customUserDetails` or `Authentication authentication`.
+
 ### Logout
-Users can sign out via /sign-out. On logout, the session is invalidated and the user is redirected to /.
+Users can sign out via /sign-out. On logout, the session is invalidated and the user is redirected to `/`.
 
 ---
 
