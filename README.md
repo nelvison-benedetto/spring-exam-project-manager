@@ -63,7 +63,7 @@ The API supports full **Create, Read, Update, and Delete (CRUD)** operations for
 
 ---
 
-## 🚀 Getting Started
+## 💻 Getting Started
 
 ### Prerequisites
 
