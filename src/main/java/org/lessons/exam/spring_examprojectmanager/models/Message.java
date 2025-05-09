@@ -72,5 +72,9 @@ public class Message implements Serializable{
     @JsonManagedReference
     private Task task; 
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "person_id", nullable = false)
+    @JsonManagedReference
+    private Person person;
 
 }

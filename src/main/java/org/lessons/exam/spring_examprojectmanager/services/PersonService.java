@@ -175,6 +175,11 @@ public class PersonService {
                 project.getPersons().add(existingPerson);  //reassign
             }
         }
+        //TODO check if works
+        existingPerson.getMessages().clear();
+        if(personToEdit.getMessages() != null) {
+            existingPerson.getMessages().addAll(personToEdit.getMessages());
+        }
 
         return personRepo.save(existingPerson);
     }

@@ -2,11 +2,13 @@ package org.lessons.exam.spring_examprojectmanager.services;
 
 import org.lessons.exam.spring_examprojectmanager.models.Client;
 import org.lessons.exam.spring_examprojectmanager.models.Company;
+import org.lessons.exam.spring_examprojectmanager.models.Message;
 import org.lessons.exam.spring_examprojectmanager.models.Person;
 import org.lessons.exam.spring_examprojectmanager.models.Project;
 import org.lessons.exam.spring_examprojectmanager.models.Task;
 import org.lessons.exam.spring_examprojectmanager.repository.ClientRepo;
 import org.lessons.exam.spring_examprojectmanager.repository.CompanyRepo;
+import org.lessons.exam.spring_examprojectmanager.repository.MessageRepo;
 import org.lessons.exam.spring_examprojectmanager.repository.ProjectRepo;
 import org.lessons.exam.spring_examprojectmanager.repository.TaskRepo;
 import org.lessons.exam.spring_examprojectmanager.security.CustomUserDetails;
@@ -22,14 +24,16 @@ public class SecurityService {
     private final TaskRepo taskRepo;
     private final CompanyRepo companyRepo;
     private final ClientRepo clientRepo;
+    private final MessageRepo messageRepo;
 
     @Autowired
-    public SecurityService(ProjectRepo projectRepo, UserService userService, TaskRepo taskRepo, CompanyRepo companyRepo, ClientRepo clientRepo){
+    public SecurityService(ProjectRepo projectRepo, UserService userService, TaskRepo taskRepo, CompanyRepo companyRepo, ClientRepo clientRepo, MessageRepo messageRepo){
         this.projectRepo = projectRepo;
         this.userService = userService;
         this.taskRepo = taskRepo;
         this.companyRepo = companyRepo;
         this.clientRepo = clientRepo;
+        this.messageRepo = messageRepo;
     }
 
 
@@ -145,4 +149,27 @@ public class SecurityService {
         
     }
 
+    // x Message
+    public Boolean hasAccessToMessage(Integer messageId, Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return false;
+        }
+        Object principal = authentication.getPrincipal();
+        if (!(principal instanceof CustomUserDetails customUserDetails)) {
+            return false;
+        }
+        Person person = userService.checkedExistsById(customUserDetails.getId()).getPerson();
+        if (person == null) {
+            return false;
+        }
+        Message message = messageRepo.findById(messageId).orElse(null);
+        if (message == null || message.getTask() == null || message.getTask().getProject() == null) {
+            return false;
+        }
+        Project project = message.getTask().getProject();
+        return project.getPersons().contains(person) || project.getCompanies().contains(person.getCompany());
+    }
+
+
+    
 }

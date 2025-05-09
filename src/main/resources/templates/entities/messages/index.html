@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Messages Index Page</title>
+    <th:block th:replace="~{fragments/head.html::bootstrap}" />  <!-- ~ :  Alt+126(numerini)-->
+    <th:block th:replace="~{fragments/head.html::style_jsscript}" />
+    <th:block th:replace="~{fragments/head.html::dayjs_x_prettydate}" />
+</head>
+<body class="bg-form">
+    
+    <nav th:replace="~{fragments/layout.html::navbarNubbin}"></nav>
+    <div class="container flex-grow-1 my-5 d-flex flex-column justify-content-between">
+
+        <h4 class="mb-3">Chat - Task <span class="fw-bold" th:text="${task.title}"></span></h4>
+
+        <div class="border rounded p-3 bg-white flex-grow-1 overflow-auto mb-3" style="max-height: 70vh;">
+            <div th:each="message : ${messages}" class="mb-3 d-flex"
+                 th:classappend="${message.person.id} == ${actualperson.id} ? 'justify-content-end' : 'justify-content-start'">
+                <div class="rounded p-2 px-3 small shadow-sm d-flex flex-column gap-1" style="max-width: 60%;"
+                    th:classappend="${message.person.id} == ${actualperson.id} ? 'bg-success text-white text-end' : 'bg-secondary-subtle text-dark text-start'">
+                    
+                    <span class="d-flex align-items-center gap-3">
+                        <i class="bi bi-person-circle fs-4"></i>
+                        <span class="fw-medium" th:text="|${message.person.firstname} ${message.person.lastname}|"></span>
+                    </span>
+                    
+                    <div th:text="${message.content}" class=""></div>
+                    <span class="updated-at small" style="color: rgb(172, 172, 172);"
+                        th:attr="data-date=${#temporals.format(message.updatedAt, 'yyyy/MM/dd HH:mm:ss')}">Last update</span>
+                    
+                </div>
+            </div>
+        </div>
+
+        <form th:action="@{/messages/create}" method="post" class="d-flex align-items-center gap-2">
+            <input type="hidden" name="taskId" th:value="${task.id}" />
+            <input type="text" name="content" class="form-control" placeholder="Write message..." required />
+            <button type="submit" class="btn btn-success rounded-circle px-3 py-2">
+                <i class="bi bi-send-fill"></i>
+            </button>
+        </form>
+
+    </div>
+
+</body>
+</html>
+
+                   

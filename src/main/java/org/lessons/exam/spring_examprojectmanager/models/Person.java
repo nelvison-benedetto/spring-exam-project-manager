@@ -107,6 +107,10 @@ public class Person implements Serializable{
     @JsonManagedReference
     private List<Project> projects = new ArrayList<>();
 
+    @OneToMany(fetch = FetchType.LAZY)
+    @JsonManagedReference
+    private List<Message> messages = new ArrayList<>();
+
     
     //DISCONNECTIONS BEFORE DELETES, better do it manually!!!
     // @PreRemove

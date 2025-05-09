@@ -86,7 +86,7 @@
             </div>
 
 
-            <div class="card mb-4" th:if="${personHeader != null && personHeader.company != null}">  <!--visible only for company, so they can collaborate with others companies-->
+            <div class="card mb-4" th:if="${personHeader != null && personHeader.company != null}">  <!--  visible only for company, so they can collaborate with others companies-->
                 <div class="card-body">
                     <h5 class="card-title text-secondary">Associated Companies</h5>
                     <ul class="list-group mb-3">
@@ -100,7 +100,7 @@
                         </li>
                     </ul>
                     <div class="text-center">
-                        <a th:href="@{/companies/partner-company(projectId=${project.id})}" class="btn btn-outline-primary">  <!--TODO--> 
+                        <a th:href="@{/companies/partner-company(projectId=${project.id})}" class="btn btn-outline-primary">  <!--TODO only a company can use this button, but the list of associated companies are visible to everyone-->
                             <i class="bi bi-building-add me-1"></i> Invite New Partner Company
                         </a>
                     </div>
@@ -166,7 +166,7 @@
                                 <div class="d-flex justify-content-between align-items-center gap-2 mb-1">
                                     <h5 class="card-title" th:text="${task.title}">Task Title</h5>
                                     <div class="" >
-                                        <a th:href="@{/messages/{id}(id=${task.id})}" class="btn btn-sm bg-purple small text-white">
+                                        <a th:href="@{/messages(taskId=${task.id})}" class="btn btn-sm bg-purple small text-white">
                                             <i class="bi bi-chat-left-text pe-2"></i>
                                             <span >Show Messages</span>
                                         </a>
@@ -197,11 +197,11 @@
                                             </span>
                                         </p>
                                         <p class="mb-1 pt-1 pb-1"><span class="fw-semibold">Priority:</span> <span th:text="${task.priority}">Priority</span></p>
-                                        <p class="mb-1 pt-1 pb-1"><span class="fw-semibold">Due:</span> <span th:text="${#temporals.format(task.dueDate, 'yyyy/MM/dd')}">Due Date</span></p>
+                                        <p class="mb-1 pt-1 pb-1"><span class="fw-semibold">Due Date:</span> <span th:text="${#temporals.format(task.dueDate, 'yyyy/MM/dd')}">Due Date</span></p>
                                     </div>
                                     <div class="col-md-6">
-                                        <p class="mb-1 pt-1 pb-1"><span class="fw-semibold">Start:</span> <span th:text="${#temporals.format(task.taskStartDate, 'yyyy/MM/dd')}">Start Date</span></p>
-                                        <p class="mb-1 pt-1 pb-1"><span class="fw-semibold">End:</span> <span th:text="${#temporals.format(task.taskEndDate, 'yyyy/MM/dd')}">End Date</span></p>
+                                        <p class="mb-1 pt-1 pb-1"><span class="fw-semibold">Start Date:</span> <span th:text="${#temporals.format(task.taskStartDate, 'yyyy/MM/dd')}">Start Date</span></p>
+                                        <p class="mb-1 pt-1 pb-1"><span class="fw-semibold">End Date:</span> <span th:text="${#temporals.format(task.taskEndDate, 'yyyy/MM/dd')}">End Date</span></p>
                                     </div>
                                 </div>
 
