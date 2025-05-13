@@ -125,7 +125,7 @@ public class PersonController {
         return "entities/persons/single-or-company.html";
     }
 
-    @GetMapping("/recruit-person")  //TODO se riceve projectId allora link project-person, se no link company-person (questo lo setti se arrivi da page persons/{id}). 
+    @GetMapping("/recruit-person")  //REMINDER se riceve projectId allora link project-person, se no link company-person (questo lo setti se arrivi da page persons/{id}). 
     public String personsRecruitPerson(
         @RequestParam(value = "projectId", required = false) Integer projectId,
         @RequestParam(value = "companyId", required = false) Integer companyId,

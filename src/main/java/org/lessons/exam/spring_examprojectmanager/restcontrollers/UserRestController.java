@@ -1,6 +1,7 @@
 package org.lessons.exam.spring_examprojectmanager.restcontrollers;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.lessons.exam.spring_examprojectmanager.models.User;
 import org.lessons.exam.spring_examprojectmanager.services.UserService;
@@ -28,39 +29,54 @@ public class UserRestController {
         this.userService = userService;
     }
 
-    // READ
+
+    //READ
     @GetMapping
-    public ResponseEntity<List<User>> getAllUsers() {
+    public ResponseEntity<List<User>> usersRestIndex() {
         List<User> users = userService.findAll();
         return ResponseEntity.ok(users);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<User> getUserById(@PathVariable Integer id) {
-        User user = userService.getById(id);
-        return ResponseEntity.ok(user);
+    public ResponseEntity<User> usersRestShow(@PathVariable Integer id) {
+        Optional<User> userOptional = userService.optionalFindById(id);
+        if (userOptional.isPresent()) {
+            return new ResponseEntity<>(userOptional.get(), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    // POST - Create new user
-    @PostMapping
-    public ResponseEntity<User> createUser(@Valid @RequestBody User user) {
-        User createdUser = userService.create(user);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
-    }
 
-    // PUT - Update existing user
-    @PutMapping("/{id}")
-    public ResponseEntity<User> updateUser(@PathVariable Integer id, @Valid @RequestBody User user) {
-        user.setId(id);
-        User updatedUser = userService.edit(user);
-        return ResponseEntity.ok(updatedUser);
-    }
+    //CREATE
+    //optionally send all roles in a list to the frontend  
+    // @PostMapping("/store")
+    // public ResponseEntity<User> usersRestStore(@Valid @RequestBody User userToStore) {
+    //     User userStored = userService.create(userToStore);
+    //     return new ResponseEntity<>(userStored, HttpStatus.CREATED);
+    // }
 
-    // DELETE - Delete user by ID
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable Integer id) {
-        userService.deleteById(id);
-        return ResponseEntity.noContent().build();
-    }
+
+    // //UPDATE
+    // @PutMapping("/{id}")
+    // public ResponseEntity<User> usersRestUpdate(@Valid @RequestBody User userToUpdate, @PathVariable Integer id) {
+    //     if (!userService.boolExistsById(id)) {
+    //         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    //     }
+    //     userToUpdate.setId(id);
+    //     User userUpdated = userService.edit(userToUpdate);
+    //     return new ResponseEntity<>(userUpdated, HttpStatus.OK);
+    // }
+
+
+    // //DELETE
+    // @DeleteMapping("/{id}")
+    // public ResponseEntity<Void> usersRestDelete(@PathVariable Integer id) {
+    //     if (!userService.boolExistsById(id)) {
+    //         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    //     }
+    //     userService.deleteById(id);
+    //     return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    // }
+
 
 }

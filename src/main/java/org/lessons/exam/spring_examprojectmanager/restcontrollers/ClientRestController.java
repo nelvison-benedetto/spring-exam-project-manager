@@ -1,74 +1,91 @@
-// package org.lessons.exam.spring_examprojectmanager.restcontrollers;
+package org.lessons.exam.spring_examprojectmanager.restcontrollers;
 
-// import java.util.List;
-// import java.util.Optional;
+import java.util.List;
+import java.util.Optional;
 
-// import org.apache.catalina.connector.Response;
-// import org.lessons.exam.spring_examprojectmanager.models.Client;
-// import org.lessons.exam.spring_examprojectmanager.services.ClientService;
-// import org.springframework.beans.factory.annotation.Autowired;
-// import org.springframework.http.HttpStatus;
-// import org.springframework.http.ResponseEntity;
-// import org.springframework.web.bind.annotation.DeleteMapping;
-// import org.springframework.web.bind.annotation.GetMapping;
-// import org.springframework.web.bind.annotation.PathVariable;
-// import org.springframework.web.bind.annotation.PostMapping;
-// import org.springframework.web.bind.annotation.PutMapping;
-// import org.springframework.web.bind.annotation.RequestBody;
-// import org.springframework.web.bind.annotation.RequestMapping;
-// import org.springframework.web.bind.annotation.RestController;
+import org.lessons.exam.spring_examprojectmanager.models.Client;
+import org.lessons.exam.spring_examprojectmanager.repository.ClientRepo;
+import org.lessons.exam.spring_examprojectmanager.security.CustomUserDetails;
+import org.lessons.exam.spring_examprojectmanager.services.ClientService;
+import org.lessons.exam.spring_examprojectmanager.services.CompanyService;
+import org.lessons.exam.spring_examprojectmanager.services.PersonService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-// import jakarta.validation.Valid;
+import jakarta.validation.Valid;
+import net.datafaker.providers.base.Company;
 
-// @RestController
-// @RequestMapping("/api/clients")
-// public class ClientRestController {
+@RestController
+@RequestMapping("/api/clients")
+public class ClientRestController {
+
+    private final ClientService clientService;
+    private final PersonService personService;
+    private final CompanyService companyService;
+    private final ClientRepo clientRepo;
+
+    @Autowired
+    public ClientRestController(ClientService clientService, PersonService personService, CompanyService companyService, ClientRepo clientRepo) {
+        this.clientService = clientService;
+        this.personService = personService;
+        this.companyService = companyService;
+        this.clientRepo = clientRepo;
+    }
+
+    //READ
+    @GetMapping
+    public ResponseEntity<List<Client>> clientsRestIndex(){
+        List<Client> clients = clientRepo.findAll();
+        return ResponseEntity.ok(clients);
+    }
+
+    @GetMapping("/id")
+    public ResponseEntity<Client> clientsRestShow(@PathVariable Integer id){
+        if(!clientService.boolExistsById(id)){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        Optional<Client> client = clientRepo.findById(id);
+        return new ResponseEntity<>(client.get(), HttpStatus.OK);
+    }
+
+
     
-//     private final ClientService clientService;
-//     @Autowired
-//     public ClientRestController(ClientService clientService) {
-//         this.clientService = clientService;
-//     }
+    // //CREATE
+    // @PostMapping
+    // public ResponseEntity<Client> clientsRestStore(@Valid @RequestBody Client clientToStore){
+    //     Client clientStored = clientService.create(clientToStore);
+    //     return new ResponseEntity<>(clientStored, HttpStatus.CREATED);
+    // }
 
-//     //READ
-//     @GetMapping
-//     public List<Client> findAll() {
-//         return clientService.findAll();
-//     }
-//     @GetMapping("/{id}")
-//     public ResponseEntity<Client> show(@PathVariable Integer id) {
-//         Optional<Client> clientOptional = clientService.optionalFindById(id);
-//         if (clientOptional.isPresent()) {
-//             return new ResponseEntity<Client>(clientOptional.get(), HttpStatus.OK);
-//         } else {
-//             return new ResponseEntity<Client>(HttpStatus.NOT_FOUND);
-//         }
-//     }
+    // //UPDATE
+    // @PutMapping("/{id}")
+    // public ResponseEntity<Client> clientsRestUpdate(@Valid @RequestBody Client clientToUpdate, @PathVariable Integer id, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+    //     if(!clientService.boolExistsById(id)){
+    //         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    //     }
+    //     clientToUpdate.setId(id);
+    //     Client clientUpdated = clientService.edit(clientToUpdate, customUserDetails);
+    //     return new ResponseEntity<>(clientUpdated, HttpStatus.OK);
+    // }
 
-//     //CREATE
-//     @PostMapping
-//     public ResponseEntity<Client> store(@Valid @RequestBody Client client) {
-//         return new ResponseEntity<Client>(clientService.create(client), HttpStatus.CREATED);
-//     }
+    // //DELETE
+    // @DeleteMapping("/{id}")
+    // public ResponseEntity<Void> clientsRestDelete(@PathVariable Integer id, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+    //     if(!clientService.boolExistsById(id)) {
+    //         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    //     }
+    //     clientService.deleteById(id, customUserDetails);
+    //     return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    // }
 
-//     //UPDATE
-//     @PutMapping("/{id}")
-//     public ResponseEntity<Client> update(@Valid @RequestBody Client client, @PathVariable Integer id) {
-//         if(clientService.optionalFindById(id).isPresent()) {
-//             client.setId(id);
-//             return new ResponseEntity<Client>(clientService.edit(client), HttpStatus.OK);
-//         }
-//         return new ResponseEntity<Client>(HttpStatus.NOT_FOUND);
-//     }
-
-//     //DELETE
-//     @DeleteMapping("/{id}")
-//     public ResponseEntity<Void> delete(@Valid @PathVariable Integer id) {
-//         if(clientService.optionalFindById(id).isPresent()) {
-//             clientService.deleteById(id);
-//             return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
-//         }
-//         return new ResponseEntity<Void>(HttpStatus.NOT_FOUND);
-//     }
-    
-// }
+}
