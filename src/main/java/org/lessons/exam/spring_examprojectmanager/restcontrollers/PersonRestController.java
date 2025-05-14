@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import org.lessons.exam.spring_examprojectmanager.dto.PersonDTO;
+import org.lessons.exam.spring_examprojectmanager.dto.TaskDTO;
 import org.lessons.exam.spring_examprojectmanager.models.Company;
 import org.lessons.exam.spring_examprojectmanager.models.Person;
 import org.lessons.exam.spring_examprojectmanager.models.Project;
@@ -49,18 +51,20 @@ public class PersonRestController {
 
     //READ
     @GetMapping
-    public ResponseEntity<List<Person>> personsRestIndex(){
+    public ResponseEntity<List<PersonDTO>> personsRestIndex(){
         List<Person> persons = personRepo.findAll();
-        return ResponseEntity.ok(persons);
+        List<PersonDTO> personDTOs = persons.stream().map(PersonDTO::new).toList();
+        return ResponseEntity.ok(personDTOs);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Person> personsRestShow(@PathVariable Integer id) {
+    public ResponseEntity<PersonDTO> personsRestShow(@PathVariable Integer id) {
         if(!personService.boolExistsById(id)) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         Optional<Person> person = personRepo.findById(id);
-        return new ResponseEntity<>(person.get(), HttpStatus.OK);  
+        PersonDTO personDTO = new PersonDTO(person.get());
+        return new ResponseEntity<>(personDTO, HttpStatus.OK);
     }
 
     //CREATE

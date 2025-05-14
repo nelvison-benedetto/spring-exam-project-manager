@@ -3,6 +3,8 @@ package org.lessons.exam.spring_examprojectmanager.restcontrollers;
 import java.util.List;
 import java.util.Optional;
 
+import org.lessons.exam.spring_examprojectmanager.dto.ClientDTO;
+import org.lessons.exam.spring_examprojectmanager.dto.TaskDTO;
 import org.lessons.exam.spring_examprojectmanager.models.Client;
 import org.lessons.exam.spring_examprojectmanager.repository.ClientRepo;
 import org.lessons.exam.spring_examprojectmanager.security.CustomUserDetails;
@@ -44,18 +46,20 @@ public class ClientRestController {
 
     //READ
     @GetMapping
-    public ResponseEntity<List<Client>> clientsRestIndex(){
+    public ResponseEntity<List<ClientDTO>> clientsRestIndex(){
         List<Client> clients = clientRepo.findAll();
-        return ResponseEntity.ok(clients);
+        List<ClientDTO> clientDTOs = clients.stream().map(ClientDTO::new).toList();
+        return ResponseEntity.ok(clientDTOs);
     }
 
     @GetMapping("/id")
-    public ResponseEntity<Client> clientsRestShow(@PathVariable Integer id){
+    public ResponseEntity<ClientDTO> clientsRestShow(@PathVariable Integer id){
         if(!clientService.boolExistsById(id)){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         Optional<Client> client = clientRepo.findById(id);
-        return new ResponseEntity<>(client.get(), HttpStatus.OK);
+        ClientDTO clientDTO = new ClientDTO(client.get());
+        return new ResponseEntity<>(clientDTO, HttpStatus.OK);
     }
 
 

@@ -3,6 +3,8 @@ package org.lessons.exam.spring_examprojectmanager.restcontrollers;
 import java.util.List;
 import java.util.Optional;
 
+import org.lessons.exam.spring_examprojectmanager.dto.ProjectDTO;
+import org.lessons.exam.spring_examprojectmanager.dto.TaskDTO;
 import org.lessons.exam.spring_examprojectmanager.models.Project;
 import org.lessons.exam.spring_examprojectmanager.repository.ProjectRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,18 +28,20 @@ public class ProjectRestController {
 
     //READ
     @GetMapping
-    public ResponseEntity<List<Project>> projectsRestIndex() {
+    public ResponseEntity<List<ProjectDTO>> projectsRestIndex() {
         List<Project> projects = projectRepo.findAll();
-        return ResponseEntity.ok(projects);
+        List<ProjectDTO> projectDTOs = projects.stream().map(ProjectDTO::new).toList();
+        return ResponseEntity.ok(projectDTOs);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Project> projectsRestShow(@PathVariable Integer id) {
+    public ResponseEntity<ProjectDTO> projectsRestShow(@PathVariable Integer id) {
         if(!projectRepo.existsById(id)) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         Optional<Project> project = projectRepo.findById(id);
-        return new ResponseEntity<>(project.get(), HttpStatus.OK);
+        ProjectDTO projectDTO = new ProjectDTO(project.get());
+        return new ResponseEntity<>(projectDTO, HttpStatus.OK);
     }
 
 

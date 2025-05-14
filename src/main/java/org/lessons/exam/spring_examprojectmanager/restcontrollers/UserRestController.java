@@ -31,20 +31,21 @@ public class UserRestController {
 
 
     //READ
-    @GetMapping
-    public ResponseEntity<List<User>> usersRestIndex() {
-        List<User> users = userService.findAll();
-        return ResponseEntity.ok(users);
-    }
+    //BETTER NOT CREATE REST API X USERS!!, i don't delete this file only x info
+    // @GetMapping
+    // public ResponseEntity<List<User>> usersRestIndex() {
+    //     List<User> users = userService.findAll();
+    //     return ResponseEntity.ok(users);
+    // }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<User> usersRestShow(@PathVariable Integer id) {
-        Optional<User> userOptional = userService.optionalFindById(id);
-        if (userOptional.isPresent()) {
-            return new ResponseEntity<>(userOptional.get(), HttpStatus.OK);
-        }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    }
+    // @GetMapping("/{id}")
+    // public ResponseEntity<User> usersRestShow(@PathVariable Integer id) {
+    //     Optional<User> userOptional = userService.optionalFindById(id);
+    //     if (userOptional.isPresent()) {
+    //         return new ResponseEntity<>(userOptional.get(), HttpStatus.OK);
+    //     }
+    //     return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    // }
 
 
     //CREATE

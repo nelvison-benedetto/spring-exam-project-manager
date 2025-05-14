@@ -3,6 +3,8 @@ package org.lessons.exam.spring_examprojectmanager.restcontrollers;
 import java.util.List;
 import java.util.Optional;
 
+import org.lessons.exam.spring_examprojectmanager.dto.CompanyDTO;
+import org.lessons.exam.spring_examprojectmanager.dto.TaskDTO;
 import org.lessons.exam.spring_examprojectmanager.models.Company;
 import org.lessons.exam.spring_examprojectmanager.models.Project;
 import org.lessons.exam.spring_examprojectmanager.repository.CompanyRepo;
@@ -44,18 +46,20 @@ public class CompanyRestController {
 
     //READ
     @GetMapping
-    public ResponseEntity<List<Company>> companiesRestIndex() {
+    public ResponseEntity<List<CompanyDTO>> companiesRestIndex() {
         List<Company> companies = companyRepo.findAll();
-        return ResponseEntity.ok(companies);
+        List<CompanyDTO> companykDTOs = companies.stream().map(CompanyDTO::new).toList();
+        return ResponseEntity.ok(companykDTOs);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Company> companiesRestShow(@PathVariable Integer id){
+    public ResponseEntity<CompanyDTO> companiesRestShow(@PathVariable Integer id){
         if(!companyService.boolExistsById(id)) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         Optional<Company> company = companyRepo.findById(id);
-        return new ResponseEntity<>(company.get(), HttpStatus.OK);  
+        CompanyDTO companyDTO = new CompanyDTO(company.get());
+        return new ResponseEntity<>(companyDTO, HttpStatus.OK);
     }
     
 
