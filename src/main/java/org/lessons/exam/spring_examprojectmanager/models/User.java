@@ -3,6 +3,8 @@ package org.lessons.exam.spring_examprojectmanager.models;
 import java.io.Serializable;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -58,6 +60,7 @@ public class User implements Serializable  {
         uniqueConstraints = @UniqueConstraint(columnNames = {"user_id", "role_id"})  //doesn't allow duplicates couples user_id-role_id at db level
         )
     @Size(min = 1, message = "Select at least one role.")
+    @JsonManagedReference
     private Set<Role> roles;  //<set> doesn't allow duplicates (same role linked to same user) 
 
 

@@ -85,6 +85,7 @@ public class Person implements Serializable{
 
     @OneToOne(mappedBy = "person", orphanRemoval = true, fetch = FetchType.LAZY)
     //@NotNull(message = "User is required")
+    @JsonBackReference
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
