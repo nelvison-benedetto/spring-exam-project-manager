@@ -13,6 +13,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import lombok.Getter;
 import lombok.Setter;
 
+
 @Getter @Setter
 public class CustomUserDetails implements UserDetails{
     
@@ -32,7 +33,7 @@ public class CustomUserDetails implements UserDetails{
         }
     }
     
-    //set all true, not necessary restrictions now.
+    //set all true, not necessary restrictions now!
     @Override
     public boolean isAccountNonExpired(){return true;}
     @Override

@@ -14,7 +14,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
-@ControllerAdvice
+@ControllerAdvice  //intercepts all requests to add common logic to controllers
 public class GlobalControllerAdvice {
     
     private final PersonService personService;
@@ -26,14 +26,14 @@ public class GlobalControllerAdvice {
         this.securityService = securityService;
     }
 
-    @ModelAttribute
+    @ModelAttribute  //x add attributes to Model model GLOBALLY (any controller now have the new attribute), + x create immediately obj e.g. ' @ModelAttribute("company") Company company'
     public void addPersonToModel(@AuthenticationPrincipal CustomUserDetails customUserDetails, Model model) {
         if(customUserDetails != null){
             //System.out.println("CustomUserDetails FROM GLOBAL ADVICE: " + customUserDetails);
             Person personHeader = securityService.checkPersonForActualUser(customUserDetails);
             if(personHeader != null){
-                model.addAttribute("personHeader", personHeader);
-            }
+                model.addAttribute("personHeader", personHeader);  //add this attribute GLOBALLY, any controller can use it
+            }  //in this case I need personHeader for the header nav bar (rendered in many pages)
         }
     }
 }

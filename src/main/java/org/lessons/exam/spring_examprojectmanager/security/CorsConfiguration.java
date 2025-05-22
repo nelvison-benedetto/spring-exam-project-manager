@@ -5,17 +5,17 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-@Configuration
+@Configuration  //x set configurations x spring
 public class CorsConfiguration {
     @Bean
-    public WebMvcConfigurer corsConfigurer() {
+    public WebMvcConfigurer corsConfigurer() {  //bean type WebMvcConfigurer x custom behavior of MVC(Model-View-Controller)
         return new WebMvcConfigurer() {
             @Override
-            public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**")
-                        .allowedOrigins("http://localhost:5173")  // React origin
+            public void addCorsMappings(CorsRegistry registry) {  //add nw rules(override if same name) x CORS(Cross-Origin Resource Sharing)
+                registry.addMapping("/**")  //apply to all endpoints start with '/..'
+                        .allowedOrigins("http://localhost:5173")  //allowed origin (localhost front-end)
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
-                        .allowCredentials(true);
+                        .allowCredentials(true);  //allow cookie/tokens
             }
         };
     }

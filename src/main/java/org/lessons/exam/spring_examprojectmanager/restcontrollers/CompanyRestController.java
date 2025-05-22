@@ -46,10 +46,10 @@ public class CompanyRestController {
 
     //READ
     @GetMapping
-    public ResponseEntity<List<CompanyDTO>> companiesRestIndex() {
+    public ResponseEntity<List<CompanyDTO>> companiesRestIndex() {  //ResponseEntity<T> classe spring contains body(la response)-statusCodeHttp-opzionaliHeaderCustom
         List<Company> companies = companyRepo.findAll();
         List<CompanyDTO> companykDTOs = companies.stream().map(CompanyDTO::new).toList();
-        return ResponseEntity.ok(companykDTOs);
+        return ResponseEntity.ok(companykDTOs);  //return body+statusCode
     }
 
     @GetMapping("/{id}")
@@ -59,7 +59,7 @@ public class CompanyRestController {
         }
         Optional<Company> company = companyRepo.findById(id);
         CompanyDTO companyDTO = new CompanyDTO(company.get());
-        return new ResponseEntity<>(companyDTO, HttpStatus.OK);
+        return new ResponseEntity<>(companyDTO, HttpStatus.OK); //return body+statusCode(qua puoi specificare lo status manualmente)
     }
     
 

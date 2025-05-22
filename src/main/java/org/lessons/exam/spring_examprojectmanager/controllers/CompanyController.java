@@ -82,7 +82,7 @@ public class CompanyController {
     }   
 
     @PostMapping("/store")
-    public String companiesStore(@Valid @ModelAttribute("company") Company company,
+    public String companiesStore(@Valid @ModelAttribute("company") Company company,  //Valid x validate the fields (e.g. @NoBlank)
     BindingResult bindingResult,  Model model){
         if(bindingResult.hasErrors()){
             return "entities/companies/create-or-edit.html";

@@ -31,7 +31,7 @@
         <form th:action="@{${edit}? @{|/companies/${company.id}/update|} : @{|/companies/store|}  }" method="post" th:object="${company}" class="mt-3">
             <input th:if="${edit}" type="hidden" name="_method" value="put">
             <input type="hidden" th:field="*{client}" />
-            <th:block th:each="p, iterStat : *{projects}">
+            <th:block th:each="p, iterStat : *{projects}">  <!--p=item, iterStat=variabile di stato del ciclo (e.g. iterStat.index, iterStat.size)-->
                 <input type="hidden" th:field="*{projects[__${iterStat.index}__].id}" />  <!--x regex in a *{} of thymeleaf-->
             </th:block>
             <th:block th:each="p, iterStat : *{persons}">
@@ -40,11 +40,11 @@
 
 
             <div class="form-group mb-2">
-                <label for="companyLegalName" class="form-label">Company Legal Name</label>
-                <input type="text" class="form-control" id="companyLegalName" th:field="*{companyLegalName}" th:errorClass="is-invalid">
-                <div class="invalid-feedback" th:if="${#fields.hasErrors('companyLegalName')}">
+                <label for="companyLegalName" class="form-label">Company Legal Name</label>  <!--when @Valid+@ModelAttribute nel controller, errors saved in BindingResult. acces to them in thymeleaf with '#fields'-->
+                <input type="text" class="form-control" id="companyLegalName" th:field="*{companyLegalName}" th:errorClass="is-invalid">  <!--thymeleaf th:appendClass(it's better!)/'th:errorClass' add auto a class (here 'is-invalid') when errors of @Valid(erros mex from entity field's restrictions) -->
+                <div class="invalid-feedback" th:if="${#fields.hasErrors('companyLegalName')}">  <!--if return true/false-->
                     <ul style="margin-bottom: -0.02rem;">
-                        <li th:each="error : ${#fields.errors('companyLegalName')}" th:text="${error}" />
+                        <li th:each="error : ${#fields.errors('companyLegalName')}" th:text="${error}" /> <!--creates a <li> for each error per il field 'companyLegalName'-->
                     </ul>
                 </div>
             </div>

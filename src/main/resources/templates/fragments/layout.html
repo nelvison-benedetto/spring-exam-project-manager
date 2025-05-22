@@ -114,13 +114,13 @@
                 <!-- <a href="/logout" class="btn btn-outline-primary btn-sm rounded-1" style="text-decoration: none;">Sign Out</a> -->
                 
                 <!--SECURITY, custom exit url-->
-                <th:block th:if="${#authorization.expression('isAuthenticated()')}">
+                <th:block th:if="${#authorization.expression('isAuthenticated()')}">  <!--isAuthenticated() check if there is a user logged in-->
                     <a href="#" onclick="document.getElementById('logoutForm').submit(); return false;"
                         class="btn btn-outline-primary btn-sm rounded-1" style="text-decoration: none;">
                         Sign Out
                     </a>
                     <form id="logoutForm" th:action="@{/sign-out}" method="post" style="display: none;">
-                        <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
+                        <input type="hidden" name="_csrf" th:value="${_csrf.token}" /> <!--send also _csrf.token, (already included x forms w th:action & method="post"/others), spring avoid attack Cross-Site Request Forgery (malicious reqs(by the hacker) from auth clean user) -->
                     </form>
                 </th:block>
                 <th:block th:unless="${#authorization.expression('isAuthenticated()')}">
