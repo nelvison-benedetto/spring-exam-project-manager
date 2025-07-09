@@ -40,7 +40,7 @@ public class Company implements Serializable{
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)  //il db genera auto l'id + AUTO_INCREMENT per la column
     private Integer id;
 
     @Column(nullable = false)

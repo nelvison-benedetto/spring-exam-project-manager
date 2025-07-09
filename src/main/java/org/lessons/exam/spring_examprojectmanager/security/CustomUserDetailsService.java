@@ -23,7 +23,7 @@ public class CustomUserDetailsService implements UserDetailsService{  //interfac
             return new CustomUserDetails(userOptional.get());
         }
         else{
-            throw new UsernameNotFoundException("No user not found with username "+username);
+            throw new UsernameNotFoundException("No user not found with username " + username);
         }
     }
 }

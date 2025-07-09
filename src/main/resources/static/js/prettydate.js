@@ -5,11 +5,11 @@ window.addEventListener('DOMContentLoaded', function () {
     dayjs.extend(dayjs_plugin_advancedFormat);
     dayjs.extend(dayjs_plugin_customParseFormat);
 
-    document.querySelectorAll('.updated-at').forEach(function (el) {
-        const dateStr = el.getAttribute('data-date');
+    document.querySelectorAll('.updated-at').forEach(function (el) {  //loop su tutti gli elementi
+        const dateStr = el.getAttribute('data-date');  //read the html attribute e.g.<span class="updated-at" data-date="2025/07/09 14:30:00"></span>
         if (!dateStr) return;
 
-        const d = dayjs(dateStr,"YYYY/MM/DD HH:mm:ss");
+        const d = dayjs(dateStr,"YYYY/MM/DD HH:mm:ss");  //conversion new format and in obj dayjs 
         let formatted;
         if (d.isValid()) {
             if (d.isToday()) {

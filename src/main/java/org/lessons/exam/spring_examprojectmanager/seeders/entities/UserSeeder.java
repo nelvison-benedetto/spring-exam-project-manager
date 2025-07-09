@@ -46,7 +46,7 @@ public class UserSeeder {
         if (! tocheckAdminUser.isPresent()) {
             User adminUser = new User();
             adminUser.setUsername("userAdmin");
-            adminUser.setPassword(passwordEncoder.encode("12345678"));  //encryption applied
+            adminUser.setPassword(passwordEncoder.encode("12345678"));  //encryption applied!
             Set<Role> adminRoles = new HashSet<>();
             adminRoles.add(adminRole);     //add role ADMIN
             adminUser.setRoles(adminRoles);

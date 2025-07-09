@@ -20,7 +20,7 @@ public class CustomUserDetails implements UserDetails{
     private final Integer id;
     private final String username;
     private final String password;
-    private final Set<GrantedAuthority> authorities;
+    private final Set<GrantedAuthority> authorities;  //qua possono venire anche objs che IMPLEMENTATO interface GrantedAuthority
 
     public CustomUserDetails(User user) {
         this.id = user.getId();
@@ -29,8 +29,8 @@ public class CustomUserDetails implements UserDetails{
         this.authorities = new HashSet<>();
 
         for (Role userRole : user.getRoles()) {
-            this.authorities.add(new SimpleGrantedAuthority(userRole.getName()));
-        }
+            this.authorities.add(new SimpleGrantedAuthority(userRole.getName()));  //SGA class che completa hasAuthority(from GrantedAuthority) e ha anche .equals()
+        }  //@PreAuthorize("hasAuthority('ADMIN')") search 'ADMIN', @PreAuthorize("hasRole('ADMIN')") search 'ROLE_ADMIN'. dopo utilizzano .equals()
     }
     
     //set all true, not necessary restrictions now!

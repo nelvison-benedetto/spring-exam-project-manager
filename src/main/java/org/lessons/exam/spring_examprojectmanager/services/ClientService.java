@@ -109,7 +109,7 @@ public class ClientService {
 
             List<Person> validPersons = fullCompany.getPersons().stream()  //questo va bene per only x sign-up form, perche avrai legato alla company appena creata solo 1 person e 1 client
             .map(person -> personService.checkedExistsById(person.getId()))
-            .collect(Collectors.toList());  //.collect() put the results in a new collection, //.toSet() to specifi collection Set<>
+            .collect(Collectors.toList());  //.collect() put the results in a new collection, .toList per convertire in type List //.toSet() to specifi collection Set<>
             
             for(Person person : validPersons) {
                 person.setClient(clientToCreate);  //add this company to the obj person

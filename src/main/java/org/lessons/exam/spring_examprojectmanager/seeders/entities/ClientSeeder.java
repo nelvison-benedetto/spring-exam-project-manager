@@ -24,7 +24,7 @@ public class ClientSeeder {
 
     public void seed() {
         if(clientRepo.count() == 0){
-            List<Client> clients = new ArrayList<>(Arrays.asList(
+            List<Client> clients = new ArrayList<>(Arrays.asList(  //covert Array -> List
 
             new Client(null, "PREMIUM", "ACTIVE", 
                 LocalDate.of(2024, 1, 15), 

@@ -13,7 +13,7 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<name>spring_examprojectmanager</name>
 	<description>Demo project for Spring Boot</description>
-	<url/>
+	<url/>  <!--URL del progetto (opzionale)-->
 	<licenses>
 		<license/>
 	</licenses>
@@ -27,9 +27,9 @@
 		<url/>
 	</scm>
 	<properties>
-		<java.version>23</java.version>  <!--MUST BE THE SAME AS THAT SEEN W console 'mvn -v'-->
+		<java.version>23</java.version>  <!--java version che maven usera x compile the prj, MUST BE THE SAME AS THAT SEEN W console 'mvn -v' info x maven what java v uses-->
 	</properties>
-	<dependencies>
+	<dependencies> <!--libs necessarie al prj-->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
@@ -103,7 +103,7 @@
 		</dependency>
 
 
-		<!-- WEBJARS (dependencies x web frontend) -->
+		<!-- WEBJARS (JS/CSS gestiti da Maven) -->
 		<!-- https://mvnrepository.com/artifact/org.webjars/bootstrap -->
 		<dependency>
 			<groupId>org.webjars</groupId>
@@ -132,8 +132,8 @@
 	</dependencies>
 
 	<build>
-		<plugins>
-			<plugin>
+		<plugins>  <!--x compilare/eseguire/pacchettizare il prj-->
+			<plugin>  <!--x compilare il prj-->
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<configuration>
@@ -145,7 +145,7 @@
 					</annotationProcessorPaths>
 				</configuration>
 			</plugin>
-			<plugin>
+			<plugin>  <!--x run prj w mvn spring-boot:run + creare .jar eseguibile result. lombock serve solo a runtime, non a compilazione-->
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<configuration>

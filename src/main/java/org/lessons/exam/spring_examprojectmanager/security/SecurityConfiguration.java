@@ -13,9 +13,9 @@ import org.springframework.security.web.SecurityFilterChain;
 
 import jakarta.servlet.http.HttpServletResponse;
 
-@Configuration
+@Configuration  //bc contains @beans of configuration
 @EnableWebSecurity  //tells to spring to use this config x all 'web security' requests 
-@EnableMethodSecurity  //x use @PreAuthorize
+@EnableMethodSecurity  //!!abilitate sec a method level, so u can use @PreAuthorize ect
 public class SecurityConfiguration {
     
     @Bean
@@ -62,7 +62,7 @@ public class SecurityConfiguration {
                 .permitAll()  //anyone can access to url "/sign-out"++any other thing in this .logout()
             .and()
             
-            .exceptionHandling();  //abilitate custom error pages
+            .exceptionHandling();  //abilitate custom error pages!
 
         return http.build();
     }
@@ -70,8 +70,8 @@ public class SecurityConfiguration {
 
     @Bean  //diventa cosi un Bean Spring, ora gestibile da Spring e facilmente iniettabile
     @SuppressWarnings("deprecation")  //to avoid deprecation's errors or settings not perfectly right
-    DaoAuthenticationProvider daoAuthenticationProvider() {   //il nome del method è anche il nome del bean!
-        DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
+    DaoAuthenticationProvider daoAuthenticationProvider() {   //il nome del method è anche il nome del bean! 
+        DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();   //implementazione concrete di AuthProvider
         daoAuthenticationProvider.setUserDetailsService(userDetailsService());
         daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
         return daoAuthenticationProvider;
@@ -84,7 +84,9 @@ public class SecurityConfiguration {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+        return PasswordEncoderFactories.createDelegatingPasswordEncoder();  //di default usa alght bcrypt, ma puo leggere anche altri encoder e.g.{SHA-256}xxxx...
+            //signup: read psw del form di sign-up-> la converte in bcrypt->add '{bcrypt}' davanti-> result saved on db '{bcrypt}$2a$10$xxsxs..', .encode(mypsw) x manually
+            //sign-in: read psw del form -> la converte in {bcrypt} -> la confronta con quella nel db
     }
 
 }

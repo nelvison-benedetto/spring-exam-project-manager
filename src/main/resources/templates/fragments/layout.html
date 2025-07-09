@@ -115,12 +115,12 @@
                 
                 <!--SECURITY, custom exit url-->
                 <th:block th:if="${#authorization.expression('isAuthenticated()')}">  <!--isAuthenticated() check if there is a user logged in-->
-                    <a href="#" onclick="document.getElementById('logoutForm').submit(); return false;"
+                    <a href="#" onclick="document.getElementById('logoutForm').submit(); return false;"  
                         class="btn btn-outline-primary btn-sm rounded-1" style="text-decoration: none;">
                         Sign Out
-                    </a>
+                    </a>  <!--return false; impedisce che il link faccia il suo comportamento standart cioe cambiare pagina-->
                     <form id="logoutForm" th:action="@{/sign-out}" method="post" style="display: none;">
-                        <input type="hidden" name="_csrf" th:value="${_csrf.token}" /> <!--send also _csrf.token, (already included x forms w th:action & method="post"/others), spring avoid attack Cross-Site Request Forgery (malicious reqs(by the hacker) from auth clean user) -->
+                        <input type="hidden" name="_csrf" th:value="${_csrf.token}" /> <!--send also _csrf.token,(always also included x forms w th:action & method="post"/others), spring se non lo riceve blocca la richiesta. avoid attack Cross-Site Request Forgery (malicious reqs(by the hacker) from auth bravi user) -->
                     </form>
                 </th:block>
                 <th:block th:unless="${#authorization.expression('isAuthenticated()')}">
@@ -128,7 +128,6 @@
                         Sign In
                     </a>
                 </th:block>
-                <!---->
 
             </div>
         </div>

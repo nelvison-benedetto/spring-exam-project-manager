@@ -51,7 +51,7 @@ public class SecurityService {
             return false;
         }
         Object principal = authentication.getPrincipal();
-        if (!(principal instanceof CustomUserDetails customUserDetails)) {  //CHECK if principal type == type CustomUserDetails
+        if (!(principal instanceof CustomUserDetails customUserDetails)) {  //CHECK if principal type == type CustomUserDetails, + assegnazione a customUserDetails
             return false;
         }
         Person authenticatedPerson = userService.checkedExistsById(customUserDetails.getId()).getPerson();
@@ -140,7 +140,7 @@ public class SecurityService {
             return false;
         }
 
-        //TO IMPROVE HERE!!
+        //TODO TO IMPROVE HERE!!
         if(client.getCompany() != null){
             return client.getCompany().getPersons().contains(person);
         }else{

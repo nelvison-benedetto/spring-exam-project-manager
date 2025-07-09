@@ -112,7 +112,7 @@ public class ProjectSeeder {
             List<Project> projects = generatedProjects();
             return projectRepo.saveAll(projects);
         }
-        return projectRepo.findAll();
+        return projectRepo.findAll();  //x called from TaskSeeder
     }
 
 }
