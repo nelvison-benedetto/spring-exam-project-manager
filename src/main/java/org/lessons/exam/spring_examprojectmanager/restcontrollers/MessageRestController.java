@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@RestController
+@RestController  //= @Controller + @ResponseBody(serializza in json format)
 @RequestMapping("/api/messages")
 public class MessageRestController {
     
@@ -28,14 +28,14 @@ public class MessageRestController {
 
     //READ
     @GetMapping
-    public ResponseEntity<List<MessageDTO>> messagesRestIndex() {
+    public ResponseEntity<List<MessageDTO>> messagesRestIndex(){   //ResponseEntity<T> classe spring contains body(la response)-statusCodeHttp-opzionaliHeaderCustom(e.g.Content-Type)
         List<Message> messages = repoMessage.findAll();
-        List<MessageDTO> messageDTOs = messages.stream().map(MessageDTO::new).toList();
+        List<MessageDTO> messageDTOs = messages.stream().map(MessageDTO::new).toList();  //.map() esegue new MessageDTO(message)
         return ResponseEntity.ok(messageDTOs);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<MessageDTO> messagesRestShow(@PathVariable Integer id) {
+    public ResponseEntity<MessageDTO> messagesRestShow(@PathVariable Integer id){   //ResponseEntity<T> classe spring contains body(la response)-statusCodeHttp-opzionaliHeaderCustom(e.g.Content-Type)
         if(!repoMessage.existsById(id)) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

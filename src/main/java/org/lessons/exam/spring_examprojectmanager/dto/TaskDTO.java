@@ -36,6 +36,6 @@ public class TaskDTO {
         this.taskStartDate = task.getTaskStartDate();
         this.taskEndDate = task.getTaskEndDate();
         
-        this.projectTitle = task.getProject() != null ? task.getProject().getTitle() : null;  //PROJECT E' CARICATO IN MOD 'LAZY', e se non è ancora stato serializzato spring si blocca qui!!
+        this.projectTitle = task.getProject() != null ? task.getProject().getTitle() : null;  
     }
 }

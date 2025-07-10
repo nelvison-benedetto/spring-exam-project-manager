@@ -27,7 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 import jakarta.validation.Valid;
 import net.datafaker.providers.base.Company;
 
-@RestController
+@RestController  //= @Controller + @ResponseBody(serializza in json format)
 @RequestMapping("/api/clients")
 public class ClientRestController {
 
@@ -46,14 +46,14 @@ public class ClientRestController {
 
     //READ
     @GetMapping
-    public ResponseEntity<List<ClientDTO>> clientsRestIndex(){
+    public ResponseEntity<List<ClientDTO>> clientsRestIndex(){  //ResponseEntity<T> classe spring contains body(la response)-statusCodeHttp-opzionaliHeaderCustom(e.g.Content-Type)
         List<Client> clients = clientRepo.findAll();
-        List<ClientDTO> clientDTOs = clients.stream().map(ClientDTO::new).toList();
+        List<ClientDTO> clientDTOs = clients.stream().map(ClientDTO::new).toList(); //.map() esegue new ClientDTO(client)
         return ResponseEntity.ok(clientDTOs);
     }
 
     @GetMapping("/id")
-    public ResponseEntity<ClientDTO> clientsRestShow(@PathVariable Integer id){
+    public ResponseEntity<ClientDTO> clientsRestShow(@PathVariable Integer id){   //ResponseEntity<T> classe spring contains body(la response)-statusCodeHttp-opzionaliHeaderCustom(e.g.Content-Type)
         if(!clientService.boolExistsById(id)){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

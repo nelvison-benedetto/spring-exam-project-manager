@@ -1,6 +1,7 @@
 const einInput = document.getElementById('companyEINRendered');
 const einHidden = document.getElementById('companyEIN');
 
+   //formatta str di chars in XX-XXXXXXX
 function formatEIN(raw) {
     raw = raw.replace(/\D/g, ''); // solo numeri
 
@@ -12,24 +13,24 @@ function formatEIN(raw) {
     // Max lunghezza: 9 cifre + 1 trattino
     return formatted.slice(0, 10);
 }
-
+   //quando user digita/modifica il filed rendered nel form
 einInput.addEventListener('input', function () {
     const formatted = formatEIN(einInput.value);
     einInput.value = formatted;
     einHidden.value = formatted;
 });
-
+  //allow only numbers digit
 einInput.addEventListener('keypress', function (e) {
     if (!/^\d$/.test(e.key)) {
         e.preventDefault();
     }
 });
-
+  //block paste non si puo incollare testo qua
 einInput.addEventListener('paste', function (e) {
     e.preventDefault();
 });
 
-// Formattazione automatica su caricamento pagina
+  //alla fine del caricamento della pagina
 document.addEventListener('DOMContentLoaded', function () {
     if (einHidden && einHidden.value) {
         einInput.value = formatEIN(einHidden.value);

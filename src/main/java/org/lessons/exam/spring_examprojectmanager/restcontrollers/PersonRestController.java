@@ -32,7 +32,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.validation.Valid;
 
-@RestController
+@RestController  //= @Controller + @ResponseBody(serializza in json format)
 @RequestMapping("/api/persons")
 public class PersonRestController {
     
@@ -51,14 +51,14 @@ public class PersonRestController {
 
     //READ
     @GetMapping
-    public ResponseEntity<List<PersonDTO>> personsRestIndex(){
+    public ResponseEntity<List<PersonDTO>> personsRestIndex(){   //ResponseEntity<T> classe spring contains body(la response)-statusCodeHttp-opzionaliHeaderCustom(e.g.Content-Type)
         List<Person> persons = personRepo.findAll();
-        List<PersonDTO> personDTOs = persons.stream().map(PersonDTO::new).toList();
+        List<PersonDTO> personDTOs = persons.stream().map(PersonDTO::new).toList();  //.map() esegue new PersonDTO(person)
         return ResponseEntity.ok(personDTOs);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<PersonDTO> personsRestShow(@PathVariable Integer id) {
+    public ResponseEntity<PersonDTO> personsRestShow(@PathVariable Integer id){   //ResponseEntity<T> classe spring contains body(la response)-statusCodeHttp-opzionaliHeaderCustom(e.g.Content-Type)
         if(!personService.boolExistsById(id)) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

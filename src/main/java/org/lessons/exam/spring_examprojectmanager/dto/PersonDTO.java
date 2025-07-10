@@ -41,11 +41,11 @@ public class PersonDTO {
         this.clientId = person.getClient() != null ? person.getClient().getId() : null;
         
         this.projectIds = person.getProjects().stream()
-                                 .map(Project::getId)
+                                 .map(Project::getId)  //Project is old type-> getId() and get value -> set new item(that contains value) type value
                                  .collect(Collectors.toList());
         
         this.messageIds = person.getMessages().stream()
-                                 .map(Message::getId)
+                                 .map(Message::getId)  //Message is old type-> getId() and get value -> set new item(that contains value) type value
                                  .collect(Collectors.toList());
     }
 }

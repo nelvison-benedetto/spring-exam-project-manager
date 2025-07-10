@@ -62,12 +62,14 @@
             <div class="form-group mb-2">
                 <label for="companyEINRendered" class="form-label">Company EIN</label>
                 <input type="hidden" name="companyEIN" id="companyEIN" th:field="*{companyEIN}" />
+                   <!--campo che arriverà al form, aggiornato da js ogni volta che viene modificato il campo companyEINRendered!-->
                 <input type="text" class="form-control"
                     id="companyEINRendered"
                     placeholder="e.g. 12-3456789"
-                    th:value="*{companyEIN}"
-                    th:classappend="${#fields.hasErrors('companyEIN')} ? ' is-invalid' : ''">
-                
+                    th:value="*{companyEIN}"  
+                    th:classappend="${#fields.hasErrors('companyEIN')} ? ' is-invalid' : ''">  
+                   <!--th:value imposta il valore iniziale preso dal model spring-->
+
                 <div class="invalid-feedback" th:if="${#fields.hasErrors('companyEIN')}">
                     <ul style="margin-bottom: -0.02rem;">
                         <li th:each="error : ${#fields.errors('companyEIN')}" th:text="${error}" />

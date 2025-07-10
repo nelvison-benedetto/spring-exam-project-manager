@@ -27,7 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.validation.Valid;
 
-@RestController
+@RestController  //= @Controller + @ResponseBody(serializza in json format)
 @RequestMapping("/api/companies")
 public class CompanyRestController {
     
@@ -46,20 +46,20 @@ public class CompanyRestController {
 
     //READ
     @GetMapping
-    public ResponseEntity<List<CompanyDTO>> companiesRestIndex() {  //ResponseEntity<T> classe spring contains body(la response)-statusCodeHttp-opzionaliHeaderCustom
+    public ResponseEntity<List<CompanyDTO>> companiesRestIndex() {  //ResponseEntity<T> classe spring contains body(la response)-statusCodeHttp-opzionaliHeaderCustom(e.g.Content-Type)
         List<Company> companies = companyRepo.findAll();
-        List<CompanyDTO> companykDTOs = companies.stream().map(CompanyDTO::new).toList();
+        List<CompanyDTO> companykDTOs = companies.stream().map(CompanyDTO::new).toList();  //.map() esegue new CompanyDTO(company)
         return ResponseEntity.ok(companykDTOs);  //return body+statusCode
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CompanyDTO> companiesRestShow(@PathVariable Integer id){
+    public ResponseEntity<CompanyDTO> companiesRestShow(@PathVariable Integer id){  //ResponseEntity<T> classe spring contains body(la response)-statusCodeHttp-opzionaliHeaderCustom(e.g.Content-Type)
         if(!companyService.boolExistsById(id)) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         Optional<Company> company = companyRepo.findById(id);
         CompanyDTO companyDTO = new CompanyDTO(company.get());
-        return new ResponseEntity<>(companyDTO, HttpStatus.OK); //return body+statusCode(qua puoi specificare lo status manualmente)
+        return new ResponseEntity<>(companyDTO, HttpStatus.OK); //return body+statusCode(here puoi specificare lo status manualmente better)
     }
     
 

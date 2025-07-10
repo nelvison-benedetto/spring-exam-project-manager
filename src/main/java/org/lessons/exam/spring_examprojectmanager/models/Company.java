@@ -77,9 +77,9 @@ public class Company implements Serializable{
 
     @ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE }, fetch = FetchType.LAZY)  
     @JoinTable(
-        name = "company_project",
-        joinColumns = @JoinColumn(name = "company_id"),
-        inverseJoinColumns = @JoinColumn(name = "project_id")
+        name = "company_project",  //nome tab ponte (sempre in ordine alfabetico)
+        joinColumns = @JoinColumn(name = "company_id"),  //FK lato Company, aggiornato quando save/update/delete old/new company (check also Cascade ect)
+        inverseJoinColumns = @JoinColumn(name = "project_id")  //FK lato Project, aggiornato quando save/update/delete old/new project (check also Cascade ect)
     )
     @JsonManagedReference
     private List<Project> projects = new ArrayList<>();

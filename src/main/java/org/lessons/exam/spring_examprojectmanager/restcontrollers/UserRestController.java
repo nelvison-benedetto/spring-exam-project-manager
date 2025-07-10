@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.validation.Valid;
 
-@RestController
+@RestController  //= @Controller + @ResponseBody(serializza in json format)
 @RequestMapping("/api/users")
 public class UserRestController {
     private final UserService userService;

@@ -14,26 +14,29 @@ import lombok.Getter;
 import lombok.Setter;
 
 
-@Getter @Setter
-public class CustomUserDetails implements UserDetails{
+@Getter @Setter  //@override of abstract methods from UserDetails!!
+public class CustomUserDetails implements UserDetails{  //interface UserDetails MAIN usata x checks utente at login
     
     private final Integer id;
     private final String username;
     private final String password;
-    private final Set<GrantedAuthority> authorities;  //qua possono venire anche objs che IMPLEMENTATO interface GrantedAuthority
+    private final Set<GrantedAuthority> authorities;  //interface GrantedAuthority, here puoi aggiungere objs che implementano GA
+      //abstract method getAuthorities()(from UserDetails) is type GA, and w Lombock create getter&setter of this
 
-    public CustomUserDetails(User user) {
+    public CustomUserDetails(User user){
         this.id = user.getId();
         this.username = user.getUsername();
         this.password = user.getPassword();
         this.authorities = new HashSet<>();
 
         for (Role userRole : user.getRoles()) {
-            this.authorities.add(new SimpleGrantedAuthority(userRole.getName()));  //SGA class che completa hasAuthority(from GrantedAuthority) e ha anche .equals()
-        }  //@PreAuthorize("hasAuthority('ADMIN')") search 'ADMIN', @PreAuthorize("hasRole('ADMIN')") search 'ROLE_ADMIN'. dopo utilizzano .equals()
+            this.authorities.add(new SimpleGrantedAuthority(userRole.getName()));  //SGA class che completa getAuthority(from GA) e ha anche .equals()
+        }  //search flow: @PreAuthorize("hasAuthority('ADMIN')") search 'ADMIN', @PreAuthorize("hasRole('ADMIN')") search 'ROLE_ADMIN' 
+              //-> dopo spring itera x each authorities(x l'item usa il type GA!) e controlla w .equals() return true/false per ciascuno
     }
     
-    //set all true, not necessary restrictions now!
+
+    //set all true, not necessary restrictions for the user now!
     @Override
     public boolean isAccountNonExpired(){return true;}
     @Override

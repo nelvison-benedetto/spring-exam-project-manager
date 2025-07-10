@@ -35,7 +35,7 @@ public class CompanyDTO {
         this.clientId = company.getClient() != null ? company.getClient().getId() : null;
 
         this.projectIds = company.getProjects().stream()
-                                  .map(Project::getId)
+                                  .map(Project::getId)  //Project is old type-> getId() and get value -> set new item(that contains value) type value
                                   .collect(Collectors.toList());
 
         this.personIds = company.getPersons().stream()

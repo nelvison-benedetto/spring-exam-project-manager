@@ -10,13 +10,13 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
-public class CustomUserDetailsService implements UserDetailsService{  //interface UserDetailsService that contains method loadUserByUsername()
+public class CustomUserDetailsService implements UserDetailsService{  //interface UserDetailsService x loadUserByUsername()
     
     @Autowired
     private UserRepo userRepo;
 
-    @Override
-    public CustomUserDetails loadUserByUsername(String username) throws UsernameNotFoundException{
+    @Override   //called by spring at login
+    public CustomUserDetails loadUserByUsername(String username) throws UsernameNotFoundException{  
         Optional<User> userOptional = userRepo.findByUsername(username);
         if(userOptional.isPresent()){
             //System.out.println("User found w .loadUserByUsername: " + username);  //x debug
